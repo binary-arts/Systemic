@@ -1,0 +1,18 @@
+# Package/Dependencies
+lib/
+bower_components/
+node_modules/
+
+# Build Output
+bin/
+
+# Transient Build Output
+obj/
+
+# POC Files
+_Futures/
+
+# Others
+.vs/
+.DS_Store
+.idea
