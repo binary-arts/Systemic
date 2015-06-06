@@ -110,14 +110,14 @@ module.exports = function(grunt) {
         requirejs: {
             pack: {
                 options: {
-                    baseUrl: 'obj',
-                    name: '_Properties/<%= pkg.name %>',
+                    baseUrl: 'obj/_Properties',
+                    name: '<%= pkg.name %>',
                     onBuildWrite: function(moduleName, path, contents) {
                         var name = grunt.config.get('pkg.name');
 
-                        return (moduleName === '_Properties/' + name)
+                        return (moduleName === name)
                             ? ''
-                            : contents.replace('define(\'', 'define(\'' + name + '/');
+                            : contents.replace('define(\'../', 'define(\'' + name + '/');
                     },
                     optimize: 'none',
                     out: 'obj/<%= pkg.name %>.js',
@@ -134,8 +134,8 @@ module.exports = function(grunt) {
                 src: 'obj/<%= pkg.name %>.js',
                 options: {
                     replacements: [{
-                        pattern: /_Debug\['default'\]\.assert\(!\(0, /g,
-                        replacement: '//_Debug[\'default\'].assert(!(0, '
+                        pattern: /_Debug\['default'\]\.assert\(/g,
+                        replacement: '//_Debug[\'default\'].assert('
                     }]
                 }
             },
@@ -144,8 +144,8 @@ module.exports = function(grunt) {
                 src: 'obj/<%= pkg.name %>.js',
                 options: {
                     replacements: [{
-                        pattern: /\/\/_Debug\['default'\]\.assert\(!\(0, /g,
-                        replacement: '_Debug[\'default\'].assert(!(0, '
+                        pattern: /\/\/_Debug\['default'\]\.assert\(/g,
+                        replacement: '_Debug[\'default\'].assert('
                     }]
                 }
             }

@@ -2,7 +2,7 @@ import { Pair } from '../../src/Tuple';
 import { Triple } from '../../src/Tuple';
 import { Quad } from '../../src/Tuple';
 
-describe('Pair', () => {
+describe('Tuple/Pair', () => {
 
     describe('Constructor:', () => {
 
@@ -34,7 +34,7 @@ describe('Pair', () => {
 
 });
 
-describe('Triple', () => {
+describe('Tuple/Triple', () => {
 
     describe('Constructor:', () => {
 
@@ -54,7 +54,7 @@ describe('Triple', () => {
 
 });
 
-describe('Quad', () => {
+describe('Tuple/Quad', () => {
 
     describe('Constructor:', () => {
 

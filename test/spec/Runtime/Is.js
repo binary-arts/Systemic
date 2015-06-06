@@ -1,6 +1,6 @@
 import is from '../../../src/Runtime/Is';
 
-describe('Is', () => {
+describe('Runtime/Is', () => {
 
     describe('Constructor:', () => {
 

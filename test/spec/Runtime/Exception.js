@@ -1,6 +1,6 @@
 ﻿import Exception from '../../../src/Runtime/Exception';
 
-describe('Exception', () => {
+describe('Runtime/Exception', () => {
 
     describe('Constructor:', () => {
 

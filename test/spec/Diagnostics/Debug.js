@@ -1,6 +1,6 @@
 ﻿import Debug from '../../../src/Diagnostics/Debug';
 
-describe('Debug', () => {
+describe('Diagnostics/Debug', () => {
 
     describe('Constructor:', () => {
 
