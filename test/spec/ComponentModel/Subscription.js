@@ -1,4 +1,4 @@
-import Subscription from '../../../src/ComponentModel/Subscription';
+import Subscription from 'ComponentModel/Subscription';
 
 describe('ComponentModel/Subscription', () => {
 

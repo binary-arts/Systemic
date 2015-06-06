@@ -1,4 +1,4 @@
-import EventList from '../../../src/ComponentModel/EventList';
+import EventList from 'ComponentModel/EventList';
 
 describe('ComponentModel/EventList', () => {
 

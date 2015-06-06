@@ -1,4 +1,4 @@
-import is from '../../../src/Runtime/Is';
+import is from 'Runtime/Is';
 
 describe('Runtime/Is', () => {
 

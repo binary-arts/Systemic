@@ -1,4 +1,4 @@
-﻿import Exception from '../../../src/Runtime/Exception';
+﻿import Exception from 'Runtime/Exception';
 
 describe('Runtime/Exception', () => {
 

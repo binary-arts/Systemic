@@ -1,6 +1,6 @@
-import { Pair } from '../../src/Tuple';
-import { Triple } from '../../src/Tuple';
-import { Quad } from '../../src/Tuple';
+import { Pair } from 'Tuple';
+import { Triple } from 'Tuple';
+import { Quad } from 'Tuple';
 
 describe('Tuple/Pair', () => {
 

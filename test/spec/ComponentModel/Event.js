@@ -1,4 +1,4 @@
-import Event from '../../../src/ComponentModel/Event';
+import Event from 'ComponentModel/Event';
 
 describe('ComponentModel/Event', () => {
 

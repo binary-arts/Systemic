@@ -63,11 +63,12 @@ module.exports = function(grunt) {
                     },
                     browsers: ['PhantomJS'],
                     files: [
-                        { pattern: 'lib/**/*.js' },
-                        { pattern: 'src/**/*.js' },
-                        { pattern: 'test/spec/**/*.js' }
+                        { pattern: 'lib/**/*.js', included:false },
+                        { pattern: 'src/**/*.js', included: false },
+                        { pattern: 'test/spec/**/*.js', included: false },
+                        { pattern: 'test/Systemic.js', included: true }
                     ],
-                    frameworks: ['jasmine'],
+                    frameworks: ['jasmine', 'requirejs'],
                     preprocessors: {
                         'src/**/*.js': ['babel'],
                         'test/spec/**/*.js': ['babel']
@@ -151,7 +152,7 @@ module.exports = function(grunt) {
         },
         watch: {
             debug: {
-                files: ['src/**'],
+                files: ['src/**', 'test/spec/**'],
                 tasks: ['build']
             }
         }
@@ -160,11 +161,11 @@ module.exports = function(grunt) {
     grunt.registerTask('reset', ['clean:reset']);
     grunt.registerTask('restore', ['bower:restore']);
     grunt.registerTask('analyze', ['jshint:analyze']); // TODO jscs
-    grunt.registerTask('test', [/*'karma:test'*/]);
+    grunt.registerTask('test', ['karma:test']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
     grunt.registerTask('pack', ['requirejs:pack', 'uglify:pack', 'clean:pack']);
     grunt.registerTask('min', ['string-replace:min', 'uglify:min', 'string-replace:post-min']);
 
-    grunt.registerTask('build', ['analyze', 'compile', 'test', 'pack', 'min', 'rename:build']);
+    grunt.registerTask('build', ['analyze', 'test', 'compile', 'pack', 'min', 'rename:build']);
     grunt.registerTask('debug', ['restore', 'build', 'watch:debug']);
 };

@@ -1,4 +1,4 @@
-﻿import Disposition from '../../../src/ComponentModel/Disposition';
+﻿import Disposition from 'ComponentModel/Disposition';
 
 describe('ComponentModel/Disposition', () => {
 
@@ -6,31 +6,41 @@ describe('ComponentModel/Disposition', () => {
 
         describe('Uninitialized', () => {
 
-            xit('Has no facts.', () => {});
+            it('Is a number with the value of 0.', () => {
+                expect(Disposition.Uninitialized).toBe(0);
+            });
 
         });
 
         describe('Initializing', () => {
 
-            xit('Has no facts.', () => {});
+            it('Is a number with the value of 0.', () => {
+                expect(Disposition.Initializing).toBe(1);
+            });
 
         });
 
         describe('Live', () => {
 
-            xit('Has no facts.', () => {});
+            it('Is a number with the value of 0.', () => {
+                expect(Disposition.Live).toBe(2);
+            });
 
         });
 
         describe('Disposing', () => {
 
-            xit('Has no facts.', () => {});
+            it('Is a number with the value of 0.', () => {
+                expect(Disposition.Disposing).toBe(3);
+            });
 
         });
 
         describe('Disposed', () => {
 
-            xit('Has no facts.', () => {});
+            it('Is a number with the value of 0.', () => {
+                expect(Disposition.Disposed).toBe(4);
+            });
 
         });
 

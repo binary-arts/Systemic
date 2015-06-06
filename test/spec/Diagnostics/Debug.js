@@ -1,4 +1,4 @@
-﻿import Debug from '../../../src/Diagnostics/Debug';
+﻿import Debug from 'Diagnostics/Debug';
 
 describe('Diagnostics/Debug', () => {
 

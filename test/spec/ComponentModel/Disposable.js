@@ -1,4 +1,4 @@
-import Disposable from '../../../src/ComponentModel/Disposable';
+import Disposable from 'ComponentModel/Disposable';
 
 describe('ComponentModel/Disposable', () => {
 
