@@ -46,32 +46,8 @@ module.exports = function(grunt) {
                 expand: true,
                 src: '**/*.js',
                 options: {
-                    browser: true,
-                    camelcase: true,
-                    eqeqeq: true,
-                    esnext: true,
-                    freeze: true,
-                    globals: {
-                        global: false,
-                        HTMLDocument: false,
-                        self: false,
-                        Window: false
-                    },
-                    immed: true,
-                    indent: 4,
-                    latedef: 'nofunc',
-                    laxbreak: true,
-                    maxdepth: 4,
-                    maxparams: 5,
-                    newcap: true,
-                    noarg: true,
-                    nonbsp: true,
-                    nonew: true,
-                    quotmark: 'single',
+                    jshintrc: true,
                     reporter: require('jshint-summary'),
-                    undef: true,
-                    unused: 'strict',
-                    white: true
                 }
             }
         },
@@ -115,9 +91,7 @@ module.exports = function(grunt) {
                     onBuildWrite: function(moduleName, path, contents) {
                         var name = grunt.config.get('pkg.name');
 
-                        return (moduleName === name)
-                            ? ''
-                            : contents.replace('define(\'../', 'define(\'' + name + '/');
+                        return (moduleName === name) ? '' : contents.replace('define(\'../', 'define(\'' + name + '/');
                     },
                     optimize: 'none',
                     out: 'obj/<%= pkg.name %>.js',

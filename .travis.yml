@@ -10,4 +10,4 @@ branches:
 script:
   - npm install --no-optional
   - grunt restore
-  - grunt build 
+  - grunt build
