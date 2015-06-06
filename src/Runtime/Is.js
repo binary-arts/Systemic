@@ -26,7 +26,7 @@ class Is {
     }
 
     get aDocument() {
-        return this.a(HTMLDocument || Document);
+        return this.a(HTMLDocument);
     }
 
     get aFunction() {
