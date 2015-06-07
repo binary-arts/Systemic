@@ -3,11 +3,12 @@ lib/
 bower_components/
 node_modules/
 
-# Build Output
+# Build
 bin/
-
-# Transient Build Output
 obj/
+
+# Test
+test/coverage
 
 # POC Files
 _Futures/

@@ -6,7 +6,7 @@ describe('ComponentModel/Disposition', () => {
 
         describe('Uninitialized', () => {
 
-            it('Is a number with the value of 0.', () => {
+            it('Is the numeric value 0.', () => {
                 expect(Disposition.Uninitialized).toBe(0);
             });
 
@@ -14,7 +14,7 @@ describe('ComponentModel/Disposition', () => {
 
         describe('Initializing', () => {
 
-            it('Is a number with the value of 0.', () => {
+            it('Is the numeric value 1.', () => {
                 expect(Disposition.Initializing).toBe(1);
             });
 
@@ -22,7 +22,7 @@ describe('ComponentModel/Disposition', () => {
 
         describe('Live', () => {
 
-            it('Is a number with the value of 0.', () => {
+            it('Is the numeric value 2.', () => {
                 expect(Disposition.Live).toBe(2);
             });
 
@@ -30,7 +30,7 @@ describe('ComponentModel/Disposition', () => {
 
         describe('Disposing', () => {
 
-            it('Is a number with the value of 0.', () => {
+            it('Is the numeric value 3.', () => {
                 expect(Disposition.Disposing).toBe(3);
             });
 
@@ -38,7 +38,7 @@ describe('ComponentModel/Disposition', () => {
 
         describe('Disposed', () => {
 
-            it('Is a number with the value of 0.', () => {
+            it('Is the numeric value 4.', () => {
                 expect(Disposition.Disposed).toBe(4);
             });
 

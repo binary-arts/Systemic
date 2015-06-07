@@ -11,11 +11,5 @@
         }
 
         return tests;
-    }(),
-    paths: {
-        'browser-polyfill': '../lib/babel-polyfill/browser-polyfill'
-    },
-    shim: {
-        'browser-polyfill': []
-    }
+    }()
 });

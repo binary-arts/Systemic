@@ -22,6 +22,7 @@
         "karma": "^0.12.35",
         "karma-babel-preprocessor": "^5.2.1",
         "karma-jasmine": "^0.3.5",
+        "karma-coverage": "^0.3.1",
         "karma-phantomjs-launcher": "^0.2.0",
         "karma-requirejs": "^0.2.2",
         "load-grunt-tasks": "^3.2.0"

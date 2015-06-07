@@ -6,5 +6,7 @@ branches:
 
 script:
   - npm install --no-optional
+  - npm install codeclimate-test-reporter
   - grunt restore
   - grunt build
+  - codeclimate < test/coverage/lcov.info
