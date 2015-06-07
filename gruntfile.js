@@ -3,6 +3,8 @@ var Babel = require('babel');
 module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
+    var pollyfill = grunt.file.read('node_modules/babel/node_modules/babel-core/browser-polyfill.js');
+
     grunt.initConfig({
         babel: {
             compile: {
@@ -98,7 +100,7 @@ module.exports = function(grunt) {
                     out: 'obj/<%= pkg.name %>.js',
                     paths: {},
                     wrap: {
-                        start: Babel.buildExternalHelpers() + '\n'
+                        start: pollyfill + '\n' + Babel.buildExternalHelpers() + '\n'
                     }
                 }
             }
