@@ -12,4 +12,4 @@ script:
   - grunt build
 
 after_script:
-  - process.env.CODECLIMATE_REPO_TOKEN codeclimate < test/coverage/lcov.info
+  - CODECLIMATE_REPO_TOKEN=process.env.CODECLIMATE_REPO_TOKEN codeclimate < test/coverage/lcov.info
