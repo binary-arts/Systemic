@@ -8,7 +8,7 @@ after_success:
 
 branches:
   only:
-    - development
+    - master
 
 language: node_js
 
