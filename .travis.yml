@@ -6,6 +6,9 @@ after_success:
   - npm install codeclimate-test-reporter -g
   - codeclimate < test/coverage/lcov.info
 
+before_script: 
+  - npm install bower -g 
+
 branches:
   only:
     - master
