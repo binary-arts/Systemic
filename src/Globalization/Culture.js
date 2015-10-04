@@ -158,6 +158,7 @@ export default class Culture {
     //#region Methods
 
     fromName(name) {
+        return name;
         //return null;
         // return name === 'en-US'
         //     ? $

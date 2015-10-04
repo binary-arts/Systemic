@@ -1,4 +1,4 @@
-import Exception from '../Runtime/Exception';
+import Exception from './Runtime/Exception';
 
 export default class Format {
 
