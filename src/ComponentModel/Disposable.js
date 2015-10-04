@@ -5,7 +5,7 @@ import Disposition from './Disposition';
 import EventList from './EventList';
 import Exception from '../Runtime/Exception';
 
-export default class {
+export default class Disposable {
 
     //#region Events
 

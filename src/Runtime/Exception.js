@@ -1,4 +1,4 @@
-﻿export default class {
+﻿export default class Exception {
 
     constructor() {
         throw this.create('Cannot invoke the constructor function of a static class.');

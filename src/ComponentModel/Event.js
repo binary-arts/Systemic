@@ -3,7 +3,7 @@ import is from '../Runtime/Is';
 import Debug from '../Diagnostics/Debug';
 import Subscription from './Subscription';
 
-export default class {
+export default class Event {
 
     constructor(source) {
         Debug.assert(is(source).anObject || is(source).aFunction);

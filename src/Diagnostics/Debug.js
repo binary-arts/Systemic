@@ -1,6 +1,6 @@
 ﻿import Exception from '../Runtime/Exception';
 
-export default class {
+export default class Debug {
 
     constructor() {
         throw Exception.create('Cannot invoke the constructor function of a static class.');

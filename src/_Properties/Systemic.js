@@ -6,7 +6,10 @@ import '../ComponentModel/Subscription';
 
 import '../Diagnostics/Debug';
 
+import '../Globalization/Culture';
+
 import '../Runtime/Exception';
 import '../Runtime/Is';
 
+import '../Format';
 import '../Tuple';
