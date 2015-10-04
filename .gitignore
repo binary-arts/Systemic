@@ -15,5 +15,6 @@ _Futures/
 
 # Others
 .vs/
+.vscode/
 .DS_Store
 .idea

@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     };
 
     var files = {
-        dep: Path.join(dir.dep, '**/*.js'),
+        dep: Path.join(dir.work, dir.dep, '**/*.js'),
         src: Path.join(dir.src, '**/*.js'),
         spec: Path.join(dir.spec, '**/*.js'),
         work: Path.join(dir.work, '**/*.js')
@@ -49,20 +49,19 @@ module.exports = function(grunt) {
             }
         },
         bower: {
-            restore: {
+            compile: {
                 options: {
-                    cleanBowerDir: true,
-                    cleanTargetDir: true,
+                    install: false,
                     layout: 'byComponent',
-                    targetDir: dir.dep
+                    targetDir: Path.join(dir.work, dir.dep)
                 }
             }
         },
         clean: {
             compile: [dir.work, dir.out],
-            test: [dir.coverage],
             pack: [Path.join(dir.work, '**/*'), '!' + file.out.debug],
-            reset: [dir.coverage, dir.dep, dir.out, dir.pkg.bower, dir.pkg.node, dir.work]
+            reset: [dir.coverage, dir.out, dir.pkg.bower, dir.pkg.node, dir.work],
+            test: [dir.coverage]
         },
         copy: {
             compile: {
@@ -123,8 +122,8 @@ module.exports = function(grunt) {
         },
         rename: {
             build: {
-                src: dir.work,
-                dest: dir.out
+                dest: dir.out,
+                src: dir.work
             }
         },
         requirejs: {
@@ -200,7 +199,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('reset', ['clean:reset']);
-    grunt.registerTask('restore', ['bower:restore']);
+    
     grunt.registerTask('analyze', ['jshint:analyze']); // TODO jscs
     grunt.registerTask('test', ['clean:test', 'karma:test']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
@@ -208,5 +207,5 @@ module.exports = function(grunt) {
     grunt.registerTask('min', ['string-replace:min', 'uglify:min', 'string-replace:post-min']);
 
     grunt.registerTask('build', ['analyze', 'test', 'compile', 'pack', 'min', 'rename:build']);
-    grunt.registerTask('debug', ['restore', 'build', 'watch:debug']);
+    grunt.registerTask('debug', ['build', 'watch:debug']);
 };

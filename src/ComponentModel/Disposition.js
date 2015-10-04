@@ -6,8 +6,6 @@ export default class {
         throw Exception.create('Cannot invoke the constructor function of a static class.');
     }
 
-    //#region Type
-
     //#region Properties
 
     static get Uninitialized() { return 0; }
@@ -15,8 +13,6 @@ export default class {
     static get Live() { return 2; }
     static get Disposing() { return 3; }
     static get Disposed() { return 4; }
-
-    //#endregion
 
     //#endregion
 
