@@ -1,9 +1,115 @@
+import 'jquery';
+
 import is from '../Runtime/Is';
 
 import Debug from '../Diagnostics/Debug';
-//import FileService from '../Net/FileService';
+import FileService from '../Net/FileService';
 
 export default class Culture {
+
+    //#region Type
+
+    //#region Properties
+
+    /**
+     * A dictionary that contains the collective state of the Culture type.
+     *
+     * @private
+     * @static
+     *
+     * @returns { Object }
+     */
+    static get _() {
+        return Culture.__ || (Culture.__ = Object.create(null));
+    }
+
+    static get current() {
+        return Culture._.current || (Culture._.current = Culture.neutral);
+    }
+    static set current(value) {
+        Culture._.current = value;
+    }
+
+    static get neutral() {
+        return Culture._.neutral || (Culture._.neutral = new Culture({
+            dateFormat: {
+                amDesignator: 'AM',
+                pmDesignator: 'PM',
+
+                dateSeparator: '/',
+                timeSeparator: ':',
+
+                gmtDateTimePattern: 'ddd, dd MMM yyyy HH:mm:ss \'GMT\'',
+                universalDateTimePattern: 'yyyy-MM-dd HH:mm:ssZ',
+                sortableDateTimePattern: 'yyyy-MM-ddTHH:mm:ss',
+                dateTimePattern: 'dddd, MMMM dd, yyyy h:mm:ss tt',
+
+                longDatePattern: 'dddd, MMMM dd, yyyy',
+                shortDatePattern: 'M/d/yyyy',
+
+                longTimePattern: 'h:mm:ss tt',
+                shortTimePattern: 'h:mm tt',
+
+                firstDayOfWeek: 0,
+                dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                shortDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                minimizedDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+
+                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
+                shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', '']
+            },
+            id: 1033,
+            name: 'en-US',
+            numberFormat: {
+                nanSymbol: 'NaN',
+                negativeSign: '-',
+                positiveSign: '+',
+                negativeInfinityText: '-Infinity',
+                positiveInfinityText: 'Infinity',
+
+                numberGroupSizes: [3],
+                numberDecimalDigits: 2,
+                numberDecimalSeparator: '.',
+                numberGroupSeparator: ',',
+
+                percentSymbol: '%',
+                percentGroupSizes: [3],
+                percentDecimalDigits: 2,
+                percentDecimalSeparator: '.',
+                percentGroupSeparator: ',',
+                percentPositivePattern: '?%',
+                percentNegativePattern: '-?%',
+
+                currencySymbol: '$',
+                currencyGroupSizes: [3],
+                currencyDecimalDigits: 2,
+                currencyDecimalSeparator: '.',
+                currencyGroupSeparator: ',',
+                currencyNegativePattern: '($?)',
+                currencyPositivePattern: '$?'
+            }
+        }));
+    }
+
+    //#endregion
+
+    //#region Methods
+
+    static fromName(name) {
+        return name === 'en-US'
+            ? $
+                .Deferred(task => task.resolve(Culture.neutral))
+                .promise()
+            : FileService
+                .getObject(`culture/${name}.js`)
+                .then(graph =>  graph ? new Culture(graph) : null);
+    }
+
+    //#endregion
+
+    //#endregion
+
+    //#region Disposition
 
     constructor(graph) {
         Debug.assert(is(graph).anObject);
@@ -69,112 +175,11 @@ export default class Culture {
         //init
         this._.graph = graph;
     }
-    
-    //#region Type
-    
+
+    //#endregion
+
     //#region Properties
 
-    /**
-     * A dictionary that contains the collective state of the Culture type.
-     *
-     * @private
-     *
-     * @returns { Object }
-     */
-    static get _() {
-        return Culture.__ || (Culture.__ = Object.create(null));
-    }
-
-    static get current() {
-        return Culture._.current || (Culture._.current = Culture.neutral);
-    }
-    static set current(value) {
-        Culture._.current = value;
-    }
-
-    static get neutral() {
-        return Culture._.neutral || (Culture._.neutral = new Culture({
-            dateFormat: {
-                amDesignator: 'AM',
-                pmDesignator: 'PM',
-
-                dateSeparator: '/',
-                timeSeparator: ':',
-
-                gmtDateTimePattern: 'ddd, dd MMM yyyy HH:mm:ss \'GMT\'',
-                universalDateTimePattern: 'yyyy-MM-dd HH:mm:ssZ',
-                sortableDateTimePattern: 'yyyy-MM-ddTHH:mm:ss',
-                dateTimePattern: 'dddd, MMMM dd, yyyy h:mm:ss tt',
-
-                longDatePattern: 'dddd, MMMM dd, yyyy',
-                shortDatePattern: 'M/d/yyyy',
-
-                longTimePattern: 'h:mm:ss tt',
-                shortTimePattern: 'h:mm tt',
-
-                firstDayOfWeek: 0,
-                dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                shortDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                minimizedDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-
-                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
-                shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', '']
-            },
-            id: 1033,
-            name: 'en-US',
-            numberFormat: {
-                nanSymbol: 'NaN',
-                negativeSign: '-',
-                positiveSign: '+',
-                negativeInfinityText: '-Infinity',
-                positiveInfinityText: 'Infinity',
-
-                numberGroupSizes: [3],
-                numberDecimalDigits: 2,
-                numberDecimalSeparator: '.',
-                numberGroupSeparator: ',',
-
-                percentSymbol: '%',
-                percentGroupSizes: [3],
-                percentDecimalDigits: 2,
-                percentDecimalSeparator: '.',
-                percentGroupSeparator: ',',
-                percentPositivePattern: '{0} %',
-                percentNegativePattern: '-{0} %',
-
-                currencySymbol: '$',
-                currencyGroupSizes: [3],
-                currencyDecimalDigits: 2,
-                currencyDecimalSeparator: '.',
-                currencyGroupSeparator: ',',
-                currencyNegativePattern: '(${0})',
-                currencyPositivePattern: '${0}'
-            }           
-        }));
-    }
-
-    //#endregion
-    
-    //#region Methods
-
-    fromName(name) {
-        return name;
-        //return null;
-        // return name === 'en-US'
-        //     ? $
-        //         .Deferred(function(task) { task.resolve(Culture.neutral); })
-        //         .promise()
-        //     : FileService
-        //         .getObject(`culture/${name}.js`)
-        //         .then(function(graph) { return graph ? new Culture(graph) : null; });
-    }
-
-    //#endregion
-    
-    //#endregion
-    
-    //#region Properties
-    
     /**
      * A dictionary that contains the collective state of a Culture instance.
      *
@@ -209,7 +214,7 @@ export default class Culture {
     get currencyNegativePattern() {
         return this._graph.numberFormat.currencyNegativePattern;
     }
-        
+
     get currencyPositivePattern() {
         return this._graph.numberFormat.currencyPositivePattern;
     }

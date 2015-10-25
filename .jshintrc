@@ -5,6 +5,7 @@
     "esnext": true,
     "freeze": true,
     "globals": {
+        "$": false,
         "global": false,
         "HTMLDocument": false,
         "self": false,
@@ -12,7 +13,7 @@
     },
     "immed": true,
     "indent": 4,
-    "latedef": "nofunc",
+    "latedef": true,
     "laxbreak": true,
     "maxdepth": 4,
     "maxparams": 5,

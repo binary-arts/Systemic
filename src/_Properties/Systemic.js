@@ -7,9 +7,15 @@ import '../ComponentModel/Subscription';
 import '../Diagnostics/Debug';
 
 import '../Globalization/Culture';
+import '../Globalization/IntlDateFormatter';
+import '../Globalization/IntlNumberFormatter';
 
+import '../Net/FileService';
+
+import '../Runtime/As';
 import '../Runtime/Exception';
+import '../Runtime/Format';
 import '../Runtime/Is';
 
-import '../Format';
+import '../Formatter';
 import '../Tuple';

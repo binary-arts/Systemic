@@ -1,7 +1,7 @@
 # Package/Dependencies
-lib/
 bower_components/
 node_modules/
+types/
 
 # Build
 bin/
@@ -15,6 +15,9 @@ _Futures/
 
 # Others
 .vs/
-.vscode/
+.vscode/**
 .DS_Store
 .idea
+
+#Explicit Includes
+!.vscode/settings.json

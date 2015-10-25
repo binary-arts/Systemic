@@ -1,3 +1,5 @@
+/* jshint node:true */
+
 var Babel = require('babel');
 var Path = require('path');
 
@@ -107,14 +109,14 @@ module.exports = function(grunt) {
                         { pattern: 'test/Systemic.js', included: true }
                     ],
                     frameworks: ['jasmine', 'requirejs'],
-                    preprocessors: function() {
+                    preprocessors: (function() {
                         var result = Object.create(null);
 
                         result[files.src] = ['babel', 'coverage'];
                         result[files.spec] = ['babel'];
 
                         return result;
-                    }(),
+                    })(),
                     reporters: ['progress', 'coverage'],
                     singleRun: true
                 }
@@ -136,6 +138,9 @@ module.exports = function(grunt) {
                     },
                     optimize: 'none',
                     out: file.out.debug,
+                    paths: {
+                        jquery: 'empty:'
+                    },
                     wrap: {
                         start: grunt.file.read(file.polyfill) + '\n' + Babel.buildExternalHelpers() + '\n'
                     }
@@ -166,7 +171,7 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                banner: ['/*! ', pkg.name, ' - v', pkg.version, ' - ', grunt.template.today("yyyy-mm-dd"), ' */\n\n'].join(''),
+                banner: ['/*! ', pkg.name, ' - v', pkg.version, ' - ', grunt.template.today('yyyy-mm-dd'), ' */\n\n'].join(''),
             },
             min: {
                 dest: file.out.min,
@@ -199,7 +204,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('reset', ['clean:reset']);
-    
+
     grunt.registerTask('analyze', ['jshint:analyze']); // TODO jscs
     grunt.registerTask('test', ['clean:test', 'karma:test']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
