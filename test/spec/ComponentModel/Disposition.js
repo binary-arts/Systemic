@@ -1,5 +1,4 @@
-﻿//TBI: figure out how to get imports working at design-time
-import Disposition from 'ComponentModel/Disposition';
+﻿import Disposition from 'src/ComponentModel/Disposition';
 
 describe('ComponentModel/Disposition', () => {
 
