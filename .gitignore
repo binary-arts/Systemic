@@ -9,6 +9,7 @@ obj/
 
 # Test
 test/coverage
+test/lib
 
 # POC Files
 _Futures/

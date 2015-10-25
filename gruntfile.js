@@ -10,13 +10,14 @@ module.exports = function(grunt) {
 
     var dir = {
         coverage: 'test/coverage',
-        dep: 'lib',
+        dep: 'obj/lib',
         out: 'bin',
         pkg: {
             bower: 'bower_components',
             node: 'node_modules'
         },
         spec: 'test/spec',
+        specdep: 'test/lib',
         src: 'src',
         work: 'obj',
     };
@@ -30,9 +31,9 @@ module.exports = function(grunt) {
     };
 
     var files = {
-        dep: Path.join(dir.work, dir.dep, '**/*.js'),
         src: Path.join(dir.src, '**/*.js'),
         spec: Path.join(dir.spec, '**/*.js'),
+        specdep: Path.join(dir.specdep, '**/*.js'),
         work: Path.join(dir.work, '**/*.js')
     };
 
@@ -55,15 +56,22 @@ module.exports = function(grunt) {
                 options: {
                     install: false,
                     layout: 'byComponent',
-                    targetDir: Path.join(dir.work, dir.dep)
+                    targetDir: dir.dep
+                }
+            },
+            test: {
+                options: {
+                    install: false,
+                    layout: 'byComponent',
+                    targetDir: dir.specdep
                 }
             }
         },
         clean: {
             compile: [dir.work, dir.out],
             pack: [Path.join(dir.work, '**/*'), '!' + file.out.debug],
-            reset: [dir.coverage, dir.out, dir.pkg.bower, dir.pkg.node, dir.work],
-            test: [dir.coverage]
+            reset: [dir.coverage, dir.out, dir.pkg.bower, dir.pkg.node, dir.specdep, dir.work],
+            test: [dir.coverage, dir.specdep]
         },
         copy: {
             compile: {
@@ -102,14 +110,15 @@ module.exports = function(grunt) {
                         type : 'lcov'
                     },
                     files: [
-                        { pattern: files.dep, included: false },
                         { pattern: files.src, included: false },
                         { pattern: files.spec, included: false },
+                        { pattern: files.specdep, included: false },
                         { pattern: file.polyfill, included: true },
                         { pattern: 'test/Systemic.js', included: true }
                     ],
                     frameworks: ['jasmine', 'requirejs'],
-                    preprocessors: (function() {
+                    logLevel: 'WARN',
+                    preprocessors: (function () {
                         var result = Object.create(null);
 
                         result[files.src] = ['babel', 'coverage'];
@@ -117,7 +126,7 @@ module.exports = function(grunt) {
 
                         return result;
                     })(),
-                    reporters: ['progress', 'coverage'],
+                    reporters: ['dots', 'coverage'],
                     singleRun: true
                 }
             }
@@ -205,8 +214,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('reset', ['clean:reset']);
 
-    grunt.registerTask('analyze', ['jshint:analyze']); // TODO jscs
-    grunt.registerTask('test', ['clean:test', 'karma:test']);
+    grunt.registerTask('analyze', ['jshint:analyze']);
+    grunt.registerTask('test', ['clean:test', 'bower:test', 'karma:test']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
     grunt.registerTask('pack', ['requirejs:pack', 'uglify:pack', 'clean:pack', 'bower:pack']);
     grunt.registerTask('min', ['string-replace:min', 'uglify:min', 'string-replace:post-min']);

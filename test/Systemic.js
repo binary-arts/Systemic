@@ -1,7 +1,7 @@
 ﻿requirejs.config({
     baseUrl: '/base/src',
     callback: window.__karma__.start,
-    deps: function() {
+    deps: (function() {
         var files = window.__karma__.files;
         var tests = [];
 
@@ -11,5 +11,8 @@
         }
 
         return tests;
-    }()
+    })(),
+    paths: {
+        'jquery': '../test/lib/jquery/jquery'
+    }
 });

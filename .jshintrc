@@ -9,10 +9,12 @@
         "global": false,
         "HTMLDocument": false,
         "self": false,
+        "requirejs": false,
         "Window": false
     },
     "immed": true,
     "indent": 4,
+    "jasmine": true,
     "latedef": true,
     "laxbreak": true,
     "maxdepth": 4,
