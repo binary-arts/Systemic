@@ -16,6 +16,7 @@ import '../Runtime/As';
 import '../Runtime/Exception';
 import '../Runtime/Format';
 import '../Runtime/Is';
+import '../Runtime/Query';
 
 import '../Formatter';
 import '../Tuple';

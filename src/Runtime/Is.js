@@ -73,9 +73,9 @@ class Is {
         return this.a(String);
     }
 
-    get aWindow() {
-        return this.a(Window);
-    }
+    // get aWindow() {
+    //     return this.a(Window);
+    // }
 
     get defined() {
         return !this.undefined && !this.null && !this.nan;
@@ -159,9 +159,9 @@ class Is {
                 result = TRefName === 'String';
                 break;
 
-            case Window:
-                result = TRefName === 'Window' || TRefName === 'global';
-                break;
+            // case Window:
+            //     result = TRefName === 'Window' || TRefName === 'global';
+            //     break;
 
             case Object:
                 result = TRefName === 'Object' || TRefName === 'Arguments';

@@ -19,7 +19,8 @@ export default class Debug {
      * @param { String } [message='An assertion failed.']
      *      A message to describe the warning if condition is false.
      */
-    assert(condition, message) {
+    static assert(condition, message) {
+
         if (!condition) {
             let warning = Exception.create('An assertion failed' + ((typeof message === 'string' && message) ? ': ' + message : '.'), { stackFrameIndex: 1 }).stack;
 

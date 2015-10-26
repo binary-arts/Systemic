@@ -1,3 +1,5 @@
+//TBI support injectable converters over "as" members on types (see format for injectable formatters)
+
 import is from './Is';
 
 import Debug from '../Diagnostics/Debug';
