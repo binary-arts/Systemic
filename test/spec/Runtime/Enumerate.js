@@ -1,10 +1,14 @@
-﻿import query from 'src/Runtime/Query';
+﻿import enumerate from 'src/Runtime/Enumerate';
 
-describe('Runtime/Query', () => {
+/* jshint ignore:start */
+const global = typeof global === 'undefined' ? self : global;
+/* jshint ignore:end */
+
+describe('Runtime/Enumerate', () => {
 
     describe('The select method', () => {
         let items;
-        let q;
+        let e;
 
         const selectors = {
             formatArguments: (item, index, context) => `${item} ${index + 1} ${context === items}`,
@@ -18,42 +22,51 @@ describe('Runtime/Query', () => {
 
         beforeEach(() => {
             items = ['hello', 'world'];
-            q = query(items);
+            e = enumerate(items);
 
             selectors.toUpperCase.calls.reset();
         });
 
         it('projects items according to a selector function.', () => {
-            expect(q.select(selectors.toUpperCase).toArray()).toEqual(['HELLO', 'WORLD']);
+            expect(e.select(selectors.toUpperCase).toArray()).toEqual(['HELLO', 'WORLD']);
         });
 
         it('can be chained.', () => {
-            expect(q.select(selectors.toUpperCase).select(selectors.pad).toArray()).toEqual([' HELLO ', ' WORLD ']);
+            expect(e.select(selectors.toUpperCase).select(selectors.pad).toArray()).toEqual([' HELLO ', ' WORLD ']);
         });
 
         it('provides the correct arguments to the selector function.', () => {
-            expect(q.select(selectors.formatArguments).toArray()).toEqual(['hello 1 true', 'world 2 true']);
+            expect(e.select(selectors.formatArguments).toArray()).toEqual(['hello 1 true', 'world 2 true']);
         });
 
         it('does not execute its selector until a terminal operation is executed.', () => {
             expect(selectors.toUpperCase.calls.any()).toBe(false);
 
-            q.select(selectors.toUpperCase);
+            e.select(selectors.toUpperCase);
             expect(selectors.toUpperCase.calls.any()).toBe(false);
 
-            expect(q.toArray()).toEqual(['HELLO', 'WORLD']);
+            expect(e.toArray()).toEqual(['HELLO', 'WORLD']);
             expect(selectors.toUpperCase.calls.count()).toBe(2);
 
             items.unshift('howdy');
             expect(selectors.toUpperCase.calls.count()).toBe(2);
 
-            expect(q.toArray()).toEqual(['HOWDY', 'HELLO', 'WORLD']);
+            expect(e.toArray()).toEqual(['HOWDY', 'HELLO', 'WORLD']);
             expect(selectors.toUpperCase.calls.count()).toBe(5);
         });
 
-        xit('provides an outer this context to arrow function selectors.', () => { });
+        it('provides a closed-over context to arrow function selectors.', () => {
+            const that = {};
+            const op = function () {
+                return e.select(() => this).toArray();
+            };
 
-        xit('provides a null this context to loose function selectors.', () => { });
+            expect(op.bind(that)()).toEqual([that, that]);
+        });
+
+        it('provides a global (window) context to loose function selectors.', () => {
+            expect(e.select(function () { return this; }).toArray()).toEqual([global, global]);
+         });
     });
 
 });

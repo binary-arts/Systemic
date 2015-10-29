@@ -1,9 +1,9 @@
-//TBI support enumerable types beyond Array
+//TBI support items decomposition beyond Array
 //TBI consider a plugin architecture for comprehensions and terminal operators
 
-import as from './As';
+import is from './Is';
 
-class Query {
+class Enumerate {
 
     //#region Type
 
@@ -17,13 +17,13 @@ class Query {
      *
      * @param { Function<?Object, Number?, Array?> } selector
      *      A transform operation to apply.
-     * @param { Array } enumerable
+     * @param { Array } items
      *      An array to select from.
      * @returns { Array }
      *      A new array whose items are the result of invoking the transform operation.
      */
-    static _select(selector, enumerable) {
-        return enumerable.map(selector);
+    static _select(selector, items) {
+        return items.map(selector);
     }
 
     //#endregion
@@ -33,11 +33,13 @@ class Query {
     //#region Disposition
 
     /**
-     * @param { Any } enumerable
+     * @param { Array<Any> } items
      */
-    constructor(enumerable) {
+    constructor(items) {
         //init
-        this._.enumerable = as(enumerable).anArray || [];
+        this._.items = items
+            .map(item => is(item).anArray ? item : [item])
+            .reduce((aggregate, items) => (aggregate || []).concat(items));
     }
 
     //#endregion
@@ -45,7 +47,7 @@ class Query {
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of this Query instance.
+     * A dictionary that contains the collective state of this Enumerate instance.
      *
      * @private
      *
@@ -60,8 +62,8 @@ class Query {
      *
      * @returns { Array<Any> }
      */
-    get _enumerable() {
-        return this._.enumerable;
+    get _items() {
+        return this._.items;
     }
 
     /**
@@ -80,15 +82,13 @@ class Query {
     /**
      * Projects items into a new form.
      *
-     * @private
-     *
      * @param { Function<?Object, Number?, Array?> } selector
      *      A transform operation to apply.
-     * @returns { Query }
-     *      This query instance, useful for chaining multiple operations.
+     * @returns { Enumerate }
+     *      This enumerate instance, useful for chaining multiple operations.
      */
     select(selector) {
-        this._operations.push(Query._select.bind(this, selector));
+        this._operations.push(Enumerate._select.bind(this, selector));
         return this;
     }
 
@@ -96,7 +96,7 @@ class Query {
      * @returns { Array<Any> }
      */
     toArray() {
-        let result = this._enumerable;
+        let result = this._items;
 
         for (const operation of this._operations)
             result = operation.bind(this, result)();
@@ -108,4 +108,4 @@ class Query {
 
 }
 
-export default (enumerable) => new Query(enumerable);
+export default (...items) => new Enumerate(items);

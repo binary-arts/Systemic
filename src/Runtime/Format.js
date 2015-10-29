@@ -129,15 +129,11 @@ class Format {
         return (result.length === 0) ? null : (result.length === 1) ? result[0] : result;
     }
 
-    /**
-     * @param { Formatter } TFormatter
-     */
-    inject(TFormatter) {
-        Format._inject(TFormatter);
-    }
-
     //#endregion
 
 }
 
-export default (...refs) => new Format(refs);
+const format = (...refs) => new Format(refs);
+format.inject = format._inject;
+
+export default format;
