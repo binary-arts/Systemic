@@ -1,6 +1,6 @@
 ﻿import Disposition from 'src/ComponentModel/Disposition';
 
-describe('ComponentModel/Disposition', () => {
+describe('ComponentModel/Disposition:', () => {
 
     describe('The Uninitialized constant', () => {
         it('is the numeric value 0.', () => {

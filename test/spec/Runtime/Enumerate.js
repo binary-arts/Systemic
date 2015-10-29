@@ -1,10 +1,145 @@
-﻿import enumerate from 'src/Runtime/Enumerate';
+﻿import is from 'src/Runtime/Is';
+
+import enumerate from 'src/Runtime/Enumerate';
 
 /* jshint ignore:start */
 const global = typeof global === 'undefined' ? self : global;
 /* jshint ignore:end */
 
-describe('Runtime/Enumerate', () => {
+describe('Runtime/Enumerate:', () => {
+
+    describe('The all method', () => {
+        let items;
+        let e;
+
+        const predicates = {
+            hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
+            isLowerCase: item => item.toLowerCase() === item,
+            isUpperCase: item => item.toUpperCase() === item
+        };
+
+        beforeAll(() => {
+            spyOn(predicates, 'isUpperCase').and.callThrough();
+        });
+
+        beforeEach(() => {
+            items = ['hello', 'world'];
+            e = enumerate(items);
+
+            predicates.isUpperCase.calls.reset();
+        });
+
+        it('returns false when at least one item does not satisfy the predicate.', () => {
+            expect(e.all(predicates.isUpperCase)).toBe(false);
+        });
+
+        it('returns true when all items satisfy the predicate.', () => {
+            expect(e.all(predicates.isLowerCase)).toBe(true);
+        });
+
+        it('returns true when there are no items.', () => {
+            expect(enumerate([]).all(predicates.isLowerCase)).toBe(true);
+        });
+
+        it('returns true when the predicate is not defined.', () => {
+            expect(e.all()).toBe(true);
+        });
+
+        it('returns true when the predicate is null.', () => {
+            expect(e.all(null)).toBe(true);
+        });
+
+        it('stops enumerating when the first item that does not satisfy the predicate is reached.', () => {
+            expect(predicates.isUpperCase.calls.any()).toBe(false);
+
+            expect(e.all(predicates.isUpperCase)).toBe(false);
+            expect(predicates.isUpperCase.calls.count()).toBe(1);
+        });
+
+        it('provides the correct arguments to the predicate.', () => {
+            expect(e.all(predicates.hasArguments)).toBe(true);
+        });
+
+        it('provides a closed-over context to arrow function predicates.', () => {
+            const that = {};
+            const op = function () { return e.all(() => this === that); };
+
+            expect(op.bind(that)()).toEqual(true);
+        });
+
+        it('provides a global (window) context to loose function predicates.', () => {
+            expect(e.all(function () { return this === global; })).toBe(true);
+         });
+    });
+
+    describe('The any method', () => {
+        let items;
+        let e;
+
+        const predicates = {
+            hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
+            isLowerCase: item => item.toLowerCase() === item,
+            isUpperCase: item => item.toUpperCase() === item,
+            startsWithHell: item => item.startsWith('hell')
+        };
+
+        beforeAll(() => {
+            spyOn(predicates, 'isLowerCase').and.callThrough();
+        });
+
+        beforeEach(() => {
+            items = ['hello', 'world'];
+            e = enumerate(items);
+
+            predicates.isLowerCase.calls.reset();
+        });
+
+        it('returns false when no item satisfies the predicate.', () => {
+            expect(e.any(predicates.isUpperCase)).toBe(false);
+        });
+
+        it('returns true when any item satisfy the predicate.', () => {
+            expect(e.any(predicates.startsWithHell)).toBe(true);
+        });
+
+        it('returns false when there are no items and the predicate is not defined.', () => {
+            expect(enumerate([]).any()).toBe(false);
+        });
+
+        it('returns false when there are no items and the predicate is null.', () => {
+            expect(enumerate([]).any(null)).toBe(false);
+        });
+
+        it('returns true when there is at least one item and the predicate is not defined.', () => {
+            expect(e.any()).toBe(true);
+        });
+
+        it('returns true when there is at least one item and the predicate is null.', () => {
+            expect(e.any(null)).toBe(true);
+        });
+
+        it('stops enumerating when the first item that satisfies the predicate is reached.', () => {
+            expect(predicates.isLowerCase.calls.any()).toBe(false);
+
+            expect(e.any(predicates.isLowerCase)).toBe(true);
+            expect(predicates.isLowerCase.calls.count()).toBe(1);
+        });
+
+        it('provides the correct arguments to the predicate.', () => {
+            expect(e.any(predicates.hasArguments)).toBe(true);
+        });
+
+        it('provides a closed-over context to arrow function predicates.', () => {
+            const that = {};
+            const op = function () { return e.any(() => this === that); };
+
+            expect(op.bind(that)()).toEqual(true);
+        });
+
+        it('provides a global (window) context to loose function predicates.', () => {
+            expect(e.any(function () { return this === global; })).toBe(true);
+         });
+    });
 
     describe('The select method', () => {
         let items;
@@ -27,7 +162,7 @@ describe('Runtime/Enumerate', () => {
             selectors.toUpperCase.calls.reset();
         });
 
-        it('projects items according to a selector function.', () => {
+        it('projects items according to the selector.', () => {
             expect(e.select(selectors.toUpperCase).toArray()).toEqual(['HELLO', 'WORLD']);
         });
 
@@ -35,7 +170,7 @@ describe('Runtime/Enumerate', () => {
             expect(e.select(selectors.toUpperCase).select(selectors.pad).toArray()).toEqual([' HELLO ', ' WORLD ']);
         });
 
-        it('provides the correct arguments to the selector function.', () => {
+        it('provides the correct arguments to the selector.', () => {
             expect(e.select(selectors.formatArguments).toArray()).toEqual(['hello 1 true', 'world 2 true']);
         });
 
@@ -57,9 +192,7 @@ describe('Runtime/Enumerate', () => {
 
         it('provides a closed-over context to arrow function selectors.', () => {
             const that = {};
-            const op = function () {
-                return e.select(() => this).toArray();
-            };
+            const op = function () { return e.select(() => this).toArray(); };
 
             expect(op.bind(that)()).toEqual([that, that]);
         });

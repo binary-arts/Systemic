@@ -80,6 +80,34 @@ class Enumerate {
     //#region Methods
 
     /**
+     * Determines whether all items satisfy a condition.
+     *
+     * @param { Function<?Object, Number?, Array?> } predicate
+     *      A condition-check operation to apply. The operation is applied to each item in this instance
+     *      until it returns false, or until the end of the enumeration is reached.
+     * @returns { Boolean }
+     *      true if every item satisfies the predicate, if this instance has no items or
+     *      if predicate is not provided; otherwise false.
+     */
+    all(predicate) {
+        return !is(predicate).defined || this._items.every(predicate);
+    }
+
+    /**
+     * Determines whether any item satisfies a condition.
+     *
+     * @param { Function<?Object, Number?, Array?> } predicate
+     *      A condition-check operation to apply. The operation is applied to each item in this instance
+     *      until it returns true, or until the end of the enumeration is reached.
+     * @returns { Boolean }
+     *      true if at least one item satisfies the predicate, or if this Enumerate instance is not
+     *      empty and predicate is not provided; otherwise false.
+     */
+    any(predicate) {
+        return is(predicate).defined ? this._items.some(predicate) : !!this._items.length;
+    }
+
+    /**
      * Projects items into a new form.
      *
      * @param { Function<?Object, Number?, Array?> } selector
