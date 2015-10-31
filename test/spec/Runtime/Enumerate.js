@@ -7,28 +7,40 @@ const global = typeof global === 'undefined' ? self : global;
 /* jshint ignore:end */
 
 describe('Runtime/Enumerate:', () => {
+    let items;
+    let e;
+
+    const predicates = {
+        hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
+        isLowerCase: item => item.toLowerCase() === item,
+        isUpperCase: item => item.toUpperCase() === item,
+        startsWithHell: item => item.startsWith('hell')
+    };
+
+    const selectors = {
+        formatArguments: (item, index, context) => `${item} ${index + 1} ${context === items}`,
+        pad: item => ` ${item} `,
+        toUpperCase: item => item.toUpperCase()
+    };
+
+    beforeAll(() => {
+        spyOn(predicates, 'isLowerCase').and.callThrough();
+        spyOn(predicates, 'isUpperCase').and.callThrough();
+        spyOn(predicates, 'startsWithHell').and.callThrough();
+        spyOn(selectors, 'toUpperCase').and.callThrough();
+    });
+
+    beforeEach(() => {
+        items = ['hello', 'world'];
+        e = enumerate(items);
+
+        predicates.isLowerCase.calls.reset();
+        predicates.isUpperCase.calls.reset();
+        predicates.startsWithHell.calls.reset();
+        selectors.toUpperCase.calls.reset();
+    });
 
     describe('The all method', () => {
-        let items;
-        let e;
-
-        const predicates = {
-            hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
-            isLowerCase: item => item.toLowerCase() === item,
-            isUpperCase: item => item.toUpperCase() === item
-        };
-
-        beforeAll(() => {
-            spyOn(predicates, 'isUpperCase').and.callThrough();
-        });
-
-        beforeEach(() => {
-            items = ['hello', 'world'];
-            e = enumerate(items);
-
-            predicates.isUpperCase.calls.reset();
-        });
-
         it('returns false when at least one item does not satisfy the predicate.', () => {
             expect(e.all(predicates.isUpperCase)).toBe(false);
         });
@@ -77,27 +89,6 @@ describe('Runtime/Enumerate:', () => {
     });
 
     describe('The any method', () => {
-        let items;
-        let e;
-
-        const predicates = {
-            hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
-            isLowerCase: item => item.toLowerCase() === item,
-            isUpperCase: item => item.toUpperCase() === item,
-            startsWithHell: item => item.startsWith('hell')
-        };
-
-        beforeAll(() => {
-            spyOn(predicates, 'isLowerCase').and.callThrough();
-        });
-
-        beforeEach(() => {
-            items = ['hello', 'world'];
-            e = enumerate(items);
-
-            predicates.isLowerCase.calls.reset();
-        });
-
         it('returns false when no item satisfies the predicate.', () => {
             expect(e.any(predicates.isUpperCase)).toBe(false);
         });
@@ -150,26 +141,6 @@ describe('Runtime/Enumerate:', () => {
     });
 
     describe('The select method', () => {
-        let items;
-        let e;
-
-        const selectors = {
-            formatArguments: (item, index, context) => `${item} ${index + 1} ${context === items}`,
-            pad: item => ` ${item} `,
-            toUpperCase: item => item.toUpperCase()
-        };
-
-        beforeAll(() => {
-            spyOn(selectors, 'toUpperCase').and.callThrough();
-        });
-
-        beforeEach(() => {
-            items = ['hello', 'world'];
-            e = enumerate(items);
-
-            selectors.toUpperCase.calls.reset();
-        });
-
         it('projects items according to the selector.', () => {
             expect(e.select(selectors.toUpperCase).toArray()).toEqual(['HELLO', 'WORLD']);
         });
@@ -211,22 +182,8 @@ describe('Runtime/Enumerate:', () => {
     });
 
     describe('The where method', () => {
-        let items;
-        let e;
-
-        const predicates = {
-            hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
-            isLowerCase: item => item.toLowerCase() === item,
-            isUpperCase: item => item.toUpperCase() === item
-        };
-
-        beforeEach(() => {
-            items = ['hello', 'WORLD'];
-            e = enumerate(items);
-        });
-
         it('filters items according to the predicate.', () => {
-            expect(e.where(predicates.isUpperCase).toArray()).toEqual(['WORLD']);
+            expect(e.where(predicates.startsWithHell).toArray()).toEqual(['hello']);
         });
 
         it('returns an empty array when no items match the predicate.', () => {
@@ -245,19 +202,34 @@ describe('Runtime/Enumerate:', () => {
         });
 
         it('provides the correct arguments to the predicate.', () => {
-            expect(e.where(predicates.hasArguments).toArray()).toEqual(['hello', 'WORLD']);
+            expect(e.where(predicates.hasArguments).toArray()).toEqual(items);
+        });
+
+        it('does not execute its predicate until a terminal operation is executed.', () => {
+            expect(predicates.startsWithHell.calls.any()).toBe(false);
+
+            e.where(predicates.startsWithHell);
+            expect(predicates.startsWithHell.calls.any()).toBe(false);
+
+            expect(e.toArray()).toEqual(['hello']);
+            expect(predicates.startsWithHell.calls.count()).toBe(2);
+
+            items.unshift('hellsinki');
+            expect(predicates.startsWithHell.calls.count()).toBe(2);
+
+            expect(e.toArray()).toEqual(['hellsinki', 'hello']);
+            expect(predicates.startsWithHell.calls.count()).toBe(5);
         });
 
         it('provides a closed-over context to arrow function predicates.', () => {
             const that = {};
             const op = function () { return e.where(() => this === that).toArray(); };
 
-            expect(op.bind(that)()).toEqual(['hello', 'WORLD']);
+            expect(op.bind(that)()).toEqual(items);
         });
 
         it('provides a global (window) context to loose function predicates.', () => {
-            expect(e.where(function () { return this === global; }).toArray()).toEqual(['hello', 'WORLD']);
+            expect(e.where(function () { return this === global; }).toArray()).toEqual(items);
          });
     });
-
 });
