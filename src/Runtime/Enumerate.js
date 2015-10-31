@@ -26,6 +26,25 @@ class Enumerate {
         return items.map(selector);
     }
 
+    /**
+     * Filters for items that meet a condition.
+     *
+     * @private
+     * @static
+     *
+     * @param { Function<?Object, Number?, Array?>? } predicate
+     *      A condition-check operation to apply. This argument is optional.
+     * @param { Array } items
+     *      An array to select from.
+     * @returns { Array }
+     *      A new array that contains all items for which the condition-check operation returns true.
+     *      If the operation returns false for every item, the length of the new array is 0. If the operation
+     *      is not provided, a copy of items is returned.
+     */
+    static _where(predicate, items) {
+        return is(predicate).defined ? items.filter(predicate) : items.slice(0);
+    }
+
     //#endregion
 
     //#endregion
@@ -130,6 +149,19 @@ class Enumerate {
             result = operation.bind(this, result)();
 
         return result;
+    }
+
+    /**
+     * Filters for items that meet a condition.
+     *
+     * @param { Function<?Object, Number?, Array?>? } predicate
+     *      A condition-check operation to apply. This argument is optional.
+     * @returns { Array }
+     *      This enumerate instance, useful for chaining multiple operations.
+     */
+    where(predicate) {
+        this._operations.push(Enumerate._where.bind(this, predicate));
+        return this;
     }
 
     //#endregion

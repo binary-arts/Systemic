@@ -202,4 +202,69 @@ describe('Runtime/Enumerate:', () => {
          });
     });
 
+    /**
+     * Filters for items that meet a condition.
+     *
+     * @private
+     * @static
+     *
+     * @param { Function<?Object, Number?, Array?>? } predicate
+     *      A condition-check operation to apply.
+     * @param { Array } items
+     *      An array to select from.
+     * @returns { Array }
+     *      A new array that contains all items for which the condition-check operation returns true.
+     *      If the operation returns false for every item, the length of the new array is 0. If the operation
+     *      is not provided, a copy of items is returned.
+     */
+    describe('The where method', () => {
+        let items;
+        let e;
+
+        const predicates = {
+            hasArguments: (item, index, context) => is(item).aString && is(index).aNumber && is(context).defined,
+            isLowerCase: item => item.toLowerCase() === item,
+            isUpperCase: item => item.toUpperCase() === item
+        };
+
+        beforeEach(() => {
+            items = ['hello', 'WORLD'];
+            e = enumerate(items);
+        });
+
+        it('filters items according to the predicate.', () => {
+            expect(e.where(predicates.isUpperCase).toArray()).toEqual(['WORLD']);
+        });
+
+        it('returns an empty array when no items match the predicate.', () => {
+            expect(e.where(() => false).toArray()).toEqual([]);
+        });
+
+        it('returns a copy of the original array when the predicate is not provided.', () => {
+            const expectation = expect(e.where().toArray());
+
+            expectation.toEqual(items);
+            expectation.not.toBe(items);
+        });
+
+        it('can be chained.', () => {
+            expect(e.where(predicates.isLowerCase).where(predicates.isUpperCase).toArray()).toEqual([]);
+        });
+
+        it('provides the correct arguments to the selector.', () => {
+            expect(e.where(predicates.hasArguments).toArray()).toEqual(['hello', 'WORLD']);
+        });
+
+        it('provides a closed-over context to arrow function selectors.', () => {
+            const that = {};
+            const op = function () { return e.where(() => this === that).toArray(); };
+
+            expect(op.bind(that)()).toEqual(['hello', 'WORLD']);
+        });
+
+        it('provides a global (window) context to loose function selectors.', () => {
+            expect(e.where(function () { return this === global; }).toArray()).toEqual(['hello', 'WORLD']);
+         });
+    });
+
 });
