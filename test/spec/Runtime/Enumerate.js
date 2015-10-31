@@ -210,21 +210,6 @@ describe('Runtime/Enumerate:', () => {
          });
     });
 
-    /**
-     * Filters for items that meet a condition.
-     *
-     * @private
-     * @static
-     *
-     * @param { Function<?Object, Number?, Array?>? } predicate
-     *      A condition-check operation to apply.
-     * @param { Array } items
-     *      An array to select from.
-     * @returns { Array }
-     *      A new array that contains all items for which the condition-check operation returns true.
-     *      If the operation returns false for every item, the length of the new array is 0. If the operation
-     *      is not provided, a copy of items is returned.
-     */
     describe('The where method', () => {
         let items;
         let e;
