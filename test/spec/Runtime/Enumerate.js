@@ -56,6 +56,10 @@ describe('Runtime/Enumerate:', () => {
             expect(predicates.isUpperCase.calls.count()).toBe(1);
         });
 
+        it('can receive a chain.', () => {
+            expect(e.select(item => item).all(predicates.isLowerCase)).toBe(true);
+        });
+
         it('provides the correct arguments to the predicate.', () => {
             expect(e.all(predicates.hasArguments)).toBe(true);
         });
@@ -123,6 +127,10 @@ describe('Runtime/Enumerate:', () => {
 
             expect(e.any(predicates.isLowerCase)).toBe(true);
             expect(predicates.isLowerCase.calls.count()).toBe(1);
+        });
+
+        it('can receive a chain.', () => {
+            expect(e.select(item => item).any(predicates.isUpperCase)).toBe(false);
         });
 
         it('provides the correct arguments to the predicate.', () => {
@@ -251,18 +259,18 @@ describe('Runtime/Enumerate:', () => {
             expect(e.where(predicates.isLowerCase).where(predicates.isUpperCase).toArray()).toEqual([]);
         });
 
-        it('provides the correct arguments to the selector.', () => {
+        it('provides the correct arguments to the predicate.', () => {
             expect(e.where(predicates.hasArguments).toArray()).toEqual(['hello', 'WORLD']);
         });
 
-        it('provides a closed-over context to arrow function selectors.', () => {
+        it('provides a closed-over context to arrow function predicates.', () => {
             const that = {};
             const op = function () { return e.where(() => this === that).toArray(); };
 
             expect(op.bind(that)()).toEqual(['hello', 'WORLD']);
         });
 
-        it('provides a global (window) context to loose function selectors.', () => {
+        it('provides a global (window) context to loose function predicates.', () => {
             expect(e.where(function () { return this === global; }).toArray()).toEqual(['hello', 'WORLD']);
          });
     });

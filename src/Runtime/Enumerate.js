@@ -109,7 +109,7 @@ class Enumerate {
      *      if predicate is not provided; otherwise false.
      */
     all(predicate) {
-        return !is(predicate).defined || this._items.every(predicate);
+        return !is(predicate).defined || this.toArray().every(predicate);
     }
 
     /**
@@ -123,7 +123,7 @@ class Enumerate {
      *      empty and predicate is not provided; otherwise false.
      */
     any(predicate) {
-        return is(predicate).defined ? this._items.some(predicate) : !!this._items.length;
+        return is(predicate).defined ? this.toArray().some(predicate) : !!this.toArray().length;
     }
 
     /**
