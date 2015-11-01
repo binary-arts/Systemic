@@ -77,16 +77,16 @@ export default class Culture {
                 percentDecimalDigits: 2,
                 percentDecimalSeparator: '.',
                 percentGroupSeparator: ',',
-                percentPositivePattern: '?%',
-                percentNegativePattern: '-?%',
+                percentPositivePattern: '{?}%',
+                percentNegativePattern: '-{?}%',
 
                 currencySymbol: '$',
                 currencyGroupSizes: [3],
                 currencyDecimalDigits: 2,
                 currencyDecimalSeparator: '.',
                 currencyGroupSeparator: ',',
-                currencyNegativePattern: '($?)',
-                currencyPositivePattern: '$?'
+                currencyNegativePattern: '(${?})',
+                currencyPositivePattern: '${?}'
             }
         }));
     }

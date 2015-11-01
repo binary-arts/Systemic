@@ -68,9 +68,9 @@ export default class IntlDateFormatter extends Formatter {
     /**
      * @override
      *
-     * @param { * } ref
+     * @param { Any } ref
      * @param { String } spec
-     * @returns { String? }
+     * @returns { ?String }
      */
     format(ref, spec) {
         let result = '';
@@ -79,7 +79,7 @@ export default class IntlDateFormatter extends Formatter {
             const culture = Culture.current;
             const expression = /dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zzz|zz|z/g;
 
-            if (' r R u U '.contains(` ${spec} `)) ref = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate(), ref.getUTCHours(), ref.getUTCMinutes(), ref.getUTCSeconds(), ref.getUTCMilliseconds()));
+            if (' r R u U '.indexOf(` ${spec} `) >= 0) ref = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate(), ref.getUTCHours(), ref.getUTCMinutes(), ref.getUTCSeconds(), ref.getUTCMilliseconds()));
 
             if (spec.length === 1)
                 spec = (IntlDateFormatter._standardFormatNames.get(spec) || [])

@@ -59,7 +59,7 @@ module.exports = function(grunt) {
                     targetDir: dir.dep
                 }
             },
-            test: {
+            unit: {
                 options: {
                     install: false,
                     layout: 'byComponent',
@@ -71,7 +71,7 @@ module.exports = function(grunt) {
             compile: [dir.work, dir.out],
             pack: [Path.join(dir.work, '**/*'), '!' + file.out.debug],
             reset: [dir.coverage, dir.out, dir.pkg.bower, dir.pkg.node, dir.specdep, dir.work],
-            test: [dir.coverage, dir.specdep]
+            unit: [dir.coverage, dir.specdep]
         },
         copy: {
             compile: {
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
             }
         },
         karma: {
-            test: {
+            unit: {
                 options: {
                     babelPreprocessor: {
                         options: {
@@ -127,7 +127,7 @@ module.exports = function(grunt) {
 
                         return result;
                     })(),
-                    reporters: ['dots', 'coverage'],
+                    reporters: ['mocha', 'coverage'],
                     singleRun: true
                 }
             }
@@ -209,6 +209,10 @@ module.exports = function(grunt) {
             debug: {
                 files: [files.src, files.spec],
                 tasks: ['build']
+            },
+            develop: {
+                files: [files.src, files.spec],
+                tasks: ['test']
             }
         }
     });
@@ -216,11 +220,14 @@ module.exports = function(grunt) {
     grunt.registerTask('reset', ['clean:reset']);
 
     grunt.registerTask('analyze', ['jshint:analyze']);
-    grunt.registerTask('test', ['clean:test', 'bower:test', 'karma:test']);
+    grunt.registerTask('unit', ['clean:unit', 'bower:unit', 'karma:unit']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
     grunt.registerTask('pack', ['requirejs:pack', 'uglify:pack', 'clean:pack', 'bower:pack']);
     grunt.registerTask('min', ['string-replace:min', 'uglify:min', 'string-replace:post-min']);
 
-    grunt.registerTask('build', ['analyze', 'test', 'compile', 'pack', 'min', 'rename:build']);
+    grunt.registerTask('test', ['analyze', 'unit']);
+    grunt.registerTask('develop', ['test', 'watch:develop']);
+
+    grunt.registerTask('build', ['test', 'compile', 'pack', 'min', 'rename:build']);
     grunt.registerTask('debug', ['build', 'watch:debug']);
 };
