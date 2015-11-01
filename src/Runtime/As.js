@@ -113,9 +113,9 @@ class As {
 
             if (is(as).aFunction)
                 result = as.call(this._ref, type);
-            else if (typeIs.anArray)
+            else if (typeIs.aTypeOf(Array))
                 result = Array.of(this._ref);
-            else if (typeIs.aString) {
+            else if (typeIs.aTypeOf(String)) {
                 const toString = this._ref.hasOwnProperty('toString') ? this._ref.toString : null;
 
                 if (is(toString).aFunction)

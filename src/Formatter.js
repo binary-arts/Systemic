@@ -9,12 +9,15 @@ export default class Formatter {
     /**
      * @static
      *
-     * @param { * } ref
+     * @param { Any } ref
      * @param { Number } minLength
      * @returns { String }
      */
     static zeroPad(ref, minLength) {
-        return `${[].fill('0', 0, minLength - 1).join()}${ref = as(ref).aString}`.substring(Math.min(ref.length, minLength.length));
+        const pad = [];
+        for (let i = 0, c = minLength; i < c; i++) pad.push('0');
+
+        return `${pad.join('') }${ref = as(ref).aString || ''}`.substring(Math.min(ref.length, minLength));
     }
 
     //#endregion
@@ -27,7 +30,7 @@ export default class Formatter {
      * A dictionary that contains the collective state of a Formatter instance.
      *
      * @protected
-     * 
+     *
      * @returns { Object }
      */
     get _() {
@@ -36,7 +39,7 @@ export default class Formatter {
 
     /**
      * @virtual
-     * 
+     *
      * @returns { Array<T> }
      */
     get priorityTypes() {
@@ -50,10 +53,10 @@ export default class Formatter {
     /* jshint ignore:start */
     /**
      * @virtual
-     * 
-     * @param { * } ref
+     *
+     * @param { Any } ref
      * @param { String } spec
-     * @returns { String? }
+     * @returns { ?String }
      */
     format(ref, spec) {
         return null;

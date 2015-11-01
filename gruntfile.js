@@ -98,6 +98,7 @@ module.exports = function(grunt) {
                     babelPreprocessor: {
                         options: {
                             comments: false,
+                            //externalHelpers: true, TODO: emit external helpers as a served file
                             modules: 'amd',
                             sourceMap: 'inline'
                         }
