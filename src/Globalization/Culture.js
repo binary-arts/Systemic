@@ -23,6 +23,95 @@ export default class Culture {
         return Culture.__ || (Culture.__ = Object.create(null));
     }
 
+    /**
+     * @private
+     * @static
+     *
+     * @returns { Map<String, Culture> }
+     */
+    static get _cache() {
+        return Culture._.cache || (Culture._.cache = () => {
+            const result = new Map();
+
+            result.set('en-US', new Culture({
+                date: {
+                    amPeriod: 'AM',
+                    pmPeriod: 'PM',
+
+                    dateSeparator: '/',
+                    timeSeparator: ':',
+
+                    firstDayOfWeek: 0,
+
+                    wideMonthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
+                    mediumMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ''],
+                    shortMonthNames: ['Ja', 'Fe', 'Ma', 'Ap', 'Ma', 'Ju', 'Jl', 'Au', 'Se', 'Oc', 'No', 'De', ''],
+                    narrowMonthNames: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D', ''],
+
+                    wideDayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                    mediumDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    shortDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    narrowDayNames: ['S', 'M', 'T', 'W', 'Th', 'F', 'S'],
+
+                    format: {
+                        dateTime: 'DDDDD, MMMMM ddd, yyyyy hh:nnn:sss apap',
+                        dateTimeGMT: 'DDDD, ddd MMMM yyyyy hhhhh:nnn:sss GMT',
+
+                        wideDate: 'DDDDD, MMMMM ddd, yyyyy',
+                        mediumDate: 'mmm/ddd/yyyyy',
+                        shortDate: 'mm/dd/yyy',
+
+                        mediumTime: 'hh:nnn:sss apap',
+                        shortTime: 'hh:nnn apap'
+                    }
+                },
+                id: 1033,
+                locale: 'en-US',
+                name: 'English (United States)',
+                number: {
+                    nanSymbol: 'NaN',
+                    negativeSign: '-',
+                    positiveSign: '+',
+                    negativeInfinity: '-∞',
+                    positiveInfinity: '∞',
+
+                    groupSizes: [3],
+                    precision: 2,
+                    decimal: '.',
+                    group: ',',
+
+                    percent: {
+                        symbol: '%',
+                        groupSizes: [3],
+                        precision: 2,
+                        decimal: '.',
+                        group: ',',
+
+                        format: {
+                            positive: '{0}%',
+                            negative: '-{0}%'
+                        }
+                    },
+
+                    currency: {
+                        symbol: '$',
+                        groupSizes: [3],
+                        precision: 2,
+                        decimal: '.',
+                        group: ',',
+
+                        format: {
+                            positive: '(${0})',
+                            negative: '${0}'
+                        }
+                    }
+                }
+            }));
+
+            return result;
+        }());
+    }
+
     static get current() {
         return Culture._.current || (Culture._.current = Culture.neutral);
     }
@@ -31,80 +120,7 @@ export default class Culture {
     }
 
     static get neutral() {
-        return Culture._.neutral || (Culture._.neutral = new Culture({
-            date: {
-                amPeriod: 'AM',
-                pmPeriod: 'PM',
-
-                dateSeparator: '/',
-                timeSeparator: ':',
-
-                firstDayOfWeek: 0,
-
-                wideMonthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
-                mediumMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ''],
-                shortMonthNames: ['Ja', 'Fe', 'Ma', 'Ap', 'Ma', 'Ju', 'Jl', 'Au', 'Se', 'Oc', 'No', 'De', ''],
-                narrowMonthNames: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D', ''],
-
-                wideDayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                mediumDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                shortDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                narrowDayNames: ['S', 'M', 'T', 'W', 'Th', 'F', 'S'],
-
-                format: {
-                    dateTime: 'DDDDD, MMMMM ddd, yyyyy hh:nnn:sss apap',
-                    dateTimeGMT: 'DDDD, ddd MMMM yyyyy hhhhh:nnn:sss GMT',
-
-                    wideDate: 'DDDDD, MMMMM ddd, yyyyy',
-                    mediumDate: 'mmm/ddd/yyyyy',
-                    shortDate: 'mm/dd/yyy',
-
-                    mediumTime: 'hh:nnn:sss apap',
-                    shortTime: 'hh:nnn apap'
-                }
-            },
-            id: 1033,
-            locale: 'en-US',
-            name: 'English (United States)',
-            number: {
-                nanSymbol: 'NaN',
-                negativeSign: '-',
-                positiveSign: '+',
-                negativeInfinity: '-∞',
-                positiveInfinity: '∞',
-
-                groupSizes: [3],
-                precision: 2,
-                decimal: '.',
-                group: ',',
-
-                percent: {
-                    symbol: '%',
-                    groupSizes: [3],
-                    precision: 2,
-                    decimal: '.',
-                    group: ',',
-
-                    format: {
-                        positive: '{0}%',
-                        negative: '-{0}%'
-                    }
-                },
-
-                currency: {
-                    symbol: '$',
-                    groupSizes: [3],
-                    precision: 2,
-                    decimal: '.',
-                    group: ',',
-
-                    format: {
-                        positive: '(${0})',
-                        negative: '${0}'
-                    }
-                }
-            }
-        }));
+        return Culture._cache.get('en-US');
     }
 
     //#endregion
@@ -112,20 +128,22 @@ export default class Culture {
     //#region Methods
 
     static fromLocale(locale) {
-        return locale === 'en-US'
+        return Culture._cache.has(locale)
             ? $
-                .Deferred(task => task.resolve(Culture.neutral))
+                .Deferred(task => task.resolve(Culture._cache.get(locale)))
                 .promise()
             : FileService
                 .getObject(`culture/${locale}.json`)
                 .then(graph => graph
-                    ? (() => {
+                    ? () => {
                         const result = new Culture(graph);
-
                         Debug.assert(result.locale === locale);
 
+                        //!!! not thread-safe
+                        Culture._cache.set(locale, result);
+
                         return result;
-                    })()
+                    }()
                     : null
                 );
     }
