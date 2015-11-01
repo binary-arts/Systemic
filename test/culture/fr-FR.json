@@ -1,0 +1,72 @@
+{
+    "date": {
+        "amPeriod": "AM",
+        "pmPeriod": "PM",
+
+        "dateSeparator": "/",
+        "timeSeparator": ":",
+
+        "firstDayOfWeek": 0,
+
+        "wideDayNames": ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+        "abbreviatedDayNames": ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+        "shortDayNames": ["di", "lu", "ma", "me", "je", "ve", "sa"],
+        "narrowDayNames": ["D", "L", "M", "M", "J", "V", "S"],
+
+        "wideMonthNames": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", ""],
+        "abbreviatedMonthNames": ["jan.", "fév.", "mar.", "avr.", "mai", "jui.", "juil.", "août", "sept.", "oct.", " nov.", "déc.", ""],
+        "narrowMonthNames": ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", " N", "D", ""],
+
+        "format": {
+            "gmtDateTime": "ddd dd MMM yyyy HH:mm:ss 'UTC'",
+            "dateTime": "dddd dd MMMM yyyy h:mm:ss tt",
+
+            "fullDate": "dddd dd MMMM yyyy",
+            "shortDate": "dd/MM/yy",
+
+            "mediumTime": "h:mm:ss tt",
+            "shortTime": "h:mm tt"
+        }
+    },
+    "id": 1036,
+    "locale": "fr-FR",
+    "name": "French (France)",
+    "number": {
+        "nanSymbol": "NaN",
+        "negativeSign": "-",
+        "positiveSign": "+",
+        "negativeInfinity": "-∞",
+        "positiveInfinity": "∞",
+
+        "groupSizes": [3],
+        "precision": 2,
+        "decimal": ".",
+        "group": ",",
+
+        "percent": {
+            "symbol": "%",
+            "groupSizes": [3],
+            "precision": 2,
+            "decimal": ".",
+            "group": ",",
+
+            "format": {
+                "positive": "{0} %",
+                "negative": "-{0} %"
+            }
+        },
+
+        "currency": {
+            "symbol": "¤",
+            "groupSizes": [3],
+            "precision": 2,
+            "decimal": ".",
+            "group": ",",
+
+            "format": {
+                "negative": "({0} ¤)",
+                "positive": "{0} ¤"
+            }
+        }
+    }
+}

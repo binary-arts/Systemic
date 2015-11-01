@@ -1,4 +1,10 @@
-﻿import Formatter from 'src/Formatter';
+﻿//TBI properties formatLocale, formatName
+//TBI constructor has to take a culture (protected property)
+//TBI inheritor static members... current (loads the current culture formatter... not statically but through culture) inherited static? fromLocale?
+//TBI cache formatters
+//TBI cache cultures
+
+import Formatter from 'src/Formatter';
 
 describe('Formatter', () => {
     const formatter = new Formatter();

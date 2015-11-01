@@ -28,8 +28,8 @@ export default class IntlDateFormatter extends Formatter {
      *
      * @returns { Map<String, Array<String>> }
      */
-    static get _standardFormatNames() {
-        return IntlDateFormatter._.standardFormatNames || (IntlDateFormatter._.standardFormatNames = new Map([
+    static get _standardFormatSpecs() {
+        return IntlDateFormatter._.standardFormatSpecs || (IntlDateFormatter._.standardFormatSpecs = new Map([
             ['d', ['shortDatePattern']],
             ['D', ['longDatePattern']],
             ['f', ['longDatePattern', 'shortTimePattern']],
@@ -77,17 +77,19 @@ export default class IntlDateFormatter extends Formatter {
 
         if ((ref = as(ref).aDate)) {
             const culture = Culture.current;
-            const expression = /dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zzz|zz|z/g;
+            const expression = /GMT|UTC|dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zz|z/g;
 
             if (' r R u U '.indexOf(` ${spec} `) >= 0) ref = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate(), ref.getUTCHours(), ref.getUTCMinutes(), ref.getUTCSeconds(), ref.getUTCMilliseconds()));
 
             if (spec.length === 1)
-                spec = (IntlDateFormatter._standardFormatNames.get(spec) || [])
-                    .map(name => Object.getOwnPropertyDescriptor(culture, name))
+                spec = (IntlDateFormatter._standardFormatSpecs.get(spec) || [])
+                    .map(spec => Object.getOwnPropertyDescriptor(Culture.prototype, spec))
                     .filter(prop => is(prop).defined && is(prop.get).aFunction)
                     .map(prop => prop.get.call(culture))
                     .filter(value => !!value)
                     .join(' ') || spec;
+
+            if (spec.startsWith('%')) spec = spec.substr(1);
 
             while (true) {
                 const index = expression.lastIndex || 0;
@@ -98,6 +100,7 @@ export default class IntlDateFormatter extends Formatter {
                 if (!match) break;
 
                 switch ((match = match[0])) {
+                    case 'GMT': case 'UTC': result = `${result}${match}`; break;
                     case 'dddd': case 'ddd': result = `${result}${(match === 'dddd' ? culture.dayNames : culture.shortDayNames)[ref.getDay()]}`; break;
                     case 'dd': case 'd': result = `${result}${Formatter.zeroPad(ref.getDate(), match.length)}`; break;
                     case 'MMMM': case 'MMM': result = `${result}${(match === 'MMMM' ? culture.monthNames : culture.shortMonthNames)[ref.getMonth()]}`; break;
@@ -109,9 +112,8 @@ export default class IntlDateFormatter extends Formatter {
                     case 'mm': case 'm': result = `${result}${Formatter.zeroPad(ref.getMinutes(), match.length)}`; break;
                     case 'ss': case 's': result = `${result}${Formatter.zeroPad(ref.getSeconds(), match.length)}`; break;
                     case 'tt': case 't': result = `${result}${((ref.getHours() < 12) ? culture.amDesignator : culture.pmDesignator).substr(0, match.length)}`; break;
-                    case 'fff': case 'ff': case 'f': result = `${result}${Formatter.zeroPad(ref.getSeconds(), 3)}`.substr(0, match.length); break;
-                    case 'zzz': case 'zz': result = `${result}${((ref = ref.getTimezoneOffset() / 60) >= 0) ? '-' : '+'}${Formatter.zeroPad(Math.floor(Math.abs(ref)), 2)}${(match === 'zz') ? null : `${culture.timeSeparator}${Formatter.zeroPad(Math.abs(ref.getTimezoneOffset() % 60), 2)}`}`; break;
-                    case 'z': result = `${result}${((ref = ref.getTimezoneOffset() / 60) >= 0) ? '-' : '+'}${Math.floor(Math.abs(ref))}`; break;
+                    case 'fff': case 'ff': case 'f': result = `${result}${Formatter.zeroPad(ref.getMilliseconds(), 3)}`.substr(0, match.length); break;
+                    case 'zz': case 'z': result = `${result}${((ref = ref.getTimezoneOffset() / 60) >= 0) ? '-' : '+'}${Formatter.zeroPad(Math.floor(Math.abs(ref)), match.length)}`; break;
                 }
             }
         }

@@ -39,9 +39,7 @@ export default class Culture {
                 dateSeparator: '/',
                 timeSeparator: ':',
 
-                gmtDateTimePattern: 'ddd, dd MMM yyyy HH:mm:ss \'GMT\'',
-                universalDateTimePattern: 'yyyy-MM-dd HH:mm:ssZ',
-                sortableDateTimePattern: 'yyyy-MM-ddTHH:mm:ss',
+                gmtDateTimePattern: 'ddd, dd MMM yyyy HH:mm:ss GMT',
                 dateTimePattern: 'dddd, MMMM dd, yyyy h:mm:ss tt',
 
                 longDatePattern: 'dddd, MMMM dd, yyyy',
@@ -59,7 +57,8 @@ export default class Culture {
                 shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', '']
             },
             id: 1033,
-            name: 'en-US',
+            locale: 'en-US',
+            name: 'English (United States)',
             numberFormat: {
                 nanSymbol: 'NaN',
                 negativeSign: '-',
@@ -77,16 +76,16 @@ export default class Culture {
                 percentDecimalDigits: 2,
                 percentDecimalSeparator: '.',
                 percentGroupSeparator: ',',
-                percentPositivePattern: '{?}%',
-                percentNegativePattern: '-{?}%',
+                percentPositivePattern: '{0}%',
+                percentNegativePattern: '-{0}%',
 
                 currencySymbol: '$',
                 currencyGroupSizes: [3],
                 currencyDecimalDigits: 2,
                 currencyDecimalSeparator: '.',
                 currencyGroupSeparator: ',',
-                currencyNegativePattern: '(${?})',
-                currencyPositivePattern: '${?}'
+                currencyNegativePattern: '(${0})',
+                currencyPositivePattern: '${0}'
             }
         }));
     }
@@ -95,14 +94,23 @@ export default class Culture {
 
     //#region Methods
 
-    static fromName(name) {
-        return name === 'en-US'
+    static fromLocale(locale) {
+        return locale === 'en-US'
             ? $
                 .Deferred(task => task.resolve(Culture.neutral))
                 .promise()
             : FileService
-                .getObject(`culture/${name}.js`)
-                .then(graph =>  graph ? new Culture(graph) : null);
+                .getObject(`culture/${locale}.json`)
+                .then(graph => graph
+                    ? (() => {
+                        const result = new Culture(graph);
+
+                        Debug.assert(result.locale === locale);
+
+                        return result;
+                    })()
+                    : null
+                );
     }
 
     //#endregion
@@ -114,6 +122,7 @@ export default class Culture {
     constructor(graph) {
         Debug.assert(is(graph).anObject);
         Debug.assert(is(graph.id).aNumber);
+        Debug.assert(is(graph.locale).aNonEmptyString);
         Debug.assert(is(graph.name).aNonEmptyString);
 
         Debug.assert(is(graph.numberFormat).anObject);
@@ -154,8 +163,6 @@ export default class Culture {
         Debug.assert(is(graph.dateFormat.timeSeparator).aNonEmptyString);
 
         Debug.assert(is(graph.dateFormat.gmtDateTimePattern).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.universalDateTimePattern).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.sortableDateTimePattern).aNonEmptyString);
         Debug.assert(is(graph.dateFormat.dateTimePattern).aNonEmptyString);
 
         Debug.assert(is(graph.dateFormat.longDatePattern).aNonEmptyString);
@@ -254,6 +261,10 @@ export default class Culture {
     get language() {
         //TBI code defensively
         return this.name.split('-')[0];
+    }
+
+    get locale() {
+        return this._graph.locale;
     }
 
     get longDatePattern() {
@@ -366,7 +377,7 @@ export default class Culture {
     }
 
     get sortableDateTimePattern() {
-        return this._graph.dateFormat.sortableDateTimePattern;
+        return 'yyyy-MM-ddTHH:mm:ss';
     }
 
     get timeSeparator() {
@@ -374,7 +385,7 @@ export default class Culture {
     }
 
     get universalDateTimePattern() {
-        return this._graph.dateFormat.universalDateTimePattern;
+        return 'yyyy-MM-dd HH:mm:sszz';
     }
 
     //#endregion
