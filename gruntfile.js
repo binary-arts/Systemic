@@ -1,6 +1,5 @@
 /* jshint node:true */
 
-var Babel = require('babel');
 var Path = require('path');
 
 module.exports = function(grunt) {
@@ -23,11 +22,12 @@ module.exports = function(grunt) {
     };
 
     var file = {
+        babelRuntime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/external-helpers.js'),
+        es6Runtime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
         out: {
             debug: Path.join(dir.work, pkg.name + '.js'),
             min: Path.join(dir.work, pkg.name + '.min.js')
         },
-        polyfill: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
     };
 
     var files = {
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
                     babelPreprocessor: {
                         options: {
                             comments: false,
-                            //externalHelpers: true, TODO: emit external helpers as a served file
+                            externalHelpers: true,
                             modules: 'amd',
                             sourceMap: 'inline'
                         }
@@ -114,7 +114,8 @@ module.exports = function(grunt) {
                         { pattern: files.src, included: false },
                         { pattern: files.spec, included: false },
                         { pattern: files.specdep, included: false },
-                        { pattern: file.polyfill, included: true },
+                        { pattern: file.es6Runtime, included: true },
+                        { pattern: file.babelRuntime, included: true },
                         { pattern: 'test/Systemic.js', included: true }
                     ],
                     frameworks: ['jasmine', 'requirejs'],
@@ -152,7 +153,7 @@ module.exports = function(grunt) {
                         jquery: 'empty:'
                     },
                     wrap: {
-                        start: grunt.file.read(file.polyfill) + '\n' + Babel.buildExternalHelpers() + '\n'
+                        start: grunt.file.read(file.es6Runtime) + '\n' + grunt.file.read(file.babelRuntime) + '\n'
                     }
                 }
             }
