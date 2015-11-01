@@ -7,8 +7,8 @@ import '../ComponentModel/Subscription';
 import '../Diagnostics/Debug';
 
 import '../Globalization/Culture';
-import '../Globalization/IntlDateFormatter';
-import '../Globalization/IntlNumberFormatter';
+import '../Globalization/DateFormatter';
+import '../Globalization/NumberFormatter';
 
 import '../Net/FileService';
 

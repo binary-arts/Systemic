@@ -32,60 +32,77 @@ export default class Culture {
 
     static get neutral() {
         return Culture._.neutral || (Culture._.neutral = new Culture({
-            dateFormat: {
-                amDesignator: 'AM',
-                pmDesignator: 'PM',
+            date: {
+                amPeriod: 'AM',
+                pmPeriod: 'PM',
 
                 dateSeparator: '/',
                 timeSeparator: ':',
 
-                gmtDateTimePattern: 'ddd, dd MMM yyyy HH:mm:ss GMT',
-                dateTimePattern: 'dddd, MMMM dd, yyyy h:mm:ss tt',
-
-                longDatePattern: 'dddd, MMMM dd, yyyy',
-                shortDatePattern: 'M/d/yyyy',
-
-                longTimePattern: 'h:mm:ss tt',
-                shortTimePattern: 'h:mm tt',
-
                 firstDayOfWeek: 0,
-                dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                shortDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                minimizedDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
 
-                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
-                shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', '']
+                wideMonthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
+                mediumMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ''],
+                shortMonthNames: ['Ja', 'Fe', 'Ma', 'Ap', 'Ma', 'Ju', 'Jl', 'Au', 'Se', 'Oc', 'No', 'De', ''],
+                narrowMonthNames: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D', ''],
+
+                wideDayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                mediumDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                shortDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                narrowDayNames: ['S', 'M', 'T', 'W', 'Th', 'F', 'S'],
+
+                format: {
+                    dateTime: 'DDDDD, MMMMM ddd, yyyyy hh:nnn:sss apap',
+                    dateTimeGMT: 'DDDD, ddd MMMM yyyyy hhhhh:nnn:sss GMT',
+
+                    wideDate: 'DDDDD, MMMMM ddd, yyyyy',
+                    mediumDate: 'mmm/ddd/yyyyy',
+                    shortDate: 'mm/dd/yyy',
+
+                    mediumTime: 'hh:nnn:sss apap',
+                    shortTime: 'hh:nnn apap'
+                }
             },
             id: 1033,
             locale: 'en-US',
             name: 'English (United States)',
-            numberFormat: {
+            number: {
                 nanSymbol: 'NaN',
                 negativeSign: '-',
                 positiveSign: '+',
-                negativeInfinityText: '-Infinity',
-                positiveInfinityText: 'Infinity',
+                negativeInfinity: '-∞',
+                positiveInfinity: '∞',
 
-                numberGroupSizes: [3],
-                numberDecimalDigits: 2,
-                numberDecimalSeparator: '.',
-                numberGroupSeparator: ',',
+                groupSizes: [3],
+                precision: 2,
+                decimal: '.',
+                group: ',',
 
-                percentSymbol: '%',
-                percentGroupSizes: [3],
-                percentDecimalDigits: 2,
-                percentDecimalSeparator: '.',
-                percentGroupSeparator: ',',
-                percentPositivePattern: '{0}%',
-                percentNegativePattern: '-{0}%',
+                percent: {
+                    symbol: '%',
+                    groupSizes: [3],
+                    precision: 2,
+                    decimal: '.',
+                    group: ',',
 
-                currencySymbol: '$',
-                currencyGroupSizes: [3],
-                currencyDecimalDigits: 2,
-                currencyDecimalSeparator: '.',
-                currencyGroupSeparator: ',',
-                currencyNegativePattern: '(${0})',
-                currencyPositivePattern: '${0}'
+                    format: {
+                        positive: '{0}%',
+                        negative: '-{0}%'
+                    }
+                },
+
+                currency: {
+                    symbol: '$',
+                    groupSizes: [3],
+                    precision: 2,
+                    decimal: '.',
+                    group: ',',
+
+                    format: {
+                        positive: '(${0})',
+                        negative: '${0}'
+                    }
+                }
             }
         }));
     }
@@ -125,61 +142,65 @@ export default class Culture {
         Debug.assert(is(graph.locale).aNonEmptyString);
         Debug.assert(is(graph.name).aNonEmptyString);
 
-        Debug.assert(is(graph.numberFormat).anObject);
+        Debug.assert(is(graph.number).anObject);
+        Debug.assert(is(graph.number.nanSymbol).aNonEmptyString);
+        Debug.assert(is(graph.number.negativeSign).aNonEmptyString);
+        Debug.assert(is(graph.number.positiveSign).aNonEmptyString);
+        Debug.assert(is(graph.number.negativeInfinity).aNonEmptyString);
+        Debug.assert(is(graph.number.positiveInfinity).aNonEmptyString);
+        Debug.assert(is(graph.number.groupSizes).aNonEmptyArray);
+        Debug.assert(is(graph.number.precision).aNumber);
+        Debug.assert(is(graph.number.decimal).aNonEmptyString);
+        Debug.assert(is(graph.number.seperator).aNonEmptyString);
 
-        Debug.assert(is(graph.numberFormat.nanSymbol).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.negativeSign).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.positiveSign).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.negativeInfinityText).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.positiveInfinityText).aNonEmptyString);
+        Debug.assert(is(graph.number.percent).anObject);
+        Debug.assert(is(graph.number.percent.symbol).aNonEmptyString);
+        Debug.assert(is(graph.number.percent.groupSizes).aNonEmptyArray);
+        Debug.assert(is(graph.number.percent.precision).aNumber);
+        Debug.assert(is(graph.number.percent.decimal).aNonEmptyString);
+        Debug.assert(is(graph.number.percent.group).aNonEmptyString);
+        Debug.assert(is(graph.number.percent.format).anObject);
+        Debug.assert(is(graph.number.percent.format.positive).aNonEmptyString);
+        Debug.assert(is(graph.number.percent.format.negative).aNonEmptyString);
 
-        Debug.assert(is(graph.numberFormat.numberGroupSizes).aNonEmptyArray);
-        Debug.assert(is(graph.numberFormat.numberDecimalDigits).aNumber);
-        Debug.assert(is(graph.numberFormat.numberDecimalSeparator).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.numberGroupSeparator).aNonEmptyString);
+        Debug.assert(is(graph.number.currency).anObject);
+        Debug.assert(is(graph.number.currency.symbol).aNonEmptyString);
+        Debug.assert(is(graph.number.currency.groupSizes).aNonEmptyArray);
+        Debug.assert(is(graph.number.currency.precision).aNumber);
+        Debug.assert(is(graph.number.currency.decimal).aNonEmptyString);
+        Debug.assert(is(graph.number.currency.group).aNonEmptyString);
+        Debug.assert(is(graph.number.currency.format).anObject);
+        Debug.assert(is(graph.number.currency.format.negative).aNonEmptyString);
+        Debug.assert(is(graph.number.currency.format.positive).aNonEmptyString);
 
-        Debug.assert(is(graph.numberFormat.percentSymbol).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.percentGroupSizes).aNonEmptyArray);
-        Debug.assert(is(graph.numberFormat.percentDecimalDigits).aNumber);
-        Debug.assert(is(graph.numberFormat.percentDecimalSeparator).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.percentGroupSeparator).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.percentPositivePattern).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.percentNegativePattern).aNonEmptyString);
+        Debug.assert(is(graph.date).anObject);
+        Debug.assert(is(graph.date.amPeriod).aNonEmptyString);
+        Debug.assert(is(graph.date.pmPeriod).aNonEmptyString);
+        Debug.assert(is(graph.date.dateSeparator).aNonEmptyString);
+        Debug.assert(is(graph.date.timeSeparator).aNonEmptyString);
+        Debug.assert(is(graph.date.firstDayOfWeek).aNumber);
+        Debug.assert(is(graph.date.wideMonthNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.mediumMonthNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.shortMonthNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.narrowMonthNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.wideDayNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.mediumDayNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.shortDayNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.narrowDayNames).aNonEmptyArray);
 
-        Debug.assert(is(graph.numberFormat.currencySymbol).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.currencyGroupSizes).aNonEmptyArray);
-        Debug.assert(is(graph.numberFormat.currencyDecimalDigits).aNumber);
-        Debug.assert(is(graph.numberFormat.currencyDecimalSeparator).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.currencyGroupSeperator).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.currencyNegativePattern).aNonEmptyString);
-        Debug.assert(is(graph.numberFormat.currencyPositivePattern).aNonEmptyString);
-
-        Debug.assert(is(graph.dateFormat).anObject);
-
-        Debug.assert(is(graph.dateFormat.amDesignator).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.pmDesignator).aNonEmptyString);
-
-        Debug.assert(is(graph.dateFormat.dateSeparator).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.timeSeparator).aNonEmptyString);
-
-        Debug.assert(is(graph.dateFormat.gmtDateTimePattern).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.dateTimePattern).aNonEmptyString);
-
-        Debug.assert(is(graph.dateFormat.longDatePattern).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.shortDatePattern).aNonEmptyString);
-
-        Debug.assert(is(graph.dateFormat.longTimePattern).aNonEmptyString);
-        Debug.assert(is(graph.dateFormat.shortTimePattern).aNonEmptyString);
-
-        Debug.assert(is(graph.dateFormat.firstDayOfWeek).aNumber);
-        Debug.assert(is(graph.dateFormat.dayNames).aNonEmptyArray);
-        Debug.assert(is(graph.dateFormat.shortDayNames).aNonEmptyArray);
-        Debug.assert(is(graph.dateFormat.minimizedDayNames).aNonEmptyArray);
-
-        Debug.assert(is(graph.dateFormat.monthNames).aNonEmptyArray);
-        Debug.assert(is(graph.dateFormat.shortMonthNames).aNonEmptyArray);
+        Debug.assert(is(graph.date.format).anObject);
+        Debug.assert(is(graph.date.format.dateTime).aNonEmptyString);
+        Debug.assert(is(graph.date.format.dateTimeGMT).aNonEmptyString);
+        Debug.assert(is(graph.date.format.wideDate).aNonEmptyString);
+        Debug.assert(is(graph.date.format.mediumDate).aNonEmptyString);
+        Debug.assert(is(graph.date.format.shortDate).aNonEmptyString);
+        Debug.assert(is(graph.date.format.mediumTime).aNonEmptyString);
+        Debug.assert(is(graph.date.format.shortTime).aNonEmptyString);
 
         //init
+        graph.date.format.sortable = 'yyyyy-mmm-dddThhhhh:nnn:sss';
+        graph.date.format.universal = 'yyyyy-mmm-ddd hhhhh:nnn:ssszzz';
+
         this._.graph = graph;
     }
 
@@ -198,56 +219,8 @@ export default class Culture {
         return this.__ || (this.__ = Object.create(null));
     }
 
-    get amDesignator() {
-        return this._graph.dateFormat.amDesignator;
-    }
-
-    get currencyDecimalDigits() {
-        return this._graph.numberFormat.currencyDecimalDigits;
-    }
-
-    get currencyDecimalSeparator(){
-        return this._graph.numberFormat.currencyDecimalSeparator;
-    }
-
-    get currencyGroupSeparator() {
-        return this._graph.numberFormat.currencyGroupSeparator;
-    }
-
-    get currencyGroupSizes() {
-        return this._graph.numberFormat.currencyGroupSizes;
-    }
-
-    get currencyNegativePattern() {
-        return this._graph.numberFormat.currencyNegativePattern;
-    }
-
-    get currencyPositivePattern() {
-        return this._graph.numberFormat.currencyPositivePattern;
-    }
-
-    get currencySymbol() {
-        return this._graph.numberFormat.currencySymbol;
-    }
-
-    get dateSeparator() {
-        return this._graph.dateFormat.dateSeparator;
-    }
-
-    get dateTimePattern() {
-        return this._graph.dateFormat.dateTimePattern;
-    }
-
-    get dayNames() {
-        return this._graph.dateFormat.dayNames;
-    }
-
-    get firstDayOfWeek() {
-        return this._graph.dateFormat.firstDayOfWeek;
-    }
-
-    get gmtDateTimePattern() {
-        return this._graph.dateFormat.gmtDateTimePattern;
+    get date() {
+        return this._graph.date;
     }
 
     get _graph(){
@@ -267,125 +240,17 @@ export default class Culture {
         return this._graph.locale;
     }
 
-    get longDatePattern() {
-        return this._graph.dateFormat.longDatePattern;
-    }
-
-    get longTimePattern() {
-        return this._graph.dateFormat.longTimePattern;
-    }
-
-    get minimizedDayNames() {
-        return this._graph.dateFormat.minimizedDayNames;
-    }
-
-    get monthNames() {
-        return this._graph.dateFormat.monthNames;
-    }
-
     get name() {
         return this._graph.name;
     }
 
-    get nanSymbol() {
-        return this._graph.numberFormat.nanSymbol;
-    }
-
-    get negativeInfinityText() {
-        return this._graph.numberFormat.negativeInfinityText;
-    }
-
-    get negativeSign() {
-        return this._graph.numberFormat.negativeSign;
-    }
-
-    get numberGroupSizes() {
-        return this._graph.numberFormat.numberGroupSizes;
-    }
-
-    get numberDecimalDigits() {
-        return this._graph.numberFormat.numberDecimalDigits;
-    }
-
-    get numberDecimalSeparator() {
-        return this._graph.numberFormat.numberDecimalSeparator;
-    }
-
-    get numberGroupSeparator() {
-        return this._graph.numberFormat.numberGroupSeparator;
-    }
-
-    get percentDecimalDigits() {
-        return this._graph.numberFormat.percentDecimalDigits;
-    }
-
-    get percentDecimalSeparator() {
-        return this._graph.numberFormat.percentDecimalSeparator;
-    }
-
-    get percentGroupSeparator() {
-        return this._graph.numberFormat.percentGroupSeparator;
-    }
-
-    get percentGroupSizes() {
-        return this._graph.numberFormat.percentGroupSizes;
-    }
-
-    get percentNegativePattern() {
-        return this._graph.numberFormat.percentNegativePattern;
-    }
-
-    get percentPositivePattern() {
-        return this._graph.numberFormat.percentPositivePattern;
-    }
-
-    get percentSymbol() {
-        return this._graph.numberFormat.percentSymbol;
-    }
-
-    get pmDesignator() {
-        return this._graph.dateFormat.pmDesignator;
-    }
-
-    get positiveInfinityText() {
-        return this._graph.numberFormat.positiveInfinityText;
-    }
-
-    get positiveSign() {
-        return this._graph.numberFormat.positiveSign;
+    get number() {
+        return this._graph.number;
     }
 
     get region() {
         //TBI code defensively
         return this.name.split('-')[1];
-    }
-
-    get shortDatePattern() {
-        return this._graph.dateFormat.shortDatePattern;
-    }
-
-    get shortDayNames() {
-        return this._graph.dateFormat.shortDayNames;
-    }
-
-    get shortMonthNames() {
-        return this._graph.dateFormat.shortMonthNames;
-    }
-
-    get shortTimePattern() {
-        return this._graph.dateFormat.shortTimePattern;
-    }
-
-    get sortableDateTimePattern() {
-        return 'yyyy-MM-ddTHH:mm:ss';
-    }
-
-    get timeSeparator() {
-        return this._graph.dateFormat.timeSeparator;
-    }
-
-    get universalDateTimePattern() {
-        return 'yyyy-MM-dd HH:mm:sszz';
     }
 
     //#endregion

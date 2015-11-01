@@ -2,8 +2,7 @@ import is from './Is';
 
 import Formatter from '../Formatter';
 
-import IntlDateFormatter from '../Globalization/IntlDateFormatter';
-import IntlNumberFormatter from '../Globalization/IntlNumberFormatter';
+import DateFormatter from '../Globalization/DateFormatter';
 
 class Format {
 
@@ -37,7 +36,7 @@ class Format {
      * @returns { Map<TFormatter, Formatter> }
      */
     static get _formatters() {
-        return Format._.formatters || (Format._.formatters = new Map([[IntlNumberFormatter, new IntlNumberFormatter()], [IntlDateFormatter, new IntlDateFormatter()]]));
+        return Format._.formatters || (Format._.formatters = new Map([[DateFormatter, new DateFormatter()]]));
     }
 
     //#endregion
