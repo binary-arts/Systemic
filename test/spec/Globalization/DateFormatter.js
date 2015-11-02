@@ -4,7 +4,7 @@ import Culture from 'src/Globalization/Culture';
 import DateFormatter from 'src/Globalization/DateFormatter';
 
 describe('Globalization.DateFormatter', () => {
-    const formatter = new DateFormatter();
+    const formatter = DateFormatter.current;
     const date = new Date(Date.parse('June 1, 1977 9:04:02 PM'));
 
     describe('_standardFormatSpecs', () => {

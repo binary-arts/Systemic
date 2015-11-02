@@ -26,6 +26,36 @@ export default class DateFormatter extends Formatter {
      * @private
      * @static
      *
+     * @returns { Map<Culture, DateFormatter> }
+     */
+    static get _cache() {
+        return DateFormatter._.cache || (DateFormatter._.cache = new Map());
+    }
+
+    /**
+     * @override
+     * @static
+     *
+     * @returns { DateFormatter }
+     */
+    static get current() {
+        const culture = Culture.current;
+
+        //!!! not thread-safe
+        return DateFormatter._cache.has(culture)
+            ? DateFormatter._cache.get(culture)
+            : () => {
+                const result = new DateFormatter(Culture.current);
+                DateFormatter._cache.set(culture, result);
+
+                return result;
+            }();
+    }
+
+    /**
+     * @private
+     * @static
+     *
      * @returns { Map<String, Array<String>> }
      */
     static get _standardFormatSpecs() {
@@ -76,7 +106,7 @@ export default class DateFormatter extends Formatter {
         let result = '';
 
         if ((ref = as(ref).aDate)) {
-            const culture = Culture.current;
+            const culture = this._culture;
             const expression = /DDDDD|DDDD|DDD|DD|ddd|dd|MMMMM|MMMM|MMM|MM|mmm|mm|yyyyy|yyy|yy|hhhhh|hhhh|hhh|hh|nnn|nn|sss|ss|apap|ap|ffff|fff|ff|zzz|zz/g;
 
             if (' r R u U '.indexOf(` ${spec} `) >= 0) ref = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate(), ref.getUTCHours(), ref.getUTCMinutes(), ref.getUTCSeconds(), ref.getUTCMilliseconds()));

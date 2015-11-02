@@ -1,8 +1,25 @@
 import as from './Runtime/As';
 
+import Culture from './Globalization/Culture';
+import Exception from './Runtime/Exception';
+
 export default class Formatter {
 
     //#region Type
+
+    //#region Properties
+
+    /**
+     * @abstract
+     * @static
+     *
+     * @returns { Formatter }
+     */
+    static get current() {
+        throw Exception.create('Cannot invoke an abstract member.');
+    }
+
+    //#endregion
 
     //#region Methods
 
@@ -24,6 +41,18 @@ export default class Formatter {
 
     //#endregion
 
+    //#region Disposition
+
+    /**
+     * @param { Culture? } culture
+     */
+    constructor(culture = Culture.neutral) {
+        //init
+        this._.culture = culture;
+    }
+
+    //#endregion
+
     //#region Properties
 
     /**
@@ -35,6 +64,22 @@ export default class Formatter {
      */
     get _() {
         return this.__ || (this.__ = Object.create(null));
+    }
+
+    /**
+     * @protected
+     *
+     * @returns { Culture }
+     */
+    get _culture() {
+        return this._.culture;
+    }
+
+    /**
+     * @returns { String }
+     */
+    get locale() {
+        return this._culture.locale;
     }
 
     /**
@@ -52,14 +97,14 @@ export default class Formatter {
 
     /* jshint ignore:start */
     /**
-     * @virtual
+     * @abstract
      *
      * @param { Any } ref
      * @param { String } spec
      * @returns { ?String }
      */
     format(ref, spec) {
-        return null;
+        throw Exception.create('Cannot invoke an abstract member.');
     }
     /* jshint ignore:end */
 

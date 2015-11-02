@@ -42,8 +42,13 @@ describe('Formatter', () => {
     });
 
     describe('format', () => {
-        it('returns null', () => {
-            expect(formatter.format()).toBeNull();
+        it('throws an abstract member error', () => {
+            let error;
+
+            try { formatter.format(); }
+            catch (ex) { error = ex; }
+
+            expect(error).toEqual(jasmine.objectContaining({ message: 'Cannot invoke an abstract member.' }));
         });
     });
 

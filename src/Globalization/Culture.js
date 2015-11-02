@@ -115,7 +115,7 @@ export default class Culture {
     static get current() {
         return Culture._.current || (Culture._.current = Culture.neutral);
     }
-    static set current(value) {
+    static set current(value = Culture.neutral) {
         Culture._.current = value;
     }
 
