@@ -8,24 +8,26 @@
 
         "firstDayOfWeek": 0,
 
+        "wideMonthNames": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", ""],
+        "mediumMonthNames": ["jan.", "fév.", "mar.", "avr.", "mai", "jui.", "juil.", "août", "sept.", "oct.", " nov.", "déc.", ""],
+        "shortMonthNames": ["ja", "fé", "m.", "av", "ma", "ju", "jl", "ao", "se", "oc", " no", "dé", ""],
+        "narrowMonthNames": ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", " N", "D", ""],
+
         "wideDayNames": ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
-        "abbreviatedDayNames": ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+        "mediumDayNames": ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
         "shortDayNames": ["di", "lu", "ma", "me", "je", "ve", "sa"],
         "narrowDayNames": ["D", "L", "M", "M", "J", "V", "S"],
 
-        "wideMonthNames": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", ""],
-        "abbreviatedMonthNames": ["jan.", "fév.", "mar.", "avr.", "mai", "jui.", "juil.", "août", "sept.", "oct.", " nov.", "déc.", ""],
-        "narrowMonthNames": ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", " N", "D", ""],
-
         "format": {
-            "gmtDateTime": "ddd dd MMM yyyy HH:mm:ss 'UTC'",
-            "dateTime": "dddd dd MMMM yyyy h:mm:ss tt",
+            "dateTime": "DDDDD ddd MMMMM yyyyy hh:nnn:sss apap",
+            "dateTimeGMT": "DDDD ddd MMMM yyyyy hhhh:nnn:sss 'UTC'",
 
-            "fullDate": "dddd dd MMMM yyyy",
-            "shortDate": "dd/MM/yy",
+            "wideDate": "DDDDD ddd MMMMM yyyyy",
+            "mediumDate": "ddd/mmm/yyyyy",
+            "shortDate": "ddd/mmm/yyy",
 
-            "mediumTime": "h:mm:ss tt",
-            "shortTime": "h:mm tt"
+            "mediumTime": "hh:nnn:sss apap",
+            "shortTime": "hh:nnn apap"
         }
     },
     "id": 1036,

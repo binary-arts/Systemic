@@ -123,6 +123,13 @@ export default class Culture {
         return Culture._cache.get('en-US');
     }
 
+    static get rootPath() {
+        return Culture._.rootPath || (Culture._.rootPath = '');
+    }
+    static set rootPath(value) {
+        Culture._.rootPath = `${(value && !value.endsWith('/')) ? `${value}/` : value}`;
+    }
+
     //#endregion
 
     //#region Methods
@@ -133,7 +140,7 @@ export default class Culture {
                 .Deferred(task => task.resolve(Culture._cache.get(locale)))
                 .promise()
             : FileService
-                .getObject(`culture/${locale}.json`)
+                .getObject(`${Culture.rootPath}culture/${locale}.json`)
                 .then(graph => graph
                     ? () => {
                         const result = new Culture(graph);
