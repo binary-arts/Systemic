@@ -18,53 +18,51 @@ export default class FileService {
     //#region Methods
 
     static getObject(path, throwOnFailure) {
-        return $
-            .Deferred(function(task) {
-                $.getJSON(path).always(function() {
-                    const failed = is(arguments[2]).aString;
-                    const result = failed ? null : arguments[0];
+        return new Promise(continueWith => {
+            $.getJSON(path).always(function() {
+                const failed = is(arguments[2]).aString;
+                const result = failed ? null : arguments[0];
 
-                    if (failed && throwOnFailure) {
-                        const request = this;
-                        const response = arguments[0];
+                if (failed && throwOnFailure) {
+                    const request = this;
+                    const response = arguments[0];
 
-                        const httpStatus = as(response.status).aNumber;
-                        const httpMessage = as(response.statusText).aString;
+                    const httpStatus = as(response.status).aNumber;
+                    const httpMessage = as(response.statusText).aString;
 
-                        let description;
+                    let description;
 
-                        switch (arguments[1]) {
-                            case 'timeout':
-                                description = 'timed out.';
-                                break;
+                    switch (arguments[1]) {
+                        case 'timeout':
+                            description = 'timed out.';
+                            break;
 
-                            case 'abort':
-                                description = 'was aborted.';
-                                break;
+                        case 'abort':
+                            description = 'was aborted.';
+                            break;
 
-                            case 'parsererror':
-                                description = 'failed because the response was invalid or corrupt and could not be parsed.';
-                                break;
+                        case 'parsererror':
+                            description = 'failed because the response was invalid or corrupt and could not be parsed.';
+                            break;
 
-                            default:
-                                description = `failed with status ${httpStatus} : "${description || httpMessage}"`;
-                                break;
-                        }
-
-                        throw Exception.create(
-                            'FileServiceError',
-                            httpStatus,
-                            httpMessage,
-                            ['A', request.type, 'file service request', request.url ? 'at' : '', request.url, description]
-                                .filter(item => !!item)
-                                .join(' ')
-                        );
+                        default:
+                            description = `failed with status ${httpStatus} : "${description || httpMessage}"`;
+                            break;
                     }
 
-                    task.resolve(result);
-                });
-            })
-            .promise();
+                    throw Exception.create(
+                        'FileServiceError',
+                        httpStatus,
+                        httpMessage,
+                        ['A', request.type, 'file service request', request.url ? 'at' : '', request.url, description]
+                            .filter(item => !!item)
+                            .join(' ')
+                    );
+                }
+
+                continueWith(result);
+            });
+        });
     }
 
     //#endregion

@@ -1,5 +1,3 @@
-import 'jquery';
-
 import is from '../Runtime/Is';
 
 import Debug from '../Diagnostics/Debug';
@@ -135,10 +133,9 @@ export default class Culture {
     //#region Methods
 
     static fromLocale(locale) {
+        //!!! not thread-safe
         return Culture._cache.has(locale)
-            ? $
-                .Deferred(task => task.resolve(Culture._cache.get(locale)))
-                .promise()
+            ? new Promise(continueWith => { continueWith(Culture._cache.get(locale)); })
             : FileService
                 .getObject(`${Culture.rootPath}culture/${locale}.json`)
                 .then(graph => graph
