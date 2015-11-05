@@ -90,14 +90,14 @@ describe('Globalization.DateFormatter', () => {
         });
 
         describe('with the neutral ("en-US") culture', () => {
+            /*jshint ignore:start */
             beforeAll(done => {
-                Culture
-                    .fromLocale('en-US')
-                    .then(culture => {
-                        formatter = new DateFormatter(culture);
-                        done();
-                    });
+                async () => {
+                    formatter = new DateFormatter(await Culture.fromLocale('en-US'));
+                    done();
+                }();
             });
+            /*jshint ignore:end */
 
             afterAll(done => {
                 formatter = DateFormatter.current;
@@ -372,14 +372,14 @@ describe('Globalization.DateFormatter', () => {
         });
 
         describe('with the French (France) ("fr-FR") culture', () => {
+            /*jshint ignore:start */
             beforeAll(done => {
-                Culture
-                    .fromLocale('fr-FR')
-                    .then(culture => {
-                        formatter = new DateFormatter(culture);
-                        done();
-                    });
+                async () => {
+                    formatter = new DateFormatter(await Culture.fromLocale('fr-FR'));
+                    done();
+                }();
             });
+            /*jshint ignore:end */
 
             afterAll(done => {
                 formatter = DateFormatter.current;

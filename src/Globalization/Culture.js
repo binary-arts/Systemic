@@ -1,7 +1,10 @@
 import is from '../Runtime/Is';
 
 import Debug from '../Diagnostics/Debug';
+
+/* jshint ignore:start */
 import FileService from '../Net/FileService';
+/* jshint ignore:end */
 
 export default class Culture {
 
@@ -132,25 +135,29 @@ export default class Culture {
 
     //#region Methods
 
+    /* jshint ignore:start */
     static fromLocale(locale) {
         //!!! not thread-safe
-        return Culture._cache.has(locale)
-            ? new Promise(continueWith => { continueWith(Culture._cache.get(locale)); })
-            : FileService
-                .getObject(`${Culture.rootPath}culture/${locale}.json`)
-                .then(graph => graph
-                    ? () => {
-                        const result = new Culture(graph);
-                        Debug.assert(result.locale === locale);
+        return async () => {
+            let result = null;
 
-                        //!!! not thread-safe
-                        Culture._cache.set(locale, result);
+            if (Culture._cache.has(locale))
+                result = Culture._cache.get(locale);
+            else {
+                const graph = await FileService.getObject(`${Culture.rootPath}culture/${locale}.json`);
 
-                        return result;
-                    }()
-                    : null
-                );
+                if (graph) {
+                    result = new Culture(graph);
+                    Debug.assert(result.locale === locale);
+
+                    Culture._cache.set(locale, result);
+                }
+            }
+
+            return result;
+        }();
     }
+    /* jshint ignore:end */
 
     //#endregion
 
