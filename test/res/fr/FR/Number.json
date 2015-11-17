@@ -1,0 +1,38 @@
+{
+    "nanSymbol": "NaN",
+    "negativeSign": "-",
+    "positiveSign": "+",
+    "negativeInfinity": "-∞",
+    "positiveInfinity": "∞",
+
+    "groupSizes": [3],
+    "precision": 2,
+    "decimal": ".",
+    "group": ",",
+
+    "percent": {
+        "symbol": "%",
+        "groupSizes": [3],
+        "precision": 2,
+        "decimal": ".",
+        "group": ",",
+
+        "format": {
+            "positive": "{0} %",
+            "negative": "-{0} %"
+        }
+    },
+
+    "currency": {
+        "symbol": "¤",
+        "groupSizes": [3],
+        "precision": 2,
+        "decimal": ".",
+        "group": ",",
+
+        "format": {
+            "negative": "({0} ¤)",
+            "positive": "{0} ¤"
+        }
+    }
+}

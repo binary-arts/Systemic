@@ -1,0 +1,31 @@
+{
+    "amPeriod": "AM",
+    "pmPeriod": "PM",
+
+    "dateSeparator": "/",
+    "timeSeparator": ":",
+
+    "firstDayOfWeek": 0,
+
+    "wideMonthNames": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", ""],
+    "mediumMonthNames": ["jan.", "fév.", "mar.", "avr.", "mai", "jui.", "juil.", "août", "sept.", "oct.", " nov.", "déc.", ""],
+    "shortMonthNames": ["ja", "fé", "m.", "av", "ma", "ju", "jl", "ao", "se", "oc", " no", "dé", ""],
+    "narrowMonthNames": ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", " N", "D", ""],
+
+    "wideDayNames": ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+    "mediumDayNames": ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+    "shortDayNames": ["di", "lu", "ma", "me", "je", "ve", "sa"],
+    "narrowDayNames": ["D", "L", "M", "M", "J", "V", "S"],
+
+    "format": {
+        "dateTime": "DDDDD ddd MMMMM yyyyy hh:nnn:sss apap",
+        "dateTimeGMT": "DDDD ddd MMMM yyyyy hhhh:nnn:sss 'UTC'",
+
+        "wideDate": "DDDDD ddd MMMMM yyyyy",
+        "mediumDate": "ddd/mmm/yyyyy",
+        "shortDate": "ddd/mmm/yyy",
+
+        "mediumTime": "hh:nnn:sss apap",
+        "shortTime": "hh:nnn apap"
+    }
+}
