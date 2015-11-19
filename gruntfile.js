@@ -145,10 +145,10 @@ module.exports = function(grunt) {
         requirejs: {
             pack: {
                 options: {
-                    baseUrl: Path.join(dir.work, '_Properties'),
+                    baseUrl: dir.work,
                     name: pkg.name,
-                    onBuildWrite: function(moduleName, path, contents) {
-                        return moduleName === pkg.name ? '' : contents.replace('define(\'../', 'define(\'' + pkg.name + '/');
+                    onBuildWrite: function (moduleName, path, contents) {
+                        return moduleName === pkg.name ? '' : contents.replace('define(\'', 'define(\'' + pkg.name + '/');
                     },
                     optimize: 'none',
                     out: file.out.debug,
