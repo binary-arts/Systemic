@@ -18,23 +18,16 @@ describe('Format.Formatter', () => {
         res.rootPath = 'base/test';
 
         async() => {
-            invariant = new Formatter('');
-            await invariant._initialized;
+            invariant = await Formatter.invariant;
 
-            en = new Formatter('en');
-            fr = new Formatter('fr');
-
-            await Promise.all([
-                en._initialized,
-                fr._initialized
+            [en, fr] = await Promise.all([
+                Formatter.fromLocale('en'),
+                Formatter.fromLocale('fr')
             ]);
 
-            enUS = new Formatter('en-US');
-            frFR = new Formatter('fr-FR');
-
-            await Promise.all([
-                enUS._initialized,
-                frFR._initialized
+            [enUS, frFR] = await Promise.all([
+                Formatter.fromLocale('en-US'),
+                Formatter.fromLocale('fr-FR')
             ]);
 
             resume();
@@ -46,48 +39,139 @@ describe('Format.Formatter', () => {
         res.rootPath = rootPath;
     });
 
+    describe('index', () => {
+        it('returns a Map containing the expected key and value types', () => {
+            expect(Formatter.index).toEqual(jasmine.any(Map));
+
+            for (const [key, value] of Formatter.index) {
+                expect(key).toEqual(jasmine.any(String));
+                expect(value).toEqual(jasmine.any(Formatter));
+            }
+        });
+    });
+
     describe('invariant', () => {
+        let anotherInvariant;
+
+        /*jshint ignore:start */
+        beforeAll(resume => {
+            async() => {
+                anotherInvariant = await Formatter.invariant;
+
+                resume();
+            }();
+        });
+        /*jshint ignore:end */
+
+        it('returns a Formatter object with the correct language, locale, and region', () => {
+            expect(invariant).toEqual(jasmine.any(Formatter));
+            expect(invariant.language).toBeNull();
+            expect(invariant.locale).toBe('');
+            expect(invariant.region).toBeNull();
+        });
+
+        it('returns a Formatter object with an empty object culture', () => {
+            expect(invariant._culture).toEqual({ });
+        });
+
+        it('returns the same Formatter object for each invocation', () => {
+            expect(invariant).toBe(anotherInvariant);
+        });
+    });
+
+    describe('invariantCulture', () => {
         it('throws an abstract member error', () => {
             let error;
-            let invariant;
+            let culture;
 
-            try { invariant = Formatter.invariant; }
+            try { culture = Formatter.invariantCulture; }
             catch (ex) { error = ex; }
 
             expect(error).toEqual(jasmine.objectContaining({ message: Exception.abstractMemberInvocation.message }));
         });
     });
 
-    describe('_invariantCulture', () => {
-        it('returns an empty object', () => {
-            expect(Formatter._invariantCulture).toEqual({ });
+    describe('priorityTypes', () => {
+        it('returns an Array of expected types', () => {
+            expect(Formatter.priorityTypes).toEqual([]);
         });
 
-        it('returns the same value on subsequent invocations', () => {
-            expect(Formatter._invariantCulture).toBe(Formatter._invariantCulture);
-        });
-    });
-
-    describe('_priorityTypes', () => {
-        it('throws an abstract member error', () => {
-            let error;
-            let priorityTypes;
-
-            try { priorityTypes = Formatter._priorityTypes; }
-            catch (ex) { error = ex; }
-
-            expect(error).toEqual(jasmine.objectContaining({ message: Exception.abstractMemberInvocation.message }));
+        it('returns the same Array on subsequent invocations', () => {
+            expect(Formatter.priorityTypes).toBe(Formatter.priorityTypes);
         });
     });
 
     describe('fromLocale', () => {
-        it('throws an abstract member error', () => {
-            let error;
+        let index;
+        let anotherEnUS;
+        let anotherFrFR;
 
-            try { Formatter.fromLocale(''); }
-            catch (ex) { error = ex; }
+        /*jshint ignore:start */
+        beforeAll(resume => {
+            index = Formatter.index;
 
-            expect(error).toEqual(jasmine.objectContaining({ message: Exception.abstractMemberInvocation.message }));
+            spyOn(index, "has").and.callThrough();
+            spyOn(index, "get").and.callThrough();
+            spyOn(index, "set").and.callThrough();
+
+            async() => {
+                [anotherEnUS, anotherFrFR] = await Promise.all([
+                    Formatter.fromLocale('en-US'),
+                    Formatter.fromLocale('fr-FR')
+                ]);
+
+                resume();
+            }();
+        });
+        /*jshint ignore:end */
+
+        afterAll(() => {
+            index.has.calls.reset();
+            index.get.calls.reset();
+            index.set.calls.reset();
+        });
+
+        it('caches Formatter objects by type and locale', () => {
+            expect(index.has.calls.count()).toBe(2);
+            expect(index.get.calls.count()).toBe(2);
+            expect(index.set.calls.count()).toBe(0);
+
+            expect(enUS).toBe(anotherEnUS);
+            expect(frFR).toBe(anotherFrFR);
+        });
+
+        describe('with an invalid locale', () => { });
+
+        describe('with the "en" locale', () => {
+            it('returns a Formatter object with the correct language, locale, and region', () => {
+                expect(en.language).toBe('en');
+                expect(en.locale).toBe('en');
+                expect(en.region).toBeNull();
+            });
+        });
+
+        describe('with the "en-US" locale', () => {
+            it('returns a Formatter object with the correct language, locale, and region', () => {
+                expect(enUS.language).toBe('en');
+                expect(enUS.locale).toBe('en-US');
+                expect(enUS.region).toBe('US');
+            });
+        });
+
+        describe('with the "fr" locale', () => {
+            it('returns a Formatter object with the correct language, locale, and region', () => {
+                expect(fr.language).toBe('fr');
+                expect(fr.locale).toBe('fr');
+                expect(fr.region).toBeNull();
+            });
+        });
+
+        describe('with the "fr-FR" locale', () => {
+            it('returns a Formatter object with the correct language, locale, and region', () => {
+                expect(frFR.language).toBe('fr');
+                expect(frFR.locale).toBe('fr-FR');
+                expect(frFR.region).toBe('FR');
+            });
         });
     });
 
@@ -118,19 +202,19 @@ describe('Format.Formatter', () => {
     });
 
     describe('_culture', () => {
-        it('returns the correct value for invariant, neutral and region-specific objects', () => {
-            expect(invariant._culture).toBe(Formatter._invariantCulture);
-            expect(en._culture).toBe(Formatter._invariantCulture);
-            expect(enUS._culture).toBe(Formatter._invariantCulture);
-            expect(fr._culture).toBe(Formatter._invariantCulture);
-            expect(frFR._culture).toBe(Formatter._invariantCulture);
+        it('returns an empty object for invariant, neutral and region-specific Formatter objects', () => {
+            expect(invariant.culture).toEqual({ });
+            expect(en.culture).toEqual({ });
+            expect(enUS.culture).toEqual({ });
+            expect(fr.culture).toEqual({ });
+            expect(frFR.culture).toEqual({ });
         });
     });
 
-    describe('_initialized', () => { });
+    describe('initialized', () => { });
 
     describe('language', () => {
-        it('returns the correct value for invariant, neutral and region-specific objects', () => {
+        it('returns the expected value for invariant, neutral and region-specific Formatter objects', () => {
             expect(invariant.language).toBeNull();
             expect(en.language).toBe('en');
             expect(enUS.language).toBe('en');
@@ -140,7 +224,7 @@ describe('Format.Formatter', () => {
     });
 
     describe('locale', () => {
-        it('returns the correct value for invariant, neutral and region-specific objects', () => {
+        it('returns the expected value for invariant, neutral and region-specific Formatter objects', () => {
             expect(invariant.locale).toBe('');
             expect(en.locale).toBe('en');
             expect(enUS.locale).toBe('en-US');
@@ -150,7 +234,7 @@ describe('Format.Formatter', () => {
     });
 
     describe('region', () => {
-        it('returns the correct value for invariant, neutral and region-specific objects', () => {
+        it('returns the expected value for invariant, neutral and region-specific Formatter objects', () => {
             expect(invariant.region).toBeNull();
             expect(en.region).toBeNull();
             expect(enUS.region).toBe('US');

@@ -4,21 +4,10 @@
 class Is {
 
     constructor(ref) {
-        this._.ref = ref;
+        this._ref = ref;
     }
 
     //#region Properties
-
-    /**
-     * A dictionary that contains the collective state of an Is instance.
-     *
-     * @private
-     *
-     * @returns { Object }
-     */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
-    }
 
     get aBoolean() {
         return this.a(Boolean);
@@ -57,11 +46,11 @@ class Is {
     }
 
     get aNonEmptyArray() {
-        return this.anArray && !!this._ref.length;
+        return this.anArray && !!this.ref.length;
     }
 
     get aNonEmptyString() {
-        return this.aString && !!this._ref.trim();
+        return this.aString && !!this.ref.trim();
     }
 
     get aNumber() {
@@ -92,8 +81,11 @@ class Is {
         return this.a(null);
     }
 
-    get _ref() {
-        return this._.ref;
+    /**
+     * @private
+     */
+    get ref() {
+        return this._ref;
     }
 
     get undefined() {
@@ -106,7 +98,7 @@ class Is {
 
     a(T) {
         let result = false;
-        const TRefName = /^\[object (.*)\]$/.exec(Object.prototype.toString.call(this._ref))[1];
+        const TRefName = /^\[object (.*)\]$/.exec(Object.prototype.toString.call(this.ref))[1];
 
         switch (T) {
             case undefined:
@@ -138,8 +130,8 @@ class Is {
                 break;
 
             case HTMLElement:
-                const windowedHTMLElement = (((this._ref || {}).ownerDocument || {}).defaultView || {}).HTMLElement;
-                result = !!windowedHTMLElement && this._ref instanceof windowedHTMLElement;
+                const windowedHTMLElement = (((this.ref || {}).ownerDocument || {}).defaultView || {}).HTMLElement;
+                result = !!windowedHTMLElement && this.ref instanceof windowedHTMLElement;
                 break;
 
             case Function:
@@ -151,7 +143,7 @@ class Is {
                 break;
 
             case Number:
-                result = TRefName === 'Number' && !isNaN(this._ref);
+                result = TRefName === 'Number' && !isNaN(this.ref);
                 break;
 
             case RegExp:
@@ -174,9 +166,9 @@ class Is {
                 const TName = /^\[object (.*)\]$/.exec(Object.prototype.toString.call(T))[1];
 
                 if (TName === 'Number' && isNaN(T))
-                    result = TRefName === 'Number' && isNaN(this._ref);
+                    result = TRefName === 'Number' && isNaN(this.ref);
                 else
-                    result = this._ref instanceof T;
+                    result = this.ref instanceof T;
 
                 break;
         }
@@ -185,14 +177,14 @@ class Is {
     }
 
     anArrayOfLength(length) {
-        return this.anArray && this._ref.length === length;
+        return this.anArray && this.ref.length === length;
     }
 
     aTypeOf(T) {
         let result = false;
 
-        if (typeof T === 'function' && !(result = (T === this._ref)) && !(result = T.isPrototypeOf(this._ref))) {
-            let proto = this._ref;
+        if (typeof T === 'function' && !(result = (T === this.ref)) && !(result = T.isPrototypeOf(this.ref))) {
+            let proto = this.ref;
 
             while (typeof proto === 'function') {
                 if ((result = proto === T) || proto === Object)

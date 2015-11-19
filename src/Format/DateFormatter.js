@@ -1,9 +1,7 @@
 import as from '../Runtime/As';
 import is from '../Runtime/Is';
 
-/* jshint ignore:start */
 import Debug from '../Diagnostics/Debug';
-/* jshint ignore:end */
 import Formatter from './Formatter';
 
 /**
@@ -15,67 +13,18 @@ export default class DateFormatter extends Formatter {
     //#region Properties
 
     /**
-     * Gets the collective state of the DateFormatter class.
-     *
-     * @private
-     * @static
-     *
-     * @returns { !Object }
-     *      A dictionary containing the collective state of the DateFormatter class.
-     */
-    static get _() {
-        return DateFormatter.__ || (DateFormatter.__ = Object.create(null));
-    }
-
-    /**
-     * Gets a list of memory-cached DateFormatter objects indexed by locale.
-     *
-     * @private
-     * @static
-     *
-     * @returns { !Map.<!String, !DateFormatter> }
-     *      A Map containing DateFormatter objects by locale. The Map returned by this property is
-     *      empty to start and is intended to be populated by private APIs as locale-unique DateFormatter
-     *      objects are initialized. Because DateFormatter objects are immutable, this property is
-     *      essentially a memory-optimized backing store where, at most, only one DateFormatter object
-     *      per locale is ever constructed.
-     */
-    static get _cache() {
-        return DateFormatter._.cache || (DateFormatter._.cache = new Map());
-    }
-
-    /**
-     * Asynchronously gets the locale-independent (invariant) DateFormatter object.
-     *
-     * @static
-     * @override
-     *
-     * @returns { !Promise.<!DateFormatter> }
-     *      A Promise of DateFormatter object that is locale-independent (invariant), associated with
-     *      neither a language nor a region. The invariant DateFormatter object will not change its
-     *      format conventions over time which makes it a suitable candidate for canonized Date serialization.
-     *      Because DateFormatter objects are immutable, the same Promise is returned each time this
-     *      property is called.
-     */
-    static get invariant() {
-        return DateFormatter.fromLocale('');
-    }
-
-    /**
      * Gets locale-independent (invariant) format conventions for the DateFormatter class.
      *
-     * @protected
-     * @static
-     * @override
+     * @protected @static @override
      *
      * @returns { !Object }
-     *      An Object containing the the invariant format conventions for the DateFormatter class.
-     *      DateFormatter objects will use these conventions during format operations unless language-
-     *      or region-specific values are declared in one or more locale-aware configuration files.
-     *      The invariant culture returned by this property conforms to 'en-US' format conventions.
+     *      The invariant format conventions for the DateFormatter class. DateFormatter objects will
+     *      apply these conventions during format operations unless language- or region- specific values
+     *      are declared in the associated formatter configuration files. Values may be individually
+     *      overridden. The object returned by this property conforms to 'en-US' format conventions.
      */
-    static get _invariantCulture() {
-        return DateFormatter._.invariantCulture || (DateFormatter._.invariantCulture = {
+    static get invariantCulture() {
+        return DateFormatter._invariantCulture || (DateFormatter._invariantCulture = {
             amPeriod: 'AM',
             pmPeriod: 'PM',
 
@@ -117,28 +66,25 @@ export default class DateFormatter extends Formatter {
     /**
      * TODO
      *
-     * @protected
-     * @static
-     * @override
+     * @public @static @override
      *
      * @returns { !Array.<!T> }
      *      TODO
      */
-    static get _priorityTypes() {
-        return DateFormatter._.priorityTypes || (DateFormatter._.priorityTypes = [Date]);
+    static get priorityTypes() {
+        return DateFormatter._dateFormatterPriorityTypes || (DateFormatter._dateFormatterPriorityTypes = [Date]);
     }
 
     /**
      * TODO
      *
-     * @private
-     * @static
+     * @private @static
      *
      * @returns { !Map.<!String, !Array.<!String>> }
      *      TODO
      */
-    static get _standardFormats() {
-        return DateFormatter._.standardFormats || (DateFormatter._.standardFormats = new Map([
+    static get standardFormats() {
+        return DateFormatter._standardFormats || (DateFormatter._standardFormats = new Map([
             ['d', ['shortDate']],
             ['D', ['wideDate']],
             ['f', ['wideDate', 'shortTime']],
@@ -160,107 +106,63 @@ export default class DateFormatter extends Formatter {
     //#region Methods
 
     /**
-     * Asynchronously gets a DateFormatter object associated with the specified locale.
+     * TODO
      *
-     * @static
-     * @override
+     * @protected @static @override
      *
-     * @param { !String } locale
-     *      A String associated with the format conventions of the DateFormatter object being requested.
-     *      This can either be a region-specific locale (e.g. 'en-US'), a neutral locale (e.g. 'en'),
-     *      or the invariant locale (e.g. '').
-     * @returns { !Promise.<!DateFormatter> }
-     *      A Promise of a DateFormatter object associated with the specified locale. Because DateFormatter
-     *      objects are immutable, the same Promise is returned for if the same locale specified in subsequent
-     *      invocations.
+     * @param { !Object }
+     *      TODO
      */
-    /* jshint ignore:start */
-    static fromLocale(locale) {
-        return async() => {
-            //!!! not thread-safe
-            if (!DateFormatter._cache.has(locale))
-                DateFormatter._cache.set(locale, new DateFormatter(locale));
+    static validate(culture) {
+        Debug.assert(is(culture).anObject);
 
-            const result = DateFormatter._cache.get(locale);
-            await result._initialized;
+        Debug.assert(is(culture.amPeriod).aNonEmptyString);
+        Debug.assert(is(culture.pmPeriod).aNonEmptyString);
 
-            return result;
-        }();
+        Debug.assert(is(culture.dateSeparator).aString);
+        Debug.assert(is(culture.joinSeperator).aString);
+        Debug.assert(is(culture.partSeperator).aString);
+        Debug.assert(is(culture.timeSeperator).aString);
+        Debug.assert(is(culture.wordSeperator).aString);
+
+        Debug.assert(is(culture.firstDayOfWeek).aNumber);
+
+        Debug.assert(is(culture.wideMonthNames).anArrayOfLength(13));
+        Debug.assert(is(culture.mediumMonthNames).anArrayOfLength(13));
+        Debug.assert(is(culture.shortMonthNames).anArrayOfLength(13));
+        Debug.assert(is(culture.narrowMonthNames).anArrayOfLength(13));
+
+        Debug.assert(is(culture.wideDayNames).anArrayOfLength(7));
+        Debug.assert(is(culture.mediumDayNames).anArrayOfLength(7));
+        Debug.assert(is(culture.shortDayNames).anArrayOfLength(7));
+        Debug.assert(is(culture.narrowDayNames).anArrayOfLength(7));
+
+        Debug.assert(is(culture.format).anObject);
+
+        Debug.assert(is(culture.format.dateTime).aNonEmptyString);
+        Debug.assert(is(culture.format.dateTimeGMT).aNonEmptyString);
+
+        Debug.assert(is(culture.format.wideDate).aNonEmptyString);
+        Debug.assert(is(culture.format.mediumDate).aNonEmptyString);
+        Debug.assert(is(culture.format.shortDate).aNonEmptyString);
+
+        Debug.assert(is(culture.format.mediumTime).aNonEmptyString);
+        Debug.assert(is(culture.format.shortTime).aNonEmptyString);
+
+        Debug.assert(is(culture.format.sortable).aNonEmptyString);
+        Debug.assert(is(culture.format.universal).aNonEmptyString);
     }
-    /* jshint ignore:end */
 
     //#endregion
 
     //#endergion
-
-    //#region Disposition
-
-    /**
-     * TODO
-     *
-     * @private
-     *
-     * @param { !String } locale
-     *      TODO
-     */
-    constructor(locale) {
-        super(locale);
-
-        //!!! TODO -> clean up validation by using JSON Schema
-        /* jshint ignore:start */
-        async() => {
-            await this._initialized;
-            const culture = this._culture;
-
-            Debug.assert(is(culture).anObject);
-
-            Debug.assert(is(culture.amPeriod).aNonEmptyString);
-            Debug.assert(is(culture.pmPeriod).aNonEmptyString);
-
-            Debug.assert(is(culture.dateSeparator).aString);
-            Debug.assert(is(culture.joinSeperator).aString);
-            Debug.assert(is(culture.partSeperator).aString);
-            Debug.assert(is(culture.timeSeperator).aString);
-            Debug.assert(is(culture.wordSeperator).aString);
-
-            Debug.assert(is(culture.firstDayOfWeek).aNumber);
-
-            Debug.assert(is(culture.wideMonthNames).anArrayOfLength(13));
-            Debug.assert(is(culture.mediumMonthNames).anArrayOfLength(13));
-            Debug.assert(is(culture.shortMonthNames).anArrayOfLength(13));
-            Debug.assert(is(culture.narrowMonthNames).anArrayOfLength(13));
-
-            Debug.assert(is(culture.wideDayNames).anArrayOfLength(7));
-            Debug.assert(is(culture.mediumDayNames).anArrayOfLength(7));
-            Debug.assert(is(culture.shortDayNames).anArrayOfLength(7));
-            Debug.assert(is(culture.narrowDayNames).anArrayOfLength(7));
-
-            Debug.assert(is(culture.format).anObject);
-
-            Debug.assert(is(culture.format.dateTime).aNonEmptyString);
-            Debug.assert(is(culture.format.dateTimeGMT).aNonEmptyString);
-
-            Debug.assert(is(culture.format.wideDate).aNonEmptyString);
-            Debug.assert(is(culture.format.mediumDate).aNonEmptyString);
-            Debug.assert(is(culture.format.shortDate).aNonEmptyString);
-
-            Debug.assert(is(culture.format.mediumTime).aNonEmptyString);
-            Debug.assert(is(culture.format.shortTime).aNonEmptyString);
-
-            Debug.assert(is(culture.format.sortable).aNonEmptyString);
-            Debug.assert(is(culture.format.universal).aNonEmptyString);
-        }();
-        /* jshint ignore:end */
-    }
-
-    //#endregion
 
     //#region Methods
 
     /**
      * TODO
      *
-     * @override
+     * @public @override
      *
      * @param { * } ref
      *      TODO
@@ -273,13 +175,13 @@ export default class DateFormatter extends Formatter {
         let result = '';
 
         if ((ref = as(ref).aDate)) {
-            const culture = this._culture;
+            const culture = this.culture;
             const expression = /DDDDD|DDDD|DDD|DD|ddd|dd|MMMMM|MMMM|MMM|MM|mmm|mm|yyyyy|yyy|yy|hhhhh|hhhh|hhh|hh|nnn|nn|sss|ss|apap|ap|ffff|fff|ff|zzz|zz/g;
 
             if (' r R u U '.indexOf(` ${spec} `) >= 0) ref = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate(), ref.getUTCHours(), ref.getUTCMinutes(), ref.getUTCSeconds(), ref.getUTCMilliseconds()));
 
             if (spec.length === 1)
-                spec = (DateFormatter._standardFormats.get(spec) || [])
+                spec = (DateFormatter.standardFormats.get(spec) || [])
                     .map(spec => culture.format[spec])
                     .filter(prop => is(prop).aNonEmptyString)
                     .join(' ');

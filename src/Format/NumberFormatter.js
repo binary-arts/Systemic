@@ -1,80 +1,30 @@
 import as from '../Runtime/As';
-/* jshint ignore:start */
 import is from '../Runtime/Is';
-/* jshint ignore:end */
 
-/* jshint ignore:start */
 import Debug from '../Diagnostics/Debug';
-/* jshint ignore:end */
 import Formatter from './Formatter';
 
+/**
+ * TODO
+ */
 export default class NumberFormatter extends Formatter {
     //#region Type
 
     //#region Properties
 
     /**
-     * Gets the collective state of the NumberFormatter class.
-     *
-     * @private
-     * @static
-     *
-     * @returns { !Object }
-     *      A dictionary containing the collective state of the NumberFormatter class.
-     */
-    static get _() {
-        return NumberFormatter.__ || (NumberFormatter.__ = Object.create(null));
-    }
-
-    /**
-     * Gets a list of memory-cached NumberFormatter objects indexed by locale.
-     *
-     * @private
-     * @static
-     *
-     * @returns { !Map.<!String, !NumberFormatter> }
-     *      A Map containing NumberFormatter objects by locale. The Map returned by this property is
-     *      empty to start and is intended to be populated by private APIs as locale-unique NumberFormatter
-     *      objects are initialized. Because NumberFormatter objects are immutable, this property is
-     *      essentially a memory-optimized backing store where, at most, only one NumberFormatter object
-     *      per locale is ever constructed.
-     */
-    static get _cache() {
-        return NumberFormatter._.cache || (NumberFormatter._.cache = new Map());
-    }
-
-    /**
-     * Asynchronously gets the locale-independent (invariant) NumberFormatter object.
-     *
-     * @static
-     * @override
-     *
-     * @returns { !Promise.<!NumberFormatter> }
-     *      A Promise of NumberFormatter object that is locale-independent (invariant), associated with
-     *      neither a language nor a region. The invariant NumberFormatter object will not change its
-     *      format conventions over time which makes it a suitable candidate for canonized Number serialization.
-     *      Because NumberFormatter objects are immutable, the same Promise is returned each time this
-     *      property is called.
-     */
-    static get invariant() {
-        return NumberFormatter.fromLocale('');
-    }
-
-    /**
      * Gets locale-independent (invariant) format conventions for the NumberFormatter class.
      *
-     * @protected
-     * @static
-     * @override
+     * @protected @static @override
      *
      * @returns { !Object }
-     *      An Object containing the the invariant format conventions for the NumberFormatter class.
-     *      NumberFormatter objects will use these conventions during format operations unless language-
-     *      or region-specific values are declared in one or more locale-aware configuration files.
-     *      The invariant culture returned by this property conforms to 'en-US' format conventions.
+     *      The invariant format conventions for the NumberFormatter class. NumberFormatter objects
+     *      will apply these conventions during format operations unless language- or region- specific
+     *      values are declared in the associated formatter configuration files. Values may be individually
+     *      overridden. The object returned by this property conforms to 'en-US' format conventions.
      */
-    static get _invariantCulture() {
-        return NumberFormatter._.invariantCulture || (NumberFormatter._.invariantCulture = {
+    static get invariantCulture() {
+        return NumberFormatter._invariantCulture || (NumberFormatter._invariantCulture = {
             nanSymbol: 'NaN',
             negativeSign: '-',
             positiveSign: '+',
@@ -117,15 +67,13 @@ export default class NumberFormatter extends Formatter {
     /**
      * TODO
      *
-     * @protected
-     * @static
-     * @override
+     * @public @static @override
      *
      * @returns { !Array.<!T> }
      *      TODO
      */
-    static get _priorityTypes() {
-        return NumberFormatter._.priorityTypes || (NumberFormatter._.priorityTypes = [Number]);
+    static get priorityTypes() {
+        return NumberFormatter._numberFormatterPriorityTypes || (NumberFormatter._numberFormatterPriorityTypes = [Number]);
     }
 
     //#endregion
@@ -133,40 +81,9 @@ export default class NumberFormatter extends Formatter {
     //#region Methods
 
     /**
-     * Asynchronously gets a NumberFormatter object associated with the specified locale.
-     *
-     * @static
-     * @override
-     *
-     * @param { !String } locale
-     *      A String associated with the format conventions of the NumberFormatter object being requested.
-     *      This can either be a region-specific locale (e.g. 'en-US'), a neutral locale (e.g. 'en'),
-     *      or the invariant locale (e.g. '').
-     * @returns { !Promise.<!DateFormatter> }
-     *      A Promise of a NumberFormatter object associated with the specified locale. Because NumberFormatter
-     *      objects are immutable, the same Promise is returned for if the same locale specified in subsequent
-     *      invocations.
-     */
-    /* jshint ignore:start */
-    static fromLocale(locale) {
-        return async() => {
-            //!!! not thread-safe
-            if (!NumberFormatter._cache.has(locale))
-                NumberFormatter._cache.set(locale, new NumberFormatter(locale));
-
-            const result = NumberFormatter._cache.get(locale);
-            await result._initialized;
-
-            return result;
-        }();
-    }
-    /* jshint ignore:end */
-
-    /**
      * TODO
      *
-     * @private
-     * @static
+     * @private @static
      *
      * @param { !String } ref
      *      TODO
@@ -181,7 +98,7 @@ export default class NumberFormatter extends Formatter {
      * @returns { !String }
      *      TODO
      */
-    static _subFormat(ref, negativeSign, groupSizes, decimal, group) {
+    static subFormat(ref, negativeSign, groupSizes, decimal, group) {
         let result = '';
 
         const isNegative = ref.startsWith(negativeSign);
@@ -238,77 +155,67 @@ export default class NumberFormatter extends Formatter {
 
     //#endregion
 
-    //#endergion
-
-    //#region Disposition
+    //#region Methods
 
     /**
      * TODO
      *
-     * @private
+     * @protected @static @override
      *
-     * @param { !String } locale
+     * @param { !Object }
      *      TODO
      */
-    constructor(locale) {
-        super(locale);
+    static validate(culture) {
+        Debug.assert(is(culture).anObject);
 
-        //!!! TODO -> clean up validation by using JSON Schema
-        /* jshint ignore:start */
-        async() => {
-            await this._initialized;
-            const culture = this._culture;
+        Debug.assert(is(culture.nanSymbol).aNonEmptyString);
+        Debug.assert(is(culture.negativeSign).aNonEmptyString);
+        Debug.assert(is(culture.positiveSign).aNonEmptyString);
+        Debug.assert(is(culture.negativeInfinity).aNonEmptyString);
+        Debug.assert(is(culture.positiveInfinity).aNonEmptyString);
 
-            Debug.assert(is(culture).anObject);
+        Debug.assert(is(culture.groupSizes).aNonEmptyArray);
+        Debug.assert(is(culture.precision).aNumber);
+        Debug.assert(is(culture.decimal).aNonEmptyString);
+        Debug.assert(is(culture.group).aNonEmptyString);
 
-            Debug.assert(is(culture.nanSymbol).aNonEmptyString);
-            Debug.assert(is(culture.negativeSign).aNonEmptyString);
-            Debug.assert(is(culture.positiveSign).aNonEmptyString);
-            Debug.assert(is(culture.negativeInfinity).aNonEmptyString);
-            Debug.assert(is(culture.positiveInfinity).aNonEmptyString);
+        Debug.assert(is(culture.percent).anObject);
 
-            Debug.assert(is(culture.groupSizes).aNonEmptyArray);
-            Debug.assert(is(culture.precision).aNumber);
-            Debug.assert(is(culture.decimal).aNonEmptyString);
-            Debug.assert(is(culture.group).aNonEmptyString);
+        Debug.assert(is(culture.percent.symbol).aNonEmptyString);
+        Debug.assert(is(culture.percent.groupSizes).aNonEmptyArray);
+        Debug.assert(is(culture.percent.precision).aNumber);
+        Debug.assert(is(culture.percent.decimal).aNonEmptyString);
+        Debug.assert(is(culture.percent.group).aNonEmptyString);
 
-            Debug.assert(is(culture.percent).anObject);
+        Debug.assert(is(culture.percent.format).anObject);
 
-            Debug.assert(is(culture.percent.symbol).aNonEmptyString);
-            Debug.assert(is(culture.percent.groupSizes).aNonEmptyArray);
-            Debug.assert(is(culture.percent.precision).aNumber);
-            Debug.assert(is(culture.percent.decimal).aNonEmptyString);
-            Debug.assert(is(culture.percent.group).aNonEmptyString);
+        Debug.assert(is(culture.percent.format.positive).aNonEmptyString);
+        Debug.assert(is(culture.percent.format.negative).aNonEmptyString);
 
-            Debug.assert(is(culture.percent.format).anObject);
+        Debug.assert(is(culture.currency).anObject);
 
-            Debug.assert(is(culture.percent.format.positive).aNonEmptyString);
-            Debug.assert(is(culture.percent.format.negative).aNonEmptyString);
+        Debug.assert(is(culture.currency.symbol).aNonEmptyString);
+        Debug.assert(is(culture.currency.groupSizes).aNonEmptyArray);
+        Debug.assert(is(culture.currency.precision).aNumber);
+        Debug.assert(is(culture.currency.decimal).aNonEmptyString);
+        Debug.assert(is(culture.currency.group).aNonEmptyString);
 
-            Debug.assert(is(culture.currency).anObject);
+        Debug.assert(is(culture.currency.format).anObject);
 
-            Debug.assert(is(culture.currency.symbol).aNonEmptyString);
-            Debug.assert(is(culture.currency.groupSizes).aNonEmptyArray);
-            Debug.assert(is(culture.currency.precision).aNumber);
-            Debug.assert(is(culture.currency.decimal).aNonEmptyString);
-            Debug.assert(is(culture.currency.group).aNonEmptyString);
-
-            Debug.assert(is(culture.currency.format).anObject);
-
-            Debug.assert(is(culture.currency.format.negative).aNonEmptyString);
-            Debug.assert(is(culture.currency.format.positive).aNonEmptyString);
-        }();
-        /* jshint ignore:end */
+        Debug.assert(is(culture.currency.format.negative).aNonEmptyString);
+        Debug.assert(is(culture.currency.format.positive).aNonEmptyString);
     }
 
     //#endregion
+
+    //#endergion
 
     //#region Methods
 
     /**
      * TODO
      *
-     * @override
+     * @public @override
      *
      * @param { * } ref
      *      TODO
