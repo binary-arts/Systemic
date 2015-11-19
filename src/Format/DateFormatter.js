@@ -64,8 +64,9 @@ export default class DateFormatter extends Formatter {
     /**
      * Gets locale-independent (invariant) format conventions for the DateFormatter class.
      *
-     * @private
+     * @protected
      * @static
+     * @override
      *
      * @returns { !Object }
      *      An Object containing the the invariant format conventions for the DateFormatter class.
@@ -203,7 +204,7 @@ export default class DateFormatter extends Formatter {
      *      TODO
      */
     constructor(locale) {
-        super(DateFormatter._invariantCulture, locale);
+        super(locale);
 
         //!!! TODO -> clean up validation by using JSON Schema
         /* jshint ignore:start */

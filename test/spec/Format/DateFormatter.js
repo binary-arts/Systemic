@@ -22,8 +22,9 @@ describe('Format.DateFormatter', () => {
         res.rootPath = 'base/test';
 
         async() => {
-            [invariant1, enUS1, frFR1] = await Promise.all([
-                DateFormatter.invariant,
+            invariant1 = await DateFormatter.invariant;
+
+            [enUS1, frFR1] = await Promise.all([
                 DateFormatter.fromLocale('en-US'),
                 DateFormatter.fromLocale('fr-FR'),
             ]);

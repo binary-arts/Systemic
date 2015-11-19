@@ -4,25 +4,43 @@ import Exception from 'src/Runtime/Exception';
 import Formatter from 'src/Format/Formatter';
 
 describe('Format.Formatter', () => {
+    let rootPath;
     let invariant;
     let en;
     let enUS;
     let fr;
     let frFR;
 
-    let rootPath;
-
-    beforeAll(() => {
+    /*jshint ignore:start */
+    beforeAll(resume => {
         //!!! TODO -> use jasmine spys to mock an accessor property
         rootPath = res.rootPath;
         res.rootPath = 'base/test';
 
-        invariant = new Formatter({ name: 'Invariant' }, '');
-        en = new Formatter({ name: 'English' }, 'en');
-        enUS = new Formatter({ name: 'English (United States)' }, 'en-US');
-        fr = new Formatter({ name: 'French' }, 'fr');
-        frFR = new Formatter({ name: 'French (France)' }, 'fr-FR');
+        async() => {
+            invariant = new Formatter('');
+            await invariant._initialized;
+
+            en = new Formatter('en');
+            fr = new Formatter('fr');
+
+            await Promise.all([
+                en._initialized,
+                fr._initialized
+            ]);
+
+            enUS = new Formatter('en-US');
+            frFR = new Formatter('fr-FR');
+
+            await Promise.all([
+                enUS._initialized,
+                frFR._initialized
+            ]);
+
+            resume();
+        }();
     });
+    /*jshint ignore:end */
 
     afterAll(() => {
         res.rootPath = rootPath;
@@ -37,6 +55,16 @@ describe('Format.Formatter', () => {
             catch (ex) { error = ex; }
 
             expect(error).toEqual(jasmine.objectContaining({ message: Exception.abstractMemberInvocation.message }));
+        });
+    });
+
+    describe('_invariantCulture', () => {
+        it('returns an empty object', () => {
+            expect(Formatter._invariantCulture).toEqual({ });
+        });
+
+        it('returns the same value on subsequent invocations', () => {
+            expect(Formatter._invariantCulture).toBe(Formatter._invariantCulture);
         });
     });
 
@@ -90,38 +118,16 @@ describe('Format.Formatter', () => {
     });
 
     describe('_culture', () => {
-        let invariantCulture;
-        let enCulture;
-        let enUSCulture;
-        let frCulture;
-        let frFRCulture;
-
-        /*jshint ignore:start */
-        beforeAll(resume => {
-            async() => {
-                [invariantCulture, enCulture, enUSCulture, frCulture, frFRCulture] = await Promise.all([
-                    invariant._culture,
-                    en._culture,
-                    enUS._culture,
-                    fr._culture,
-                    frFR._culture
-                ]);
-
-                resume();
-            }();
-        });
-        /*jshint ignore:end */
-
         it('returns the correct value for invariant, neutral and region-specific objects', () => {
-            expect(invariantCulture.name).toBe('Invariant');
-            expect(enCulture.name).toBe('English');
-            expect(enUSCulture.name).toBe('English (United States)');
-            expect(frCulture.name).toBe('French');
-            expect(frFRCulture.name).toBe('French (France)');
+            expect(invariant._culture).toBe(Formatter._invariantCulture);
+            expect(en._culture).toBe(Formatter._invariantCulture);
+            expect(enUS._culture).toBe(Formatter._invariantCulture);
+            expect(fr._culture).toBe(Formatter._invariantCulture);
+            expect(frFR._culture).toBe(Formatter._invariantCulture);
         });
     });
 
-    describe('initialized', () => { });
+    describe('_initialized', () => { });
 
     describe('language', () => {
         it('returns the correct value for invariant, neutral and region-specific objects', () => {

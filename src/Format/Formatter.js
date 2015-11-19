@@ -1,3 +1,6 @@
+/* jshint ignore:start */
+import is from '../Runtime/Is';
+/* jshint ignore:end */
 import as from '../Runtime/As';
 import res from '../Runtime/Res';
 
@@ -24,6 +27,22 @@ export default class Formatter {
      */
     static get invariant() {
         throw Exception.abstractMemberInvocation;
+    }
+
+    /**
+     * Gets locale-independent (invariant) format conventions for the Formatter class.
+     *
+     * @protected
+     * @static
+     * @virtual
+     *
+     * @returns { !Object }
+     *      An Object containing the the invariant format conventions for the Formatter class.
+     *      Formatter objects will use these conventions during format operations unless language-
+     *      or region-specific values are declared in one or more locale-aware configuration files.
+     */
+    static get _invariantCulture() {
+        return Formatter.__invariantCulture || (Formatter.__invariantCulture = {});
     }
 
     /**
@@ -93,20 +112,26 @@ export default class Formatter {
      * @param { !String } locale
      *      TODO
      */
-    constructor(invariantCulture, locale) {
+    constructor(locale) {
+        const TFormatter = this.constructor;
         const resource = res(locale);
 
         this._.language = resource.language;
         this._.locale = resource.locale;
         this._.region = resource.region;
-        this._.culture = invariantCulture;
+        this._.culture = TFormatter._invariantCulture;
 
         /* jshint ignore:start */
         this._.initialized = async() => {
-            //!!! TODO -> pass the name of the computed constructed type (minus the formatter part) to the following
-            //!!! TODO -> once determined how to get the caller, invoke the invariant culture directly instead of by passing in as ctor arg
-            if (!resource.isInvariant)
-                this._.culture = await resource.get('Date').then(culture => res.merge(culture, this._.culture));
+            if (!resource.isInvariant) {
+                let name = TFormatter.name;
+
+                if (name.endsWith('Formatter'))
+                    name = name.substr(0, name.length - 9);
+
+                if (is(name).aNonEmptyString)
+                    this._.culture = await resource.get(name).then(culture => res.merge(culture, this._.culture));
+            }
         }();
         /* jshint ignore:end */
     }

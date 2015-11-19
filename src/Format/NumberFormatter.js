@@ -63,8 +63,9 @@ export default class NumberFormatter extends Formatter {
     /**
      * Gets locale-independent (invariant) format conventions for the NumberFormatter class.
      *
-     * @private
+     * @protected
      * @static
+     * @override
      *
      * @returns { !Object }
      *      An Object containing the the invariant format conventions for the NumberFormatter class.
@@ -250,7 +251,7 @@ export default class NumberFormatter extends Formatter {
      *      TODO
      */
     constructor(locale) {
-        super(NumberFormatter._invariantCulture, locale);
+        super(locale);
 
         //!!! TODO -> clean up validation by using JSON Schema
         /* jshint ignore:start */
