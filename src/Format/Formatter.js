@@ -1,7 +1,7 @@
 import as from '../Runtime/As';
+import res from '../Runtime/Res';
 
 import Exception from '../Runtime/Exception';
-import Resource from '../Resource';
 
 /**
  * TODO
@@ -94,7 +94,7 @@ export default class Formatter {
      *      TODO
      */
     constructor(invariantCulture, locale) {
-        const resource = Resource.fromLocale(locale);
+        const resource = res(locale);
 
         this._.language = resource.language;
         this._.locale = resource.locale;
@@ -104,10 +104,9 @@ export default class Formatter {
         /* jshint ignore:start */
         this._.initialized = async() => {
             //!!! TODO -> pass the name of the computed constructed type (minus the formatter part) to the following
+            //!!! TODO -> once determined how to get the caller, invoke the invariant culture directly instead of by passing in as ctor arg
             if (!resource.isInvariant)
-                this._.culture = await resource
-                    .get('Date')
-                    .then(culture => Resource.merge(culture, this._.culture));
+                this._.culture = await resource.get('Date').then(culture => res.merge(culture, this._.culture));
         }();
         /* jshint ignore:end */
     }

@@ -24,7 +24,7 @@ module.exports = function(grunt) {
 
     var file = {
         babelRuntime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/external-helpers.js'),
-        es6Runtime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
+        es7Runtime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
         out: {
             debug: Path.join(dir.work, pkg.name + '.js'),
             min: Path.join(dir.work, pkg.name + '.min.js')
@@ -117,7 +117,7 @@ module.exports = function(grunt) {
                         { pattern: files.spec, included: false },
                         { pattern: files.specres, included: false },
                         { pattern: files.specdep, included: false },
-                        { pattern: file.es6Runtime, included: true },
+                        { pattern: file.es7Runtime, included: true },
                         { pattern: file.babelRuntime, included: true },
                         { pattern: 'test/Systemic.js', included: true }
                     ],
@@ -156,7 +156,7 @@ module.exports = function(grunt) {
                         jquery: 'empty:'
                     },
                     wrap: {
-                        start: grunt.file.read(file.es6Runtime) + '\n' + grunt.file.read(file.babelRuntime) + '\n'
+                        start: grunt.file.read(file.es7Runtime) + '\n' + grunt.file.read(file.babelRuntime) + '\n'
                     }
                 }
             }

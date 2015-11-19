@@ -1,7 +1,8 @@
 //!!! TODO -> fix tests that are time-zone dependant (usine Jasmine date mocking)
 
+import res from 'src/Runtime/Res';
+
 import DateFormatter from 'src/Format/DateFormatter';
-import Resource from 'src/Resource';
 
 const date = new Date(Date.parse('June 1, 1977 9:04:02 PM'));
 
@@ -17,8 +18,8 @@ describe('Format.DateFormatter', () => {
     /*jshint ignore:start */
     beforeAll(resume => {
         //!!! TODO -> use jasmine spys to mock an accessor property
-        rootPath = Resource.rootPath;
-        Resource.rootPath = 'base/test';
+        rootPath = res.rootPath;
+        res.rootPath = 'base/test';
 
         async() => {
             [invariant1, enUS1, frFR1] = await Promise.all([
@@ -39,7 +40,7 @@ describe('Format.DateFormatter', () => {
     /*jshint ignore:end */
 
     afterAll(() => {
-        Resource.rootPath = rootPath;
+        res.rootPath = rootPath;
     });
 
     describe('_cache', () => { });

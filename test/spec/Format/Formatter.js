@@ -1,6 +1,7 @@
-﻿import Exception from 'src/Runtime/Exception';
+﻿import res from 'src/Runtime/Res';
+
+import Exception from 'src/Runtime/Exception';
 import Formatter from 'src/Format/Formatter';
-import Resource from 'src/Resource';
 
 describe('Format.Formatter', () => {
     let invariant;
@@ -13,8 +14,8 @@ describe('Format.Formatter', () => {
 
     beforeAll(() => {
         //!!! TODO -> use jasmine spys to mock an accessor property
-        rootPath = Resource.rootPath;
-        Resource.rootPath = 'base/test';
+        rootPath = res.rootPath;
+        res.rootPath = 'base/test';
 
         invariant = new Formatter({ name: 'Invariant' }, '');
         en = new Formatter({ name: 'English' }, 'en');
@@ -24,7 +25,7 @@ describe('Format.Formatter', () => {
     });
 
     afterAll(() => {
-        Resource.rootPath = rootPath;
+        res.rootPath = rootPath;
     });
 
     describe('invariant', () => {

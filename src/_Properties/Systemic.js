@@ -18,5 +18,3 @@ import '../Runtime/Exception';
 import '../Runtime/Format';
 import '../Runtime/Is';
 import '../Runtime/Res';
-
-import '../Resource';
