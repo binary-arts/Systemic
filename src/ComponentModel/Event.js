@@ -3,6 +3,9 @@ import is from '../Runtime/Is';
 import Debug from '../Diagnostics/Debug';
 import Subscription from './Subscription';
 
+/**
+ * TODO
+ */
 export default class Event {
 
     constructor(source) {

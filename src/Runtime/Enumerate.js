@@ -3,6 +3,9 @@
 
 import is from './Is';
 
+/**
+ * TODO
+ */
 class Enumerate {
 
     //#region Type

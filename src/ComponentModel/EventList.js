@@ -3,6 +3,9 @@ import is from '../Runtime/Is';
 import Debug from '../Diagnostics/Debug';
 import Event from './Event';
 
+/**
+ * TODO
+ */
 export default class EventList {
 
     constructor(source) {

@@ -16,8 +16,8 @@ module.exports = function(grunt) {
             node: 'node_modules'
         },
         spec: 'test/spec',
-        specculture: 'test/culture',
         specdep: 'test/lib',
+        specres: 'test/res',
         src: 'src',
         work: 'obj',
     };
@@ -34,8 +34,8 @@ module.exports = function(grunt) {
     var files = {
         src: Path.join(dir.src, '**/*.js'),
         spec: Path.join(dir.spec, '**/*.js'),
-        specculture: Path.join(dir.specculture, '**/*.json'),
         specdep: Path.join(dir.specdep, '**/*.js'),
+        specres: Path.join(dir.specres, '**/*.json'),
         work: Path.join(dir.work, '**/*.js')
     };
 
@@ -115,7 +115,7 @@ module.exports = function(grunt) {
                     files: [
                         { pattern: files.src, included: false },
                         { pattern: files.spec, included: false },
-                        { pattern: files.specculture, included: false },
+                        { pattern: files.specres, included: false },
                         { pattern: files.specdep, included: false },
                         { pattern: file.es6Runtime, included: true },
                         { pattern: file.babelRuntime, included: true },

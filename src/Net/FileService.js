@@ -5,12 +5,20 @@ import is from '../Runtime/Is';
 
 import Exception from '../Runtime/Exception';
 
+/**
+ * TODO
+ */
 export default class FileService {
 
     //#region Dispositon
 
+    /**
+     * As a static (singleton) class, FileService defines a constructor that is not intended to be
+     * called. The constructor is explicitly defined so that attempts to initialize a FileService
+     * object will result in an exception.
+     */
     constructor() {
-        throw Exception.create('Cannot invoke the constructor function of a static class.');
+        throw Exception.staticClassConstructorInvocation;
     }
 
     //#endregion

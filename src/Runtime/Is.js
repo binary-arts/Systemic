@@ -1,7 +1,9 @@
+/**
+ * TODO
+ */
 class Is {
 
     constructor(ref) {
-        //init
         this._.ref = ref;
     }
 
@@ -11,6 +13,7 @@ class Is {
      * A dictionary that contains the collective state of an Is instance.
      *
      * @private
+     *
      * @returns { Object }
      */
     get _() {
@@ -181,6 +184,10 @@ class Is {
         return result;
     }
 
+    anArrayOfLength(length) {
+        return this.anArray && this._ref.length === length;
+    }
+
     aTypeOf(T) {
         let result = false;
 
@@ -205,14 +212,10 @@ class Is {
 
 }
 
-//#region Initializer
-
 (function(global) {
     /* jshint sub:true */
     global.HTMLDocument = global['HTMLDocument'] || global.Document;
     /* jshint sub:false */
 })(typeof global === 'undefined' ? self : global);
-
-//#endregion
 
 export default ref => new Is(ref);

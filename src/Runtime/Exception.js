@@ -1,29 +1,71 @@
-﻿export default class Exception {
+﻿/**
+ * TODO
+ */
+export default class Exception {
 
+    //#region Disposition
+
+    /**
+     * As a static (singleton) class, Exception defines a constructor that is not intended to be called.
+     * The constructor is explicitly defined so that attempts to initialize an Exception object will
+     * result in an exception.
+     */
     constructor() {
-        throw this.create('Cannot invoke the constructor function of a static class.');
+        throw Exception.staticClassConstructorInvocation;
     }
+
+    //#endregion
+
+    //#region Properties
+
+    /**
+     * TODO
+     *
+     * @static
+     *
+     * @returns { !Error }
+     *      A JavaScript Error.
+     */
+    static get abstractMemberInvocation() {
+        return Exception.create('Cannot invoke an abstract member.', { stackFrameIndex: 1 });
+    }
+
+    /**
+     * TODO
+     *
+     * @static
+     *
+     * @returns { !Error }
+     *      A JavaScript Error.
+     */
+    static get staticClassConstructorInvocation() {
+        return Exception.create('Cannot invoke the constructor function of a static class.', { stackFrameIndex: 1 });
+    }
+
+    //#endregion
 
     //#region Methods
 
-    /// <summary>
-    ///     Initialzies a new JavaScript Error extended with an explicit message property, user-augmented properties, an
-    ///     inner error, an error classification code, an objectified stack trace and a packed and serialized description
-    ///     which can be used in uncaught error handler methods.
-    /// </summary>
-    /// <param name="message" type="String" mayBeNull="true" default="'Unspecified error.'">
-    ///     A description of the error.
-    /// </param>
-    /// <param name="options" type="Object" mayBeNull="true" optional="true" default="null" value="Object.create(null, { data: { value: {} }, innerError: { value: new Error() }, number: { value: 0 }, stackFrameIndex: { value: 0 } })">
-    ///     An object used to configure properties of the error. {pname_1} can include any combination of the following:
-    ///     (1) data, an object that provides supplementary information relative to the error; properties of the data property are
-    ///     copied directly to the error; (2) innerError, an error that is the cause of this error with a default value of null;
-    ///     (3) number, a number that classifies the error type with a default value of 0; and (4) stackFrameIndex, a count
-    ///     of stack frames above the caller at which to initialize the objectified stack trace at with a default value of 0.
-    /// </param>
-    /// <returns type="Error">
-    ///     A JavaScript Error.
-    /// </returns>
+    /**
+     * Initialzies a new JavaScript Error extended with an explicit message property, user-augmented
+     * properties, an inner error, an error classification code, an objectified stack trace and a packed
+     * and serialized description which can be used in uncaught error handler methods.
+     *
+     * @static
+     *
+     * @param { ?String } message='Unspecified error.'
+     *      A description of the error.
+     * @param { ?Object } [options={ data: {}, innorError: new Error(), number: 0, stackFrameIndex: 0 }]
+     *      An object used to configure properties of the error. {pname_1} can include any combination
+     *      of the following: (1) data, an object that provides supplementary information relative
+     *      to the error; properties of the data property are copied directly to the error; (2) innerError,
+     *      an error that is the cause of this error with a default value of null; (3) number, a
+     *      number that classifies the error type with a default value of 0; and (4) stackFrameIndex,
+     *      a count of stack frames above the caller at which to initialize the objectified stack trace
+     *      at with a default value of 0.
+     * @returns { !Error }
+     *      A JavaScript Error.
+     */
     static create(message, options) {
         //argument coercion
         options = typeof options === 'object' ? options : {};
@@ -113,12 +155,22 @@
         return ex;
     }
 
-    /// <summary />
-    /// <param name="value" type="String" mayBeNull="true" default="Unclassified script error." />
-    /// <param name="url" type="String" mayBeNull="true" optional="true" default="null" />
-    /// <param name="line" type="Number" mayBeNull="true" optional="true" default="null" />
-    /// <param name="column" type="Number" mayBeNull="true" optional="true" default="null" />
-    /// <returns type="Error">
+    /**
+     * TODO
+     *
+     * @static
+     *
+     * @param { ?String } value='Unclassified script error.'
+     *      TODO
+     * @param { ?String } [url=null]
+     *      TODO
+     * @param { ?Number } [line=null]
+     *      TODO
+     * @param { ?Number } [column=null]
+     *      TODO
+     * @returns { Error }
+     *      TODO
+     */
     static deserialize(value, url, line, column) {
         if (typeof value !== 'string' || !value) value = 'Unclassified script error.';
 

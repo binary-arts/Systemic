@@ -1,10 +1,22 @@
 ﻿import Exception from '../Runtime/Exception';
 
+/**
+ * TODO
+ */
 export default class Debug {
 
+    //#region Disposition
+
+    /**
+     * As a static (singleton) class, Debug defines a constructor that is not intended to be called.
+     * The constructor is explicitly defined so that attempts to initialize a Debug object will result
+     * in an exception.
+     */
     constructor() {
-        throw Exception.create('Cannot invoke the constructor function of a static class.');
+        throw Exception.staticClassConstructorInvocation;
     }
+
+    //#endregion
 
     //#region Methods
 
@@ -16,7 +28,7 @@ export default class Debug {
      *
      * @param { * } [condition]
      *      A conditional expression to evaluate. If the expression is truthy, no warning is logged.
-     * @param { String } [message='An assertion failed.']
+     * @param { ?String } [message='An assertion failed.']
      *      A message to describe the warning if condition is false.
      */
     static assert(condition, message) {

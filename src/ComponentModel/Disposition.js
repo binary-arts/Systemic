@@ -1,10 +1,21 @@
 import Exception from '../Runtime/Exception';
 
+/**
+ * TODO
+ */
 export default class Disposition {
 
+    //#region Disposition
+
+    /**
+     * As an Enum, Disposition defines a constructor that is not intended to be called. The constructor
+     * is explicitly defined so that attempts to initialize a Disposition Enum will result in an exception.
+     */
     constructor() {
-        throw Exception.create('Cannot invoke the constructor function of a static class.');
+        throw Exception.staticClassConstructorInvocation;
     }
+
+    //#endregion
 
     //#region Properties
 

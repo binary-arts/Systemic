@@ -4,12 +4,14 @@ import is from './Is';
 
 import Debug from '../Diagnostics/Debug';
 
+/**
+ * TODO
+ */
 class As {
 
     //#region Disposition
 
     constructor(ref) {
-        //init
         this._.ref = ref;
     }
 

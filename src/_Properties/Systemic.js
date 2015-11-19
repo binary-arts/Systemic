@@ -6,9 +6,9 @@ import '../ComponentModel/Subscription';
 
 import '../Diagnostics/Debug';
 
-import '../Globalization/Culture';
-import '../Globalization/DateFormatter';
-import '../Globalization/NumberFormatter';
+import '../Format/Formatter';
+import '../Format/DateFormatter';
+import '../Format/NumberFormatter';
 
 import '../Net/FileService';
 
@@ -17,6 +17,6 @@ import '../Runtime/Enumerate';
 import '../Runtime/Exception';
 import '../Runtime/Format';
 import '../Runtime/Is';
+import '../Runtime/Res';
 
-import '../Formatter';
-import '../Tuple';
+import '../Resource';
