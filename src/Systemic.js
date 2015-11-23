@@ -6,10 +6,6 @@ import './ComponentModel/Subscription';
 
 import './Diagnostics/Debug';
 
-import './Format/Formatter';
-import './Format/DateFormatter';
-import './Format/NumberFormatter';
-
 import './Net/FileService';
 
 import './Runtime/As';
@@ -18,3 +14,7 @@ import './Runtime/Exception';
 import './Runtime/Format';
 import './Runtime/Is';
 import './Runtime/Res';
+
+import './Text/Formatter';
+import './Text/DateFormatter';
+import './Text/NumberFormatter';

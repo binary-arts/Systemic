@@ -159,8 +159,8 @@ export default class Formatter {
         /* jshint ignore:start */
         this._initialized = async() => {
             if (!resource.isInvariant) {
+                const baseName = Formatter.name;
                 let name = TFormatter.name;
-                let baseName = Formatter.name;
 
                 if (name.endsWith(baseName))
                     name = name.substr(0, name.length - baseName.length);

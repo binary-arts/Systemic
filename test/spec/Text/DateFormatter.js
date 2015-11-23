@@ -2,9 +2,7 @@
 
 import res from 'src/Runtime/Res';
 
-import DateFormatter from 'src/Format/DateFormatter';
-
-import { standardFormats } from 'src/Format/DateFormatter';
+import DateFormatter from 'src/Text/DateFormatter';
 
 describe('Format.DateFormatter', () => {
     const date = new Date(Date.parse('June 1, 1977 9:04:02 PM'));

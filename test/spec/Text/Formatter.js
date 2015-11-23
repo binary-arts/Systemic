@@ -1,7 +1,7 @@
 ﻿import res from 'src/Runtime/Res';
 
 import Exception from 'src/Runtime/Exception';
-import Formatter from 'src/Format/Formatter';
+import Formatter from 'src/Text/Formatter';
 
 describe('Format.Formatter', () => {
     let rootPath;
