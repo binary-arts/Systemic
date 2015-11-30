@@ -130,9 +130,9 @@ export default class Event {
                 //teardown
                 if (this._handlers) this._handlers.length = 0;
 
-                delete this._handlers;
-                delete this._source;
-                delete this._subscription;
+                Reflect.deleteProperty(this, '_handlers');
+                Reflect.deleteProperty(this, '_source');
+                Reflect.deleteProperty(this, '_subscription');
 
                 //state
                 this._disposed = true;

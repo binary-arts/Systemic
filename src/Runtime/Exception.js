@@ -76,7 +76,7 @@ export default class Exception {
 
         //user-defined data
         if (typeof options.data === 'object') {
-            for (var prop of options.data)
+            for (const prop of options.data)
                 ex[prop] = options.data[prop];
         }
 
@@ -100,11 +100,11 @@ export default class Exception {
             catch (thownEx) { ex = thownEx; }
         }
 
-        let frames = ex
+        const frames = ex
             .stack
             .split('\n');
 
-        let topFrame = frames[0];
+        const topFrame = frames[0];
 
         while (stackFrameIndex-- > 0) frames.shift();
 
@@ -147,7 +147,7 @@ export default class Exception {
         catch (innerEx) { /* swallow... ex.stack is readonly */ }
 
         //description as serialized error
-        delete ex.description;
+        Reflect.deleteProperty(ex, 'description');
         ex.description = JSON.stringify(ex, null, 2);
 
         return ex;
@@ -183,7 +183,7 @@ export default class Exception {
         try {
             const literal = JSON.parse(value);
 
-            for (let prop of literal)
+            for (const prop of literal)
                 result[prop] = literal[prop];
         }
         catch (ex) {
@@ -194,7 +194,7 @@ export default class Exception {
         result.line = isNaN(line) ? null : line;
         result.column = isNaN(column) ? null : column;
 
-        delete result.description;
+        Reflect.deleteProperty(result, 'description');
 
         return result;
     }

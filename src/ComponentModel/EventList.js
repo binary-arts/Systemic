@@ -103,8 +103,8 @@ export default class EventList {
             }
             finally {
                 //teardown
-                delete this._events;
-                delete this._source;
+                Reflect.deleteProperty(this, '_events');
+                Reflect.deleteProperty(this, '_source');
 
                 //state
                 this._disposed = true;

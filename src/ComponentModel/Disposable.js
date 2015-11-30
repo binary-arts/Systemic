@@ -142,7 +142,7 @@ export default class Disposable {
                     //TODO: support array teardown by entry (set length = 0);
                     Object
                         .keys(this)
-                        .forEach(key => delete this[key]);
+                        .forEach(key => Reflect.deleteProperty(this, key));
 
                     //state
                     this.disposition = Disposition.Disposed;

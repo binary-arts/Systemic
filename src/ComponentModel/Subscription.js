@@ -61,8 +61,8 @@ export default class Subscription {
     dispose() {
         if (!this.disposed) {
             //teardown
-            delete this._addHandler;
-            delete this._removeHandler;
+            Reflect.deleteProperty(this, '_addHandler');
+            Reflect.deleteProperty(this, '_removeHandler');
 
             //state
             this._disposed = true;

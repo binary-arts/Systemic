@@ -253,7 +253,7 @@ class Is {
      */
     a(T) {
         let result = false;
-        const TRefName = /^\[object (.*)\]$/.exec(Object.prototype.toString.call(this.ref))[1];
+        const TRefName = /^\[object (.*)\]$/.exec(Reflect.apply(Object.prototype.toString, this.ref))[1];
 
         switch (T) {
             case undefined:
@@ -319,7 +319,7 @@ class Is {
                 break;
 
             default: {
-                    const TName = /^\[object (.*)\]$/.exec(Object.prototype.toString.call(T))[1];
+                    const TName = /^\[object (.*)\]$/.exec(Reflect.apply(Object.prototype.toString, T))[1];
     
                     if (TName === 'Number' && isNaN(T)) result = TRefName === 'Number' && isNaN(this.ref);
                     else result = this.ref instanceof T;
@@ -361,8 +361,8 @@ class Is {
             while (typeof proto === 'function') {
                 if ((result = proto === T) || proto === Object) break;
 
-                if (typeof proto.prototype === 'object' && Object.getPrototypeOf(proto).constructor === Function) proto = (Object.getPrototypeOf(proto.prototype) || {}).constructor;
-                else proto = Object.getPrototypeOf(proto);
+                if (typeof proto.prototype === 'object' && Reflect.getPrototypeOf(proto).constructor === Function) proto = (Reflect.getPrototypeOf(proto.prototype) || {}).constructor;
+                else proto = Reflect.getPrototypeOf(proto);
             }
         }
 

@@ -61,7 +61,7 @@ class Enumerate {
      */
     constructor(items) {
         this._items = items
-            .map(item => is(item).anArray ? item : [item])
+            .map(item => { if (is(item).anArray) return item; else return [item]; })
             .reduce((aggregate, items) => (aggregate || []).concat(items));
     }
 

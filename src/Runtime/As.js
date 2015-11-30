@@ -215,14 +215,14 @@ class As {
         if (typeIsUndefined || typeIsNull || typeIsNaN) result = type;
         else if (this.refIs.a(type)) result = this.ref;
         else if (!this.refIs.undefined && !this.refIs.null) {
-            let as = this.ref.hasOwnProperty('as') ? this.ref.as : null;
+            const as = this.ref.hasOwnProperty('as') ? this.ref.as : null;
 
-            if (is(as).aFunction) result = as.call(this.ref, type);
+            if (is(as).aFunction) result = Reflect.apply(as, this.ref, [type]);
             else if (typeIs.aTypeOf(Array)) result = Array.of(this.ref);
             else if (typeIs.aTypeOf(String)) {
                 const toString = this.ref.hasOwnProperty('toString') ? this.ref.toString : null;
 
-                if (is(toString).aFunction) result = toString.call(this.ref);
+                if (is(toString).aFunction) result = Reflect.apply(toString, this.ref);
                 else result = JSON.stringify(this.ref);
             }
         }

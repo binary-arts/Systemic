@@ -211,7 +211,7 @@ export default class NumberFormatter extends Formatter {
      * @returns { ?String } TODO
      */
     format(ref/*, spec*/) {
-        let result = '';
+        const result = '';
 
         ref = as(ref).aNumber;
 
