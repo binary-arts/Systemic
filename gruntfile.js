@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 var Path = require('path');
 
 module.exports = function(grunt) {
@@ -116,7 +118,7 @@ module.exports = function(grunt) {
                         { pattern: files.specdep, included: false },
                         { pattern: file.es7Runtime, included: true },
                         { pattern: file.babelRuntime, included: true },
-                        { pattern: 'test/Systemic.js', included: true }
+                        { pattern: 'test/karma.runner.js', included: true }
                     ],
                     frameworks: ['jasmine', 'requirejs'],
                     logLevel: 'WARN',

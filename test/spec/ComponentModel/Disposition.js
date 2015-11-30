@@ -1,6 +1,18 @@
 ﻿import Disposition from 'src/ComponentModel/Disposition';
+import Exception from 'src/Runtime/Exception';
 
 describe('ComponentModel.Disposition', () => {
+
+    describe('Constructor', () => {
+        it('throws an static class invocation error', () => {
+            let error;
+
+            try { new Disposition(); }
+            catch (ex) { error = ex; }
+
+            expect(error).toEqual(jasmine.objectContaining({ message: Exception.staticClassConstructorInvocation.message }));
+        });
+    });
 
     describe('Uninitialized', () => {
         it('is the numeric value 0', () => {
