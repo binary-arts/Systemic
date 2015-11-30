@@ -1,3 +1,5 @@
+//TODO: get rid of initialize state and prefer to do async init on construction, with a promise as the initialization token
+
 import is from '../Runtime/Is';
 
 import Debug from '../Diagnostics/Debug';
@@ -6,18 +8,23 @@ import EventList from './EventList';
 import Exception from '../Runtime/Exception';
 
 /**
- * TODO
+ * A base class that provides a mechanism for managing object lifetime.
+ * 
+ * @public
  */
 export default class Disposable {
 
     //#region Events
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Object } TODO
+     */
     get disposing() {
-        const result = this._events.get('disposing');
-
-        Debug.assert(is(result).anObject);
-
-        return result;
+        return this._events.get('disposing');
     }
 
     //#endregion
@@ -25,129 +32,163 @@ export default class Disposable {
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of a Disposable instance.
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Boolean } TODO
+     */
+    get disposed() {
+        return this.disposition === Disposition.Disposed;
+    }
+
+    /**
+     * TODO
      *
      * @private
      *
-     * @returns { Object }
+     * @returns { !Number } TODO
      */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
-    }
-
-    get disposed() {
-        const result = this.disposition === Disposition.Disposed;
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
-    }
-
     get disposition() {
-        return this._disposition;
+        return this._disposition || (this._disposition = this.supportsInitialization ? Disposition.Uninitialized : Disposition.Live);
     }
-    get _disposition() {
-        const result = this._.disposition || (this._.disposition = this._supportsInitialization ? Disposition.Uninitialized : Disposition.Live);
+    /**
+     * TODO
+     *
+     * @private
+     *
+     * @param { !Number } value TODO
+     */
+    set disposition(value) {
+        const disposition = this.disposition;
+        
+        if (disposition !== value) {
+            Debug.assert(value !== Disposition.Uninitialized || disposition === Disposition.Initializing);
+            Debug.assert(value !== Disposition.Initializing || disposition === Disposition.Uninitialized);
+            Debug.assert(value !== Disposition.Live || disposition === Disposition.Initializing);
+            Debug.assert(value !== Disposition.Disposing || disposition !== Disposition.Disposing && disposition !== Disposition.Disposed);
+            Debug.assert(value !== Disposition.Disposed || disposition === Disposition.Disposing);
 
-        Debug.assert(is(result).aNumber);
-
-        return result;
-    }
-    set _disposition(value) {
-        if (this.disposition !== value) {
-            Debug.assert(value !== Disposition.Uninitialized || this.disposition === Disposition.Initializing);
-            Debug.assert(value !== Disposition.Initializing || this.disposition === Disposition.Uninitialized);
-            Debug.assert(value !== Disposition.Live || this.disposition === Disposition.Initializing);
-            Debug.assert(value !== Disposition.Disposing || (this.disposition !== Disposition.Disposing && this.disposition !== Disposition.Disposed));
-            Debug.assert(value !== Disposition.Disposed || this.disposition === Disposition.Disposing);
-
-            this._.disposition = value;
+            this._disposition = value;
         }
     }
 
-    get _events() {
-        const result = this.disposed ? null : (this._.events || (this._.events = new EventList(this)));
-
-        Debug.assert((this.disposed && is(result).null) || is(result).a(EventList));
-
-        return result;
+    /**
+     * TODO
+     *
+     * @private
+     *
+     * @returns { ?EventList } TODO
+     */
+    get events() {
+        return this.disposed ? null : this._events || (this._events = new EventList(this));
     }
 
-    get _supportsInitialization() {
-        const result = false;
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
+    /**
+     * TODO
+     *
+     * @protected @virtual
+     *
+     * @returns { !Boolean } TODO
+     */
+    get supportsInitialization() {
+        return false;
     }
 
     //#endregion
 
     //#region Methods
 
-    _dispatch(name, e) {
-        Debug.assert(is(name).aNonEmptyString);
-
-        if (!this.disposed) this._events.dispatch(name, e);
+    /**
+     * TODO
+     *
+     * @private
+     *
+     * @param { !String } name TODO
+     * @param { !Object } e TODO
+     */
+    dispatch(name, e) {
+        if (!this.disposed) this.events.dispatch(name, e);
     }
 
+    /**
+     * Performs application-defined tasks associated with releasing references and resetting internal 
+     * state.
+     *
+     * @public
+     */
     dispose() {
         if (!this.disposed && this.disposition !== Disposition.Disposing) {
             try {
-                this._disposition = Disposition.Disposing;
-                this._onDisposing();
+                this.disposition = Disposition.Disposing;
+                this.onDisposing();
             }
             finally {
                 try {
                     //transitive disposal
+                    //TODO: enumerate backing store only (_ state)
                     //TODO: support object disposal by key
                     //TODO: support array disposal by entry
                     Object
-                        .keys(this._)
+                        .keys(this)
                         .forEach(key => {
-                            if (is(this._[key].dispose).aFunction) this._[key].dispose();
+                            if (is(this[key].dispose).aFunction) this[key].dispose();
                         });
                 }
                 finally {
                     //teardown
+                    //TODO: enumerate backing store only (_ state)
                     //TODO: support object disposal by key (nullify the key)
                     //TODO: support array teardown by entry (set length = 0);
                     Object
-                        .keys(this._)
-                        .forEach(key => delete this._[key]);
+                        .keys(this)
+                        .forEach(key => delete this[key]);
 
                     //state
-                    this._disposition = Disposition.Disposed;
+                    this.disposition = Disposition.Disposed;
                 }
             }
         }
     }
 
+    /**
+     * TODO
+     *
+     * @protected
+     */
     initialize() {
         if (this.disposition === Disposition.Uninitialized) {
             try {
-                this._disposition = Disposition.Initializing;
+                this.disposition = Disposition.Initializing;
 
-                if (this._onInitialize()) this._disposition = Disposition.Live;
+                if (this.onInitialize()) this.disposition = Disposition.Live;
                 else throw Exception.create('An error occurred during object initialization.');
             }
             catch (ex) {
-                this._disposition = Disposition.Uninitialized;
+                this.disposition = Disposition.Uninitialized;
                 throw ex;
             }
         }
     }
 
-    _onDisposing() {
-        this._dispatch('disposing');
+    /**
+     * TODO
+     *
+     * @protected @virtual
+     */
+    onDisposing() {
+        this.dispatch('disposing');
     }
 
-    _onInitialize() {
-        const result = true;
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
+    /**
+     * TODO
+     *
+     * @protected @virtual
+     * 
+     * @returns { !Boolean } TODO
+     */
+    onInitialize() {
+        return true;
     }
 
     //#endregion

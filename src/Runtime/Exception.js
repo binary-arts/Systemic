@@ -1,5 +1,7 @@
-﻿/**
+/**
  * TODO
+ * 
+ * @public @static @sealed
  */
 export default class Exception {
 
@@ -21,7 +23,7 @@ export default class Exception {
     /**
      * TODO
      *
-     * @static
+     * @public @static
      *
      * @returns { !Error }
      *      A JavaScript Error.
@@ -33,7 +35,7 @@ export default class Exception {
     /**
      * TODO
      *
-     * @static
+     * @public @static
      *
      * @returns { !Error }
      *      A JavaScript Error.
@@ -51,7 +53,7 @@ export default class Exception {
      * properties, an inner error, an error classification code, an objectified stack trace and a packed
      * and serialized description which can be used in uncaught error handler methods.
      *
-     * @static
+     * @public @static
      *
      * @param { ?String } message='Unspecified error.'
      *      A description of the error.
@@ -74,7 +76,7 @@ export default class Exception {
 
         //user-defined data
         if (typeof options.data === 'object') {
-            for (var prop in options.data)
+            for (var prop of options.data)
                 ex[prop] = options.data[prop];
         }
 
@@ -86,10 +88,10 @@ export default class Exception {
         ex.number = typeof options.number === 'number' ? options.number : 0;
 
         //message
-        ex.message = (typeof message === 'string' && message) ? message : 'Unspecified error.';
+        ex.message = typeof message === 'string' && message ? message : 'Unspecified error.';
 
         //!!! tested on IE11... test on other user agents
-        let stackFrameIndex = Math.max((options.stackFrameIndex || 0), 0) + 1;
+        let stackFrameIndex = Math.max(options.stackFrameIndex || 0, 0) + 1;
 
         if (!ex.stack) {
             stackFrameIndex++;
@@ -104,8 +106,7 @@ export default class Exception {
 
         let topFrame = frames[0];
 
-        while (stackFrameIndex-- > 0)
-            frames.shift();
+        while (stackFrameIndex-- > 0) frames.shift();
 
         //trace
         ex.trace = frames.map(frame => {
@@ -131,11 +132,8 @@ export default class Exception {
 
                     let position;
 
-                    if (!isNaN(position = parseInt(parts[parts.length - 2])))
-                        result.line = position;
-
-                    if (!isNaN(position = parseInt(parts[parts.length - 1])))
-                        result.column = position;
+                    if (!isNaN(position = parseInt(parts[parts.length - 2]))) result.line = position;
+                    if (!isNaN(position = parseInt(parts[parts.length - 1]))) result.column = position;
                 }
             }
 
@@ -158,7 +156,7 @@ export default class Exception {
     /**
      * TODO
      *
-     * @static
+     * @public @static
      *
      * @param { ?String } value='Unclassified script error.'
      *      TODO
@@ -177,17 +175,15 @@ export default class Exception {
         const result = new Error();
 
         let prefix = 'Uncaught ';
-        if (value.indexOf(prefix) === 0)
-            value = value.slice(prefix.length);
+        if (value.indexOf(prefix) === 0) value = value.slice(prefix.length);
 
         prefix = 'Error: ';
-        if (value.indexOf(prefix) === 0)
-            value = value.slice(prefix.length);
+        if (value.indexOf(prefix) === 0) value = value.slice(prefix.length);
 
         try {
             const literal = JSON.parse(value);
 
-            for (let prop in literal)
+            for (let prop of literal)
                 result[prop] = literal[prop];
         }
         catch (ex) {

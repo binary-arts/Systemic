@@ -5,6 +5,8 @@ import is from './Is';
 
 /**
  * TODO
+ * 
+ * @private @sealed
  */
 class Enumerate {
 
@@ -15,36 +17,34 @@ class Enumerate {
     /**
      * Projects items into a new form.
      *
-     * @private
-     * @static
+     * @private @static
      *
-     * @param { Function<?Object, Number?, Array?> } selector
+     * @param { !Function<?Object, [!Number], [!Array]> } selector
      *      A transform operation to apply.
-     * @param { Array } items
+     * @param { !Array } items
      *      An array to select from.
-     * @returns { Array }
+     * @returns { !Array }
      *      A new array whose items are the result of invoking the transform operation.
      */
-    static _select(selector, items) {
+    static select(selector, items) {
         return items.map(selector);
     }
 
     /**
      * Filters for items that meet a condition.
      *
-     * @private
-     * @static
+     * @private @static
      *
-     * @param { Function<?Object, Number?, Array?>? } predicate
+     * @param { ?Function<?Object, [!Number], [!Array]> } [predicate]
      *      A condition-check operation to apply. This argument is optional.
-     * @param { Array } items
+     * @param { !Array } items
      *      An array to select from.
-     * @returns { Array }
+     * @returns { !Array }
      *      A new array that contains all items for which the condition-check operation returns true.
      *      If the operation returns false for every item, the length of the new array is 0. If the operation
      *      is not provided, a copy of items is returned.
      */
-    static _where(predicate, items) {
+    static where(predicate, items) {
         return is(predicate).defined ? items.filter(predicate) : items.slice(0);
     }
 
@@ -55,11 +55,12 @@ class Enumerate {
     //#region Disposition
 
     /**
-     * @param { Array<Any> } items
+     * TODO
+     * 
+     * @param { !Array<*> } items TODO
      */
     constructor(items) {
-        //init
-        this._.items = items
+        this._items = items
             .map(item => is(item).anArray ? item : [item])
             .reduce((aggregate, items) => (aggregate || []).concat(items));
     }
@@ -69,32 +70,25 @@ class Enumerate {
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of this Enumerate instance.
-     *
+     * TODO
+     * 
      * @private
      *
-     * @returns { Object }
+     * @returns { !Array<*> } TODO
      */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
+    get items() {
+        return this._items;
     }
 
     /**
+     * TODO
+     * 
      * @private
      *
-     * @returns { Array<Any> }
+     * @returns { !Array<!Function> } TODO
      */
-    get _items() {
-        return this._.items;
-    }
-
-    /**
-     * @private
-     *
-     * @returns { Array<Function> }
-     */
-    get _operations() {
-        return this._.operations || (this._.operations = []);
+    get operations() {
+        return this._operations || (this._operations = []);
     }
 
     //#endregion
@@ -144,11 +138,13 @@ class Enumerate {
 
     /**
      * Determines whether all items satisfy a condition.
-     *
-     * @param { Function<?Object, Number?, Array?> } predicate
+     * 
+     * @public
+     * 
+     * @param { !Function<?Object, [!Number], [!Array]> } predicate
      *      A condition-check operation to apply. The operation is applied to each item in this instance
      *      until it returns false, or until the end of the enumeration is reached.
-     * @returns { Boolean }
+     * @returns { !Boolean }
      *      true if every item satisfies the predicate, if this instance has no items or
      *      if predicate is not provided; otherwise false.
      */
@@ -158,11 +154,13 @@ class Enumerate {
 
     /**
      * Determines whether any item satisfies a condition.
-     *
-     * @param { Function<?Object, Number?, Array?> } predicate
+     * 
+     * @public
+     * 
+     * @param { !Function<?Object, [!Number], [!Array]> } predicate
      *      A condition-check operation to apply. The operation is applied to each item in this instance
      *      until it returns true, or until the end of the enumeration is reached.
-     * @returns { Boolean }
+     * @returns { !Boolean }
      *      true if at least one item satisfies the predicate, or if this Enumerate instance is not
      *      empty and predicate is not provided; otherwise false.
      */
@@ -671,14 +669,16 @@ class Enumerate {
 
     /**
      * Projects items into a new form.
-     *
-     * @param { Function<?Object, Number?, Array?> } selector
+     * 
+     * @public
+     * 
+     * @param { !Function<?Object, [!Number], [!Array]> } selector
      *      A transform operation to apply.
-     * @returns { Enumerate }
+     * @returns { !Enumerate }
      *      This enumerate instance, useful for chaining multiple operations.
      */
     select(selector) {
-        this._operations.push(Enumerate._select.bind(this, selector));
+        this.operations.push(Enumerate.select.bind(this, selector));
         return this;
     }
 
@@ -756,12 +756,16 @@ class Enumerate {
     thenBy(/*descending*/) { }
 
     /**
-     * @returns { Array<Any> }
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Array<*> } TODO
      */
     toArray() {
         let result = this._items;
 
-        for (const operation of this._operations)
+        for (const operation of this.operations)
             result = operation.bind(this, result)();
 
         return result;
@@ -814,14 +818,16 @@ class Enumerate {
 
     /**
      * Filters for items that meet a condition.
-     *
-     * @param { Function<?Object, Number?, Array?>? } predicate
+     * 
+     * @public
+     * 
+     * @param { ?Function<?Object, [!Number], [!Array]> } [predicate]
      *      A condition-check operation to apply. This argument is optional.
-     * @returns { Array }
+     * @returns { !Array }
      *      This enumerate instance, useful for chaining multiple operations.
      */
     where(predicate) {
-        this._operations.push(Enumerate._where.bind(this, predicate));
+        this.operations.push(Enumerate.where.bind(this, predicate));
         return this;
     }
 

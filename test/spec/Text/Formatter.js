@@ -11,13 +11,12 @@ describe('Format.Formatter', () => {
     let fr;
     let frFR;
 
-    /*jshint ignore:start */
     beforeAll(resume => {
         //!!! TODO -> use jasmine spys to mock an accessor property
         rootPath = res.rootPath;
         res.rootPath = 'base/test';
 
-        async() => {
+        (async () => {
             invariant = await Formatter.invariant;
 
             [en, fr] = await Promise.all([
@@ -31,9 +30,8 @@ describe('Format.Formatter', () => {
             ]);
 
             resume();
-        }();
+        })();
     });
-    /*jshint ignore:end */
 
     afterAll(() => {
         res.rootPath = rootPath;
@@ -53,15 +51,13 @@ describe('Format.Formatter', () => {
     describe('invariant', () => {
         let anotherInvariant;
 
-        /*jshint ignore:start */
         beforeAll(resume => {
-            async() => {
+            (async () => {
                 anotherInvariant = await Formatter.invariant;
 
                 resume();
-            }();
+            })();
         });
-        /*jshint ignore:end */
 
         it('returns a Formatter object with the correct language, locale, and region', () => {
             expect(invariant).toEqual(jasmine.any(Formatter));
@@ -106,7 +102,6 @@ describe('Format.Formatter', () => {
         let anotherEnUS;
         let anotherFrFR;
 
-        /*jshint ignore:start */
         beforeAll(resume => {
             index = Formatter.index;
 
@@ -114,16 +109,15 @@ describe('Format.Formatter', () => {
             spyOn(index, "get").and.callThrough();
             spyOn(index, "set").and.callThrough();
 
-            async() => {
+            (async () => {
                 [anotherEnUS, anotherFrFR] = await Promise.all([
                     Formatter.fromLocale('en-US'),
                     Formatter.fromLocale('fr-FR')
                 ]);
 
                 resume();
-            }();
+            })();
         });
-        /*jshint ignore:end */
 
         afterAll(() => {
             index.has.calls.reset();

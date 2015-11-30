@@ -2,17 +2,22 @@
 
 import is from './Is';
 
-import Debug from '../Diagnostics/Debug';
-
 /**
  * TODO
+ * 
+ * @private @sealed
  */
 class As {
 
     //#region Disposition
 
+    /**
+     * TODO
+     * 
+     * @param { * } ref TODO
+     */
     constructor(ref) {
-        this._.ref = ref;
+        this._ref = ref;
     }
 
     //#endregion
@@ -20,72 +25,166 @@ class As {
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of an As instance.
-     *
-     * @private
-     *
-     * @returns { Object }
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
      */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
-    }
-
     get aBoolean() {
         return this.a(Boolean);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get aDate() {
         return this.a(Date);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get aFunction() {
         return this.a(Function);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get anArray() {
         return this.a(Array);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get anElement() {
         return this.a(HTMLElement);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get anError() {
         return this.a(Error);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get anObject() {
         return this.a(Object);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get aNumber() {
         return this.a(Number);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get aRegExp() {
         return this.a(RegExp);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get aString() {
         return this.a(String);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get nan() {
         return this.a(NaN);
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get null() {
         return this.a(null);
     }
 
-    get _ref() {
-        return this._.ref;
+    /**
+     * TODO
+     * 
+     * @private
+     * 
+     * @returns { * } TODO
+     */
+    get ref() {
+        return this._ref;
     }
 
-    get _refIs() {
-        return this._.refIs || (this._.refIs = is(this._ref));
+    /**
+     * TODO
+     * 
+     * @private
+     * 
+     * @returns { !Object } TODO
+     */
+    get refIs() {
+        return this._refIs || (this._refIs = is(this.ref));
     }
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @returns { !Boolean } TODO
+     */
     get undefined() {
         return this.a(undefined);
     }
@@ -94,6 +193,15 @@ class As {
 
     //#region Methods
 
+    /**
+     * TODO
+     * 
+     * @public
+     * 
+     * @param { ?T } [type] TODO
+     * 
+     * @returns { !Boolean } TODO
+     */
     a(type) {
         //TODO: _to(ref, type) => _as(ref, type) || default(ref);
 
@@ -102,28 +210,20 @@ class As {
         const typeIsNull = typeIs.null;
         const typeIsNaN = typeIs.nan;
 
-        Debug.assert(typeIsUndefined || typeIsNull || typeIsNaN || typeIs.aFunction);
-
         let result = null;
 
-        if (typeIsUndefined || typeIsNull || typeIsNaN)
-            result = type;
-        else if (this._refIs.a(type))
-            result = this._ref;
-        else if (!this._refIs.undefined && !this._refIs.null) {
-            let as = this._ref.hasOwnProperty('as') ? this._ref.as : null;
+        if (typeIsUndefined || typeIsNull || typeIsNaN) result = type;
+        else if (this.refIs.a(type)) result = this.ref;
+        else if (!this.refIs.undefined && !this.refIs.null) {
+            let as = this.ref.hasOwnProperty('as') ? this.ref.as : null;
 
-            if (is(as).aFunction)
-                result = as.call(this._ref, type);
-            else if (typeIs.aTypeOf(Array))
-                result = Array.of(this._ref);
+            if (is(as).aFunction) result = as.call(this.ref, type);
+            else if (typeIs.aTypeOf(Array)) result = Array.of(this.ref);
             else if (typeIs.aTypeOf(String)) {
-                const toString = this._ref.hasOwnProperty('toString') ? this._ref.toString : null;
+                const toString = this.ref.hasOwnProperty('toString') ? this.ref.toString : null;
 
-                if (is(toString).aFunction)
-                    result = toString.call(this._ref);
-                else
-                    result = JSON.stringify(this._ref, null, 4);
+                if (is(toString).aFunction) result = toString.call(this.ref);
+                else result = JSON.stringify(this.ref);
             }
         }
 

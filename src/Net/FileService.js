@@ -7,6 +7,8 @@ import Exception from '../Runtime/Exception';
 
 /**
  * TODO
+ * 
+ * @public @static @sealed
  */
 export default class FileService {
 
@@ -25,6 +27,16 @@ export default class FileService {
 
     //#region Methods
 
+    /**
+     * TODO
+     *
+     * @public @static
+     *
+     * @param { !String } path TODO
+     * @param { ?Boolean } [throwOnFailure] TODO
+     * 
+     * @returns { Promise<?Object> } TODO
+     */
     static getObject(path, throwOnFailure) {
         return new Promise(continueWith => {
             $.getJSON(path).always(function() {
@@ -32,7 +44,7 @@ export default class FileService {
                 const result = failed ? null : arguments[0];
 
                 if (failed && throwOnFailure) {
-                    const request = this;
+                    const request = this; //eslint-disable-line no-invalid-this
                     const response = arguments[0];
 
                     const httpStatus = as(response.status).aNumber;
@@ -54,7 +66,7 @@ export default class FileService {
                             break;
 
                         default:
-                            description = `failed with status ${httpStatus} : "${description || httpMessage}"`;
+                            description = `failed with status ${httpStatus} : "${description || httpMessage}".`;
                             break;
                     }
 

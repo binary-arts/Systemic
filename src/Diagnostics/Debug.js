@@ -1,7 +1,9 @@
-﻿import Exception from '../Runtime/Exception';
+import Exception from '../Runtime/Exception';
 
 /**
- * TODO
+ * Provides a set of utilities that assist in code debugging.
+ * 
+ * @public @static @sealed
  */
 export default class Debug {
 
@@ -24,7 +26,7 @@ export default class Debug {
      * Checks a condition; if the condition is false, logs a console warning with a specified message
      * at the caller's location in the stack.
      *
-     * @static
+     * @public @static
      *
      * @param { * } [condition]
      *      A conditional expression to evaluate. If the expression is truthy, no warning is logged.
@@ -32,16 +34,14 @@ export default class Debug {
      *      A message to describe the warning if condition is false.
      */
     static assert(condition, message) {
-
         if (!condition) {
-            let warning = Exception.create('An assertion failed' + ((typeof message === 'string' && message) ? ': ' + message : '.'), { stackFrameIndex: 1 }).stack;
+            let warning = Exception.create(`An assertion failed${typeof message === 'string' && message ? `: ${message}` : null}.`, { stackFrameIndex: 1 }).stack;
+            const prefix = 'Error: ';
 
-            if (warning.indexOf('Error: ') === 0) warning = warning.substring(7);
+            if (warning.indexOf(prefix) === 0) warning = warning.substring(prefix.length);
 
-            /* global console */
-            if (console.assert) console.assert(false, warning);
-            else console.warn(warning);
-            /* global -console */
+            if (console.assert) console.assert(false, warning); //eslint-disable-line no-console
+            else console.warn(warning); //eslint-disable-line no-console
         }
     }
 

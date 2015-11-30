@@ -1,69 +1,75 @@
 import is from '../Runtime/Is';
 
-import Debug from '../Diagnostics/Debug';
 import Event from './Event';
 
 /**
  * TODO
+ *
+ * @public @sealed
  */
 export default class Subscription {
 
+    /**
+     * TODO
+     *
+     * @param { !Event } event TODO
+     */
     constructor(event) {
-        Debug.assert(is(event).a(Event));
-
-        //init
-        this._.addHandler = event.addHandler.bind(event);
-        this._.removeHandler = event.removeHandler.bind(event);
+        this._addHandler = event.addHandler.bind(event);
+        this._removeHandler = event.removeHandler.bind(event);
     }
 
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of a Subscription instance.
+     * TODO
      *
-     * @private
+     * @public
      *
-     * @returns { Object }
+     * @returns { !Function } TODO
      */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
-    }
-
     get addHandler() {
-        const result = this._.addHandler;
-
-        Debug.assert(is(result).aFunction);
-
-        return result;
+        return this._addHandler;
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Boolean } TODO
+     */
     get disposed() {
-        const result = this._.disposed || (this._.disposed = false);
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
+        return this._disposed || (this._disposed = false);
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Function } TODO
+     */
     get removeHandler() {
-        const result = this._.removeHandler;
-
-        Debug.assert(is(result).aFunction);
-
-        return result;
+        return this._removeHandler;
     }
     //#endregion
 
     //#region Methods
 
+    /**
+     * TODO
+     *
+     * @public
+     */
     dispose() {
         if (!this.disposed) {
             //teardown
-            delete this._.addHandler;
-            delete this._.removeHandler;
+            delete this._addHandler;
+            delete this._removeHandler;
 
             //state
-            this._.disposed = true;
+            this._disposed = true;
         }
     }
 

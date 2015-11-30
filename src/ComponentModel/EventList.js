@@ -1,115 +1,142 @@
+//TODO: reimplement with a Map as the backing store
+
 import is from '../Runtime/Is';
 
-import Debug from '../Diagnostics/Debug';
 import Event from './Event';
 
 /**
  * TODO
+ * 
+ * @public @sealed
  */
 export default class EventList {
 
+    /**
+     * TODO
+     * 
+     * @param { ?Object|?Function } source TODO
+     */
     constructor(source) {
-        Debug.assert(is(source).anObject || is(source).aFunction);
-
-        //init
-        this._.source = source;
+        this._source = source;
     }
 
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of an EventList instance.
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Boolean } TODO
+     */
+    get disposed() {
+        return this._disposed || (this._disposed = false);
+    }
+
+    /**
+     * TODO
      *
      * @private
      *
-     * @returns { Object }
+     * @returns { ?Object } TODO
      */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
+    get events() {
+        return this.disposed ? null : this._events || (this._events = {});
     }
 
-    get disposed() {
-        const result = this._.disposed || (this._.disposed = false);
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
-    }
-
-    get _events() {
-        const result = this.disposed ? null : (this._.events || (this._.events = {}));
-
-        Debug.assert((this.disposed && is(result).null) || is(result).anObject);
-
-        return result;
-    }
-
-    get _source() {
-        const result = this._.source;
-
-        Debug.assert(is(result).anObject || is(result).aFunction);
-
-        return result;
+    /**
+     * TODO
+     *
+     * @private
+     *
+     * @returns { !Object|!Function } TODO
+     */
+    get source() {
+        return this._source;
     }
 
     //#endregion
 
     //#region Methods
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @param { !String } name TODO
+     */
     clear(name) {
-        Debug.assert(is(name).aNonEmptyString);
-
         if (!this.disposed) {
-            const event = this._events[name];
+            const event = this.events[name];
             if (event) event.clearHandlers();
         }
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @param { !String } name TODO
+     * @param { ?Object } [e] TODO
+     */
     dispatch(name, e) {
-        Debug.assert(is(name).aNonEmptyString);
-
         if (!this.disposed) {
-            const event = this._events[name];
+            const event = this.events[name];
             if (event) event.dispatch(e);
         }
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     */
     dispose() {
         if (!this.disposed) {
             try {
                 //transitive disposal
-                if (this._.events)
+                if (this._events) {
                     Object
-                        .keys(this._.events)
-                        .forEach(key => this._.events[key].dispose());
+                        .keys(this._events)
+                        .forEach(key => this._events[key].dispose());
+                }
             }
             finally {
                 //teardown
-                delete this._.events;
-                delete this._.source;
+                delete this._events;
+                delete this._source;
 
                 //state
-                this._.disposed = true;
+                this._disposed = true;
             }
         }
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @param { !String } name TODO
+     * 
+     * @returns { ?Object } TODO
+     */
     get(name) {
-        Debug.assert(is(name).aNonEmptyString);
-
-        const result = this.disposed ? null : (this._events[name] || (this._events[name] = new Event(this._source))).subscription;
-
-        Debug.assert((this.disposed && is(result).null) || is(result).anObject);
-
-        return result;
+        return this.disposed ? null : (this.events[name] || (this.events[name] = new Event(this.source))).subscription;
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Boolean } TODO
+     */
+
     has(name) {
-        const result = this._events && this._events[name];
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
+        return this.events && this.events[name];
     }
 
     //#endregion

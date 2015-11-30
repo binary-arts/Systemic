@@ -1,12 +1,12 @@
 import is from './Is';
 
-/* jshint ignore:start */
 import FileService from '../Net/FileService';
-/* jshint ignore:end */
 
 /**
  * Projects locale-specific, externally declared, dynamically loaded language translations as well as
  * conventions for compare, parse and format operations.
+ * 
+ * @private @sealed
  */
 class Res {
 
@@ -15,39 +15,25 @@ class Res {
     //#region Properties
 
     /**
-     * Gets the collective state of the Res class.
-     *
-     * @private
-     * @static
-     *
-     * @returns { !Object }
-     *      A dictionary containing the collective state of the Res class.
-     */
-    static get _() {
-        return Res.__ || (Res.__ = Object.create(null));
-    }
-
-    /**
      * Gets a list of memory-cached Res objects indexed by locale.
      *
-     * @private
-     * @static
+     * @private @static
      *
-     * @returns { !Map.<!String, !Res> }
+     * @returns { !Map<!String, !Res> }
      *      A Map containing loaded Res objects by locale. The Map returned by this property
      *      is empty to start and is intended to be populated by private APIs as locale-unique
      *      resources are requested. Because Res objects are immutable, this property is essentially
      *      a memory-optimized backing store where, at most, only one Res object per locale is ever
      *      constructed.
      */
-    static get _cache() {
-        return Res._.cache || (Res._.cache = new Map());
+    static get cache() {
+        return Res._cache || (Res._cache = new Map());
     }
 
     /**
      * Gets the default locale associated with the Res class.
      *
-     * @static
+     * @public @static
      *
      * @returns { !String }
      *      The default locale associated with the Res class, which controls translate, compare, parse
@@ -55,12 +41,12 @@ class Res {
      *      or invariant (e.g. ''). The default value of this property is the invariant locale.
      */
     static get defaultLocale() {
-        return Res._.defaultLocale || (Res._.defaultLocale = '');
+        return Res._defaultLocale || (Res._defaultLocale = '');
     }
     /**
      * Sets the default locale associated with the Res class.
      *
-     * @static
+     * @public @static
      *
      * @param { !String } value
      *      The default locale associated with the Res class, which controls translate, compare, parse
@@ -68,29 +54,28 @@ class Res {
      *      or invariant (e.g. '').
      */
     static set defaultLocale(value) {
-        Res._.defaultLocale = value;
+        Res._defaultLocale = value;
     }
 
     /**
      * Gets a list of memory-cached graphs indexed by file path.
      *
-     * @private
-     * @static
+     * @private @static
      *
-     * @returns { !Map.<!String, ?Object> }
+     * @returns { !Map<!String, ?Object> }
      *      A Map containing loaded graphs (anonymous objects) by file path. The Map returned by this
      *      property is empty to start and is intended to be populated by private APIs as unique-by-file
      *      graphs are resolved and loaded. Because the graphs are immutable, this property is essentially
      *      a memory-optimized backing store where, at most, only one graph per filed path is ever resolved.
      */
-    static get _graphCache() {
-        return Res._.graphCache || (Res._.graphCache = new Map());
+    static get graphCache() {
+        return Res._graphCache || (Res._graphCache = new Map());
     }
 
     /**
      * Gets the root path where locale-specifc resource files will be loaded.
      *
-     * @static
+     * @public @static
      *
      * @returns { !String }
      *      The starting point for locating locale-specific resource files. Locale- and resource-specific
@@ -98,12 +83,12 @@ class Res {
      *      relative to the Res class, and has a default value of ''.
      */
     static get rootPath() {
-        return Res._.rootPath || (Res._.rootPath = '');
+        return Res._rootPath || (Res._rootPath = '');
     }
     /**
      * Sets the root path where locale-specifc resource files will be loaded.
      *
-     * @static
+     * @public @static
      *
      * @param { !String } value
      *      The starting point for locating locale-specific resource files. Applications which locate
@@ -111,7 +96,7 @@ class Res {
      *      so files can be properly resolved.
      */
     static set rootPath(value) {
-        Res._.rootPath = `${(value && !value.endsWith('/')) ? `${value}/` : value}`;
+        Res._rootPath = `${value && !value.endsWith('/') ? `${value}/` : value}`;
     }
 
     //#region Methods
@@ -119,7 +104,7 @@ class Res {
     /**
      * Gets a Res object associated with the specified locale.
      *
-     * @static
+     * @public @static
      *
      * @param { !String } locale
      *      A String that represents the translation, compare, parse and format conventions of the
@@ -131,23 +116,19 @@ class Res {
      */
     static fromLocale(locale) {
         //!!! not thread-safe
-        if (!Res._cache.has(locale))
-            Res._cache.set(locale, new Res(locale));
+        if (!Res.cache.has(locale)) Res.cache.set(locale, new Res(locale));
 
-        return Res._cache.get(locale);
+        return Res.cache.get(locale);
     }
 
     /**
      * TODO
      *
-     * @static
+     * @public @static
      *
-     * @param { !Object } source
-     *      TODO
-     * @param { !Object } target
-     *      TODO
-     * @returns { !Object }
-     *      TODO
+     * @param { !Object } source TODO
+     * @param { !Object } target TODO
+     * @returns { !Object } TODO
      */
     static merge(source, target) {
         target = Object.assign({}, target);
@@ -161,7 +142,7 @@ class Res {
                     const sourceValue = source[key];
                     const targetValue = target[key];
 
-                    target[key] = (is(sourceValue).anObject && is(targetValue).anObject) ? Res.merge(sourceValue, targetValue) : sourceValue;
+                    target[key] = is(sourceValue).anObject && is(targetValue).anObject ? Res.merge(sourceValue, targetValue) : sourceValue;
                 }
 
             });
@@ -188,9 +169,9 @@ class Res {
     constructor(locale) {
         const parts = locale.split('-');
 
-        this._.language = parts.length ? (parts[0] || null) : null;
-        this._.region = (this._.language && parts.length > 1) ? (parts[1] || null) : null;
-        this._.locale = locale;
+        this._language = parts.length ? parts[0] || null : null;
+        this._region = this._language && parts.length > 1 ? parts[1] || null : null;
+        this._locale = locale;
     }
 
     //#endregion
@@ -198,23 +179,11 @@ class Res {
     //#region Properties
 
     /**
-     * Gets the collective state of this Res object.
-     *
-     * @private
-     *
-     * @returns { !Object }
-     *      A dictionary containing the collective state of this Res object.
-     */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
-    }
-
-    /**
      * Gets a list of memory-cached composite graphs indexed by root and local path.
      *
      * @private
      *
-     * @returns { !Map.<!String, !Object> }
+     * @returns { !Map<!String, !Object> }
      *      A Map containing loaded composite graphs (anonymous objects) by root and local path. The
      *      Map returned by this property is empty to start and is intended to be populated by private
      *      APIs as spec-driven resource paths are resolved and merged into composite graphs. Because
@@ -222,30 +191,34 @@ class Res {
      *      store where, at most, only one composite graph per root and local path is ever resolved
      *      and merged.
      */
-    get _cache() {
-        return this._.cache || (this._.cache = new Map());
+    get cache() {
+        return this._cache || (this._cache = new Map());
     }
 
     /**
      * Gets a value indicating whether this Res object is locale-invariant.
-     *
+     * 
+     * @public
+     * 
      * @returns { !Boolean }
      *      true if this Res object is neither associated with a language nor a region; otherwise,
      *      false.
      */
     get isInvariant() {
-        return this._.isInvariant || (this._.isInvariant = !(this.language || this.region));
+        return this._isInvariant || (this._isInvariant = !(this.language || this.region));
     }
 
     /**
      * Gets a value indicating whether this Res object is locale-neutral.
-     *
+     * 
+     * @public
+     * 
      * @returns { !Boolean }
      *      true if this Res object is associated with a language but not a region; otherwise,
      *      false.
      */
     get isNeutral() {
-        return this._.isNeutral || (this._.isNeutral = (this.language && !this.region));
+        return this._isNeutral || (this._isNeutral = this.language && !this.region);
     }
 
     /**
@@ -256,30 +229,34 @@ class Res {
      *      object's locale does not specify a language.
      */
     get language() {
-        return this._.language;
+        return this._language;
     }
 
     /**
      * Gets the locale associated with this Res object.
-     *
+     * 
+     * @public
+     * 
      * @returns { !String }
      *      The locale associated with this Res object, used to load locale-specific resource files
      *      declaring translation, compare, parse and format conventions. Locales are either region-specific
      *      (e.g. 'en-US'), neutral (e.g. 'en'), or invariant (e.g. '').
      */
     get locale() {
-        return this._.locale;
+        return this._locale;
     }
 
     /**
      * Gets the region code associated with this Res object.
-     *
+     * 
+     * @public
+     * 
      * @returns { ?String }
      *      The region code (e.g. 'US') associated with this Res object, or null if this Res
      *      object's locale does not specify a region.
      */
     get region() {
-        return this._.region;
+        return this._region;
     }
 
     //#endregion
@@ -288,88 +265,76 @@ class Res {
 
     /**
      * TODO
-     *
-     * @param { !String } spec
-     *      TODO
-     * @returns { !Promise.<*> }
-     *      TODO
+     * 
+     * @public @async
+     * 
+     * @param { !String } spec TODO
+     * @returns { !Promise<*> } TODO
      */
-    /* jshint ignore:start */
-    get(spec) {
-        return async() => {
-            let result;
+    async get(spec) {
+        let result;
 
-            //!!! memory barrier thread safety
-            const rootPath = Res.rootPath;
-            const language = this.language;
-            const region = this.region;
+        //!!! memory barrier thread safety
+        const rootPath = Res.rootPath;
+        const language = this.language;
+        const region = this.region;
 
-            const index = spec.indexOf('.');
-            const localPath = (index >= 0) ? spec.substr(0, index) : spec;
-            const val = (index >= 0) ? spec.substr(index + 1) : null;
+        const index = spec.indexOf('.');
+        const localPath = index >= 0 ? spec.substr(0, index) : spec;
+        const val = index >= 0 ? spec.substr(index + 1) : null;
 
-            if (localPath) {
-                const key = [rootPath, localPath].join(':');
+        if (localPath) {
+            const key = [rootPath, localPath].join(':');
 
-                //!!! not thread-safe
-                if (!this._cache.has(key)) {
-                    this._cache.set(key, await Promise
-                        .all([
-                            (language && region)
-                                ? async() => {
-                                    const spec = `${rootPath}res/${language}/${region}/${localPath}.json`;
-
-                                    //!!! not thread-safe
-                                    if (!Res._graphCache.has(spec))
-                                        Res._graphCache.set(spec, await FileService.getObject(spec));
-
-                                    return Res._graphCache.get(spec);
-                                }()
-                                : null,
-                            language
-                                ? async() => {
-                                    const spec = `${rootPath}res/${language}/${localPath}.json`;
-
-                                    //!!! not thread-safe
-                                    if (!Res._graphCache.has(spec))
-                                        Res._graphCache.set(spec, await FileService.getObject(spec));
-
-                                    return Res._graphCache.get(spec);
-                                }()
-                                : null,
-                            async() => {
-                                const spec = `${rootPath}res/${localPath}.json`;
+            //!!! not thread-safe
+            if (!this.cache.has(key)) {
+                this.cache.set(key, await Promise
+                    .all([
+                        language && region
+                            ? (async () => {
+                                const spec = `${rootPath}res/${language}/${region}/${localPath}.json`;
 
                                 //!!! not thread-safe
-                                if (!Res._graphCache.has(spec))
-                                    Res._graphCache.set(spec, await FileService.getObject(spec));
+                                if (!Res.graphCache.has(spec)) Res.graphCache.set(spec, await FileService.getObject(spec));
 
-                                return Res._graphCache.get(spec);
-                            }()
-                        ])
-                        .then(graphs => graphs.reduce((composite, graph) => Res.merge(composite || {}, graph || {})))
-                    );
-                }
+                                return Res.graphCache.get(spec);
+                            })()
+                            : null,
+                        language
+                            ? (async () => {
+                                const spec = `${rootPath}res/${language}/${localPath}.json`;
 
-                result = this._cache.get(key);
+                                //!!! not thread-safe
+                                if (!Res.graphCache.has(spec)) Res.graphCache.set(spec, await FileService.getObject(spec));
 
-                if (val) {
-                    const parts = val.split('.');
+                                return Res.graphCache.get(spec);
+                            })()
+                            : null,
+                        (async () => {
+                            const spec = `${rootPath}res/${localPath}.json`;
 
-                    if (!parts.every(part => !!part))
-                        result = undefined;
-                    else
-                        parts.forEach(part => {
-                            if (is(result).defined)
-                                result = result[part];
-                        });
-                }
+                            //!!! not thread-safe
+                            if (!Res.graphCache.has(spec)) Res.graphCache.set(spec, await FileService.getObject(spec));
+
+                            return Res.graphCache.get(spec);
+                        })()
+                    ])
+                    .then(graphs => graphs.reduce((composite, graph) => Res.merge(composite || {}, graph || {})))
+                );
             }
 
-            return result;
-        }();
+            result = this.cache.get(key);
+
+            if (val) {
+                const parts = val.split('.');
+
+                if (!parts.every(part => !!part)) result = undefined;
+                else parts.forEach(part => { if (is(result).defined) result = result[part]; });
+            }
+        }
+
+        return result;
     }
-    /* jshint ignore:end */
 
     //#endregion
 }
@@ -377,10 +342,8 @@ class Res {
 /**
  * Provides convenience operations for working with Res objects at runtime.
  *
- * @param { !String } locale
- *      TODO
- * @returns { Res }
- *      TODO
+ * @param { !String } locale TODO
+ * @returns { Res } TODO
  */
 const res = locale => Res.fromLocale(locale);
 

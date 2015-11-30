@@ -6,6 +6,8 @@ import Formatter from './Formatter';
 
 /**
  * TODO
+ * 
+ * @public @sealed
  */
 export default class NumberFormatter extends Formatter {
     //#region Type
@@ -69,8 +71,7 @@ export default class NumberFormatter extends Formatter {
      *
      * @public @static @override
      *
-     * @returns { !Array.<!T> }
-     *      TODO
+     * @returns { !Array<!T> } TODO
      */
     static get priorityTypes() {
         return NumberFormatter._numberFormatterPriorityTypes || (NumberFormatter._numberFormatterPriorityTypes = [Number]);
@@ -85,38 +86,29 @@ export default class NumberFormatter extends Formatter {
      *
      * @private @static
      *
-     * @param { !String } ref
-     *      TODO
-     * @param { !String } negativeSign
-     *      TODO
-     * @param { !Array.<!Number> } groupSizes
-     *      TODO
-     * @param { !String } decimalSeperator
-     *      TODO
-     * @param { !String } groupSeperator
-     *      TODO
-     * @returns { !String }
-     *      TODO
+     * @param { !String } ref TODO
+     * @param { !String } negativeSign TODO
+     * @param { !Array<!Number> } groupSizes TODO
+     * @param { !String } decimal TODO
+     * @param { !String } group TODO
+     * @returns { !String } TODO
      */
     static subFormat(ref, negativeSign, groupSizes, decimal, group) {
         let result = '';
 
         const isNegative = ref.startsWith(negativeSign);
 
-        if (isNegative)
-            ref = ref.substr(negativeSign.length);
+        if (isNegative) ref = ref.substr(negativeSign.length);
 
         const decimalIndex = ref.indexOf(decimal);
-        const decimalPart = (decimalIndex >= 0) ? ref.substr(decimalIndex) : null;
+        const decimalPart = decimalIndex >= 0 ? ref.substr(decimalIndex) : null;
 
-        if (decimalIndex >= 0)
-            ref = ref.substr(0, decimalIndex);
+        if (decimalIndex >= 0) ref = ref.substr(0, decimalIndex);
 
         let groupIndex = 0;
         let groupSize = groupSizes[groupIndex];
 
-        if (ref.length < groupSize)
-            result = `${ref}${decimalPart}`;
+        if (ref.length < groupSize) result = `${ref}${decimalPart}`;
         else {
             let index = ref.length;
             let done = false;
@@ -132,8 +124,7 @@ export default class NumberFormatter extends Formatter {
                     done = true;
                 }
 
-                if (!length)
-                    break;
+                if (!length) break;
 
                 result = `${ref.substr(startIndex, length)}${result ? group : null}${result}`;
                 index -= length;
@@ -147,8 +138,7 @@ export default class NumberFormatter extends Formatter {
             result = `${result}${decimalPart}`;
         }
 
-        if (isNegative)
-            result = `${negativeSign}${result}`;
+        if (isNegative) result = `${negativeSign}${result}`;
 
         return result;
     }
@@ -162,8 +152,7 @@ export default class NumberFormatter extends Formatter {
      *
      * @protected @static @override
      *
-     * @param { !Object }
-     *      TODO
+     * @param { !Object } culture TODO
      */
     static validate(culture) {
         Debug.assert(is(culture).anObject);
@@ -217,17 +206,16 @@ export default class NumberFormatter extends Formatter {
      *
      * @public @override
      *
-     * @param { * } ref
-     *      TODO
-     * @param { !String } spec
-     *      TODO
-     * @returns { ?String }
-     *      TODO
+     * @param { * } ref TODO
+     * @param { !String } spec TODO
+     * @returns { ?String } TODO
      */
     format(ref/*, spec*/) {
         let result = '';
 
-        if ((ref = as(ref).aNumber)) {
+        ref = as(ref).aNumber;
+
+        if (ref) {
 //            const culture = this._culture;
 //            const precision = (spec.length > 1) ? (parseInt(spec.substr(1)) || -1) : -1;
 //

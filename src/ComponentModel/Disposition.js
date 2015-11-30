@@ -2,6 +2,8 @@ import Exception from '../Runtime/Exception';
 
 /**
  * TODO
+ * 
+ * @public @static @sealed
  */
 export default class Disposition {
 

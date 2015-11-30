@@ -8,7 +8,7 @@ import Exception from '../Runtime/Exception';
 /**
  * TODO
  *
- * @abstract
+ * @public @abstract
  */
 export default class Formatter {
     //#region Type
@@ -20,7 +20,7 @@ export default class Formatter {
      *
      * @private @static
      *
-     * @returns { !Map.<!String, !Formatter> }
+     * @returns { !Map<!String, !Formatter> }
      *      A Map containing DateFormatter objects by type name and locale. The Map returned by this
      *      property is empty to start and is intended to be populated by private APIs as type- and
      *      locale- unique Formatter objects are initialized. This property is a memory-optimized
@@ -33,25 +33,22 @@ export default class Formatter {
     /**
      * Asynchronously gets a locale-independent (invariant) Formatter object.
      *
-     * @public @static
+     * @public @static @async
      *
-     * @returns { !Promise.<!DateFormatter> }
+     * @returns { !Promise<!DateFormatter> }
      *      A Formatter object Promise that is locale-independent (invariant), not associated with
      *      a language nor a region. The resultant Formatter object will not change its format conventions
      *      over time which makes it a suitable candidate for canonized Date serialization. The same
      *      Promise is returned for each Formatter type.
      */
     static get invariant() {
-        return this.fromLocale('');
+        return this.fromLocale(''); //eslint-disable-line no-invalid-this
     }
 
     /**
      * Gets locale-independent (invariant) format conventions for the Formatter class.
      *
      * @protected @static @abstract
-     *
-     * @returns { !Object }
-     *      This member is abstract and must be overridden by inheriting classes.
      */
     static get invariantCulture() {
         throw Exception.abstractMemberInvocation;
@@ -62,8 +59,7 @@ export default class Formatter {
      *
      * @public @static @virtual
      *
-     * @returns { !Array.<!T> }
-     *      TODO
+     * @returns { !Array<!T> } TODO
      */
     static get priorityTypes() {
         return Formatter._formatterPriorityTypes || (Formatter._formatterPriorityTypes = []);
@@ -76,42 +72,36 @@ export default class Formatter {
     /**
      * Asynchronously gets a Formatter object associated with the specified locale.
      *
-     * @public @static
+     * @public @static @async
      *
      * @param { !String } locale
      *      The locale to be associated with the returned Formatter object. The locale is used to locate
      *      and apply language- and region- specific conventions during format operations. Locales are
      *      region-specific (e.g. 'en-US'), neutral (e.g. 'en'), or invariant (e.g. '').
-     * @returns { !Promise.<!DateFormatter> }
+     * @returns { !Promise<!DateFormatter> }
      *      A Formatter object Promise. The resultant Formatter object is bound to the specified locale
      *      and applies its conventions during format operations. The same Promise is returned for each
      *      combination of Formatter type and locale.
      */
-    /* jshint ignore:start */
-    static fromLocale(locale) {
-        return async() => {
-            const TFormatter = this;
-            const key = `${TFormatter.name}:${locale}`;
+    static async fromLocale(locale) {
+        const TFormatter = this; //eslint-disable-line no-invalid-this
+        const key = `${TFormatter.name}:${locale}`;
 
-            //!!! not thread-safe
-            if (!Formatter.index.has(key))
-                Formatter.index.set(key, Reflect.construct(TFormatter, [locale]));
+        //!!! not thread-safe
+        if (!Formatter.index.has(key)) Formatter.index.set(key, Reflect.construct(TFormatter, [locale]));
 
-            const result = Formatter.index.get(key);
-            await result.initialized;
+        const result = Formatter.index.get(key);
+        await result.initialized;
 
-            return result;
-        }();
+        return result;
     }
-    /* jshint ignore:end */
 
     /**
      * TODO
      *
      * @protected @static @virtual
      *
-     * @param { !Object }
-     *      TODO
+     * @param { !Object } culture TODO
      */
     static validate(culture) {
         Debug.assert(is(culture).anObject);
@@ -122,12 +112,9 @@ export default class Formatter {
      *
      * @public @static
      *
-     * @param { * } ref
-     *      TODO
-     * @param { !Number } minLength
-     *      TODO
-     * @returns { !String }
-     *      TODO
+     * @param { * } ref TODO
+     * @param { !Number } minLength TODO
+     * @returns { !String } TODO
      */
     static zeroPad(ref, minLength) {
         return `${new Array(Math.max(0, minLength)).fill('0').join('')}${ref = as(ref).aString || ''}`.substring(Math.min(ref.length, minLength));
@@ -144,11 +131,11 @@ export default class Formatter {
      *
      * @private
      *
-     * @param { !String } locale
-     *      TODO
+     * @param { !String } locale TODO
      */
     constructor(locale) {
         const TFormatter = this.constructor;
+
         const resource = res(locale);
 
         this._language = resource.language;
@@ -156,22 +143,17 @@ export default class Formatter {
         this._region = resource.region;
         this._culture = TFormatter === Formatter ? {} : TFormatter.invariantCulture;
 
-        /* jshint ignore:start */
-        this._initialized = async() => {
+        this._initialized = (async () => {
             if (!resource.isInvariant) {
                 const baseName = Formatter.name;
                 let name = TFormatter.name;
 
-                if (name.endsWith(baseName))
-                    name = name.substr(0, name.length - baseName.length);
-
-                if (is(name).aNonEmptyString)
-                    this._culture = await resource.get(name).then(culture => res.merge(culture, this._culture));
+                if (name.endsWith(baseName)) name = name.substr(0, name.length - baseName.length);
+                if (is(name).aNonEmptyString) this._culture = await resource.get(name).then(culture => res.merge(culture, this._culture));
             }
 
             TFormatter.validate(this._culture);
-        }();
-        /* jshint ignore:end */
+        })();
     }
 
     //#endregion
@@ -183,8 +165,7 @@ export default class Formatter {
      *
      * @protected
      *
-     * @returns { !Object }
-     *      TODO
+     * @returns { !Object } TODO
      */
     get culture() {
         return this._culture;
@@ -254,18 +235,12 @@ export default class Formatter {
      *
      * @public @abstract
      *
-     * @param { * } ref
-     *      TODO
-     * @param { !String } spec
-     *      TODO
-     * @returns { ?String }
-     *      TODO
+     * @param { * } ref TODO
+     * @param { !String } spec TODO
      */
-    /* jshint ignore:start */
     format(ref, spec) {
         throw Exception.abstractMemberInvocation;
     }
-    /* jshint ignore:end */
 
     //#endregion
 }

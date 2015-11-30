@@ -2,9 +2,7 @@
 
 import enumerate from 'src/Runtime/Enumerate';
 
-/* jshint ignore:start */
 const global = typeof global === 'undefined' ? self : global;
-/* jshint ignore:end */
 
 describe('Runtime.Enumerate', () => {
     let items;
@@ -78,13 +76,13 @@ describe('Runtime.Enumerate', () => {
 
         it('provides a closed-over context to an arrow function predicate', () => {
             const that = {};
-            const op = function () { return e.all(() => this === that); };
+            const op = function () { return e.all(() => this === that); }; //eslint-disable-line no-invalid-this
 
             expect(op.bind(that)()).toEqual(true);
         });
 
         it('provides a global (window) context to a loose function predicate', () => {
-            expect(e.all(function () { return this === global; })).toBe(true);
+            expect(e.all(function () { return this === global; })).toBe(true); //eslint-disable-line no-invalid-this
          });
     });
 
@@ -130,13 +128,13 @@ describe('Runtime.Enumerate', () => {
 
         it('provides a closed-over context to an arrow function predicate', () => {
             const that = {};
-            const op = function () { return e.any(() => this === that); };
+            const op = function () { return e.any(() => this === that); }; //eslint-disable-line no-invalid-this
 
             expect(op.bind(that)()).toEqual(true);
         });
 
         it('provides a global (window) context to a loose function predicate', () => {
-            expect(e.any(function () { return this === global; })).toBe(true);
+            expect(e.any(function () { return this === global; })).toBe(true); //eslint-disable-line no-invalid-this
          });
     });
 
@@ -171,13 +169,13 @@ describe('Runtime.Enumerate', () => {
 
         it('provides a closed-over context to an arrow function selector', () => {
             const that = {};
-            const op = function () { return e.select(() => this).toArray(); };
+            const op = function () { return e.select(() => this).toArray(); }; //eslint-disable-line no-invalid-this
 
             expect(op.bind(that)()).toEqual([that, that]);
         });
 
         it('provides a global (window) context to a loose function selector', () => {
-            expect(e.select(function () { return this; }).toArray()).toEqual([global, global]);
+            expect(e.select(function () { return this; }).toArray()).toEqual([global, global]); //eslint-disable-line no-invalid-this
          });
     });
 
@@ -223,13 +221,13 @@ describe('Runtime.Enumerate', () => {
 
         it('provides a closed-over context to an arrow function predicate', () => {
             const that = {};
-            const op = function () { return e.where(() => this === that).toArray(); };
+            const op = function () { return e.where(() => this === that).toArray(); }; //eslint-disable-line no-invalid-this
 
             expect(op.bind(that)()).toEqual(items);
         });
 
         it('provides a global (window) context to a loose function predicate', () => {
-            expect(e.where(function () { return this === global; }).toArray()).toEqual(items);
+            expect(e.where(function () { return this === global; }).toArray()).toEqual(items); //eslint-disable-line no-invalid-this
          });
     });
 });

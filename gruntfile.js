@@ -1,5 +1,3 @@
-/* jshint node:true */
-
 var Path = require('path');
 
 module.exports = function(grunt) {
@@ -19,7 +17,7 @@ module.exports = function(grunt) {
         specdep: 'test/lib',
         specres: 'test/res',
         src: 'src',
-        work: 'obj',
+        work: 'obj'
     };
 
     var file = {
@@ -28,7 +26,7 @@ module.exports = function(grunt) {
         out: {
             debug: Path.join(dir.work, pkg.name + '.js'),
             min: Path.join(dir.work, pkg.name + '.min.js')
-        },
+        }
     };
 
     var files = {
@@ -83,14 +81,13 @@ module.exports = function(grunt) {
                 src: '**/*.js'
             }
         },
-        jshint: {
+        eslint: {
             analyze: {
                 cwd: dir.src,
                 expand: true,
                 src: '**/*.js',
                 options: {
-                    jshintrc: true,
-                    reporter: require('jshint-summary')
+                    format: 'stylish'
                 }
             }
         },
@@ -185,7 +182,7 @@ module.exports = function(grunt) {
         },
         uglify: {
             options: {
-                banner: ['/*! ', pkg.name, ' - v', pkg.version, ' - ', grunt.template.today('yyyy-mm-dd'), ' */\n\n'].join(''),
+                banner: ['/*! ', pkg.name, ' - v', pkg.version, ' - ', grunt.template.today('yyyy-mm-dd'), ' */\n\n'].join('')
             },
             min: {
                 dest: file.out.min,
@@ -223,7 +220,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('reset', ['clean:reset']);
 
-    grunt.registerTask('analyze', ['jshint:analyze']);
+    grunt.registerTask('analyze', ['eslint:analyze']);
     grunt.registerTask('unit', ['clean:unit', 'bower:unit', 'karma:unit']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
     grunt.registerTask('pack', ['requirejs:pack', 'uglify:pack', 'clean:pack', 'bower:pack']);

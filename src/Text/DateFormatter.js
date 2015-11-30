@@ -6,6 +6,8 @@ import Formatter from './Formatter';
 
 /**
  * TODO
+ * 
+ * @public @sealed
  */
 export default class DateFormatter extends Formatter {
     //#region Type
@@ -68,8 +70,7 @@ export default class DateFormatter extends Formatter {
      *
      * @public @static @override
      *
-     * @returns { !Array.<!T> }
-     *      TODO
+     * @returns { !Array<!T> } TODO
      */
     static get priorityTypes() {
         return DateFormatter._dateFormatterPriorityTypes || (DateFormatter._dateFormatterPriorityTypes = [Date]);
@@ -80,8 +81,7 @@ export default class DateFormatter extends Formatter {
      *
      * @private @static
      *
-     * @returns { !Map.<!String, !Array.<!String>> }
-     *      TODO
+     * @returns { !Map<!String, !Array<!String>> } TODO
      */
     static get standardFormats() {
         return DateFormatter._standardFormats || (DateFormatter._standardFormats = new Map([
@@ -110,8 +110,7 @@ export default class DateFormatter extends Formatter {
      *
      * @protected @static @override
      *
-     * @param { !Object }
-     *      TODO
+     * @param { !Object } culture TODO
      */
     static validate(culture) {
         Debug.assert(is(culture).anObject);
@@ -164,27 +163,27 @@ export default class DateFormatter extends Formatter {
      *
      * @public @override
      *
-     * @param { * } ref
-     *      TODO
-     * @param { !String } spec
-     *      TODO
-     * @returns { ?String }
-     *      TODO
+     * @param { * } ref TODO
+     * @param { !String } spec TODO
+     * @returns { ?String } TODO
      */
     format(ref, spec) {
         let result = '';
 
-        if ((ref = as(ref).aDate)) {
+        ref = as(ref).aDate;
+
+        if (ref) {
             const culture = this.culture;
             const expression = /DDDDD|DDDD|DDD|DD|ddd|dd|MMMMM|MMMM|MMM|MM|mmm|mm|yyyyy|yyy|yy|hhhhh|hhhh|hhh|hh|nnn|nn|sss|ss|apap|ap|ffff|fff|ff|zzz|zz/g;
 
             if (' r R u U '.indexOf(` ${spec} `) >= 0) ref = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), ref.getUTCDate(), ref.getUTCHours(), ref.getUTCMinutes(), ref.getUTCSeconds(), ref.getUTCMilliseconds()));
 
-            if (spec.length === 1)
+            if (spec.length === 1) {
                 spec = (DateFormatter.standardFormats.get(spec) || [])
                     .map(spec => culture.format[spec])
                     .filter(prop => is(prop).aNonEmptyString)
                     .join(' ');
+            }
 
             while (spec.indexOf('{/}') >= 0) spec = spec.replace('{/}', culture.dateSeparator);
             while (spec.indexOf('{-}') >= 0) spec = spec.replace('{-}', culture.joinSeperator);
@@ -192,7 +191,7 @@ export default class DateFormatter extends Formatter {
             while (spec.indexOf('{:}') >= 0) spec = spec.replace('{:}', culture.timeSeparator);
             while (spec.indexOf('{ }') >= 0) spec = spec.replace('{ }', culture.wordSeperator);
 
-            while (true) {
+            while (true) { //eslint-disable-line no-constant-condition
                 const index = expression.lastIndex || 0;
                 let match = expression.exec(spec);
 
@@ -200,7 +199,7 @@ export default class DateFormatter extends Formatter {
 
                 if (!match) break;
 
-                switch ((match = match[0])) {
+                switch (match = match[0]) {
                     case 'DDDDD': case 'DDDD': case 'DDD': case 'DD': result = `${result}${(match === 'DDDDD' ? culture.wideDayNames : match === 'DDDD' ? culture.mediumDayNames : match === 'DDD' ? culture.shortDayNames : culture.narrowDayNames)[ref.getDay()]}`; break;
                     case 'ddd': case 'dd': result = `${result}${Formatter.zeroPad(ref.getDate(), match.length - 1)}`; break;
                     case 'MMMMM': case 'MMMM': case 'MMM': case 'MM': result = `${result}${(match === 'MMMMM' ? culture.wideMonthNames : match === 'MMMM' ? culture.mediumMonthNames : match === 'MMM' ? culture.shortMonthNames : culture.narrowMonthNames)[ref.getMonth()]}`; break;
@@ -211,9 +210,9 @@ export default class DateFormatter extends Formatter {
                     case 'hhh': case 'hh': result = `${result}${Formatter.zeroPad(ref.getHours() % 12 || 12, match.length - 1)}`; break;
                     case 'nnn': case 'nn': result = `${result}${Formatter.zeroPad(ref.getMinutes(), match.length - 1)}`; break;
                     case 'sss': case 'ss': result = `${result}${Formatter.zeroPad(ref.getSeconds(), match.length - 1)}`; break;
-                    case 'apap': case 'ap': result = `${result}${((ref.getHours() < 12) ? culture.amPeriod : culture.pmPeriod).substr(0, match.length / 2)}`; break;
+                    case 'apap': case 'ap': result = `${result}${(ref.getHours() < 12 ? culture.amPeriod : culture.pmPeriod).substr(0, match.length / 2)}`; break;
                     case 'ffff': case 'fff': case 'ff': result = `${result}${Formatter.zeroPad(ref.getMilliseconds(), 3)}`.substr(0, match.length - 1); break;
-                    case 'zzz': case 'zz': result = `${result}${((ref = ref.getTimezoneOffset() / 60) >= 0) ? '-' : '+'}${Formatter.zeroPad(Math.floor(Math.abs(ref)), match.length - 1)}`; break;
+                    case 'zzz': case 'zz': result = `${result}${(ref = ref.getTimezoneOffset() / 60) >= 0 ? '-' : '+'}${Formatter.zeroPad(Math.floor(Math.abs(ref)), match.length - 1)}`; break;
                 }
             }
         }

@@ -1,91 +1,110 @@
 import is from '../Runtime/Is';
 
-import Debug from '../Diagnostics/Debug';
 import Subscription from './Subscription';
 
 /**
  * TODO
+ * 
+ * @public sealed
  */
 export default class Event {
 
+    /**
+     * TODO
+     *
+     * @param { !Object|!Function } source TODO
+     */
     constructor(source) {
-        Debug.assert(is(source).anObject || is(source).aFunction);
-
-        //init
-        this._.source = source;
+        this._source = source;
     }
 
     //#region Properties
 
     /**
-     * A dictionary that contains the collective state of an Event instance.
+     * TODO
+     *
+     * @public
+     *
+     * @returns { !Boolean } TODO
+     */
+    get disposed() {
+        return this._disposed || (this._disposed = false);
+    }
+
+    /**
+     * TODO
      *
      * @private
      *
-     * @returns { Object }
+     * @returns { ?Array } TODO
      */
-    get _() {
-        return this.__ || (this.__ = Object.create(null));
+    get handlers() {
+        return this.disposed ? null : this._handlers || (this._handlers = []);
     }
 
-    get disposed() {
-        const result = this._.disposed || (this._.disposed = false);
-
-        Debug.assert(is(result).aBoolean);
-
-        return result;
+    /**
+     * TODO
+     *
+     * @private
+     *
+     * @returns { !Object|!Function } TODO
+     */
+    get source() {
+        return this._source;
     }
 
-    get _handlers() {
-        const result = this.disposed ? null : (this._.handlers || (this._.handlers = []));
-
-        Debug.assert((this.disposed && is(result).null) || is(result).anArray);
-
-        return result;
-    }
-
-    get _source() {
-        const result = this._.source;
-
-        Debug.assert(is(result).anObject || is(result).aFunction);
-
-        return result;
-    }
-
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @returns { ?Subscription } TODO
+     */
     get subscription() {
-        const result = this.disposed ? null : (this._.subscription || (this._.subscription = new Subscription(this)));
-
-        Debug.assert((this.disposed && is(result).null) || is(result).a(Subscription));
-
-        return result;
+        return this.disposed ? null : this._subscription || (this._subscription = new Subscription(this));
     }
 
     //#endregion
 
     //#region Methods
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @param { !Function } handler TODO
+     */
     addHandler(handler) {
-        Debug.assert(is(handler).aFunction);
-
-        if (!this.disposed && this._handlers.indexOf(handler) === -1)
-            this._handlers.push(handler);
+        if (!this.disposed && this.handlers.indexOf(handler) === -1) this.handlers.push(handler);
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     */
     clearHandlers() {
-        if (!this.disposed)
-            this._handlers.length = 0;
+        if (!this.disposed) this.handlers.length = 0;
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @param { ?Object } [e] TODO
+     */
     dispatch(e) {
         if (!this.disposed) {
             if (!is(e).anObject) e = {};
 
             let thrown = false;
 
-            this._handlers.forEach(
+            this.handlers.forEach(
                 handler => {
                     if (!thrown) {
-                        try { handler.bind(null, this._source, e)(); }
+                        try { handler.bind(null, this.source, e)(); }
                         catch (ex) {
                             thrown = true;
                             throw ex;
@@ -96,34 +115,45 @@ export default class Event {
         }
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     */
     dispose() {
         if (!this.disposed) {
             try {
                 //transitive disposal
-                if (this._.subscription) this._.subscription.dispose();
+                if (this._subscription) this._subscription.dispose();
             }
             finally {
                 //teardown
-                if (this._.handlers) this._.handlers.length = 0;
+                if (this._handlers) this._handlers.length = 0;
 
-                delete this._.handlers;
-                delete this._.source;
-                delete this._.subscription;
+                delete this._handlers;
+                delete this._source;
+                delete this._subscription;
 
                 //state
-                this._.disposed = true;
+                this._disposed = true;
             }
         }
     }
 
+    /**
+     * TODO
+     *
+     * @public
+     *
+     * @param { !Function } handler TODO
+     */
     removeHandler(handler) {
         Debug.assert(is(handler).aFunction);
 
         if (!this.disposed) {
-            const index = this._handlers.indexOf(handler);
+            const index = this.handlers.indexOf(handler);
 
-            if (index >= 0)
-                this._handlers.splice(index, 1);
+            if (index >= 0) this.handlers.splice(index, 1);
         }
     }
 

@@ -12,24 +12,22 @@ describe('Format.DateFormatter', () => {
     let enUS;
     let frFR;
 
-    /*jshint ignore:start */
     beforeAll(resume => {
         //!!! TODO -> use jasmine spys to mock an accessor property
         rootPath = res.rootPath;
         res.rootPath = 'base/test';
 
-        async() => {
+        (async () => {
             invariant = await DateFormatter.invariant;
 
             [enUS, frFR] = await Promise.all([
                 DateFormatter.fromLocale('en-US'),
-                DateFormatter.fromLocale('fr-FR'),
+                DateFormatter.fromLocale('fr-FR')
             ]);
 
             resume();
-        }();
+        })();
     });
-    /*jshint ignore:end */
 
     afterAll(() => {
         res.rootPath = rootPath;
