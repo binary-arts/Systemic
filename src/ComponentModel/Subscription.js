@@ -1,7 +1,3 @@
-import is from '../Runtime/Is';
-
-import Event from './Event';
-
 /**
  * TODO
  *

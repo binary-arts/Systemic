@@ -1,3 +1,5 @@
+/* global global */
+
 /**
  * TODO
  * 

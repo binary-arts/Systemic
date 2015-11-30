@@ -238,7 +238,7 @@ export default class Formatter {
      * @param { * } ref TODO
      * @param { !String } spec TODO
      */
-    format(ref, spec) {
+    format(ref, spec) { //eslint-disable-line no-unused-vars
         throw Exception.abstractMemberInvocation;
     }
 
