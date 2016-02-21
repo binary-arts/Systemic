@@ -23,6 +23,7 @@ module.exports = function(grunt) {
     };
 
     var file = {
+        amdRuntime: Path.join(dir.pkg.node, 'requirejs/require.js'),
         babelRuntime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/external-helpers.js'),
         es7Runtime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
         out: {
@@ -155,7 +156,7 @@ module.exports = function(grunt) {
                         jquery: 'empty:'
                     },
                     wrap: {
-                        start: grunt.file.read(file.es7Runtime) + '\n' + grunt.file.read(file.babelRuntime) + '\n'
+                        start: '!function() {\n' + grunt.file.read(file.amdRuntime) + '\n}();\n' + grunt.file.read(file.es7Runtime) + '\n' + grunt.file.read(file.babelRuntime) + '\n'
                     }
                 }
             }

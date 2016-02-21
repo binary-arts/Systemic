@@ -765,8 +765,7 @@ class Enumerate {
     toArray() {
         let result = this._items;
 
-        for (const operation of this.operations)
-            result = operation.bind(this, result)();
+        for (const operation of this.operations) result = operation.bind(this, result)();
 
         return result;
     }

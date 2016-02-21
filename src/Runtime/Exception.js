@@ -75,10 +75,7 @@ export default class Exception {
         let ex = new Error();
 
         //user-defined data
-        if (typeof options.data === 'object') {
-            for (const prop of options.data)
-                ex[prop] = options.data[prop];
-        }
+        if (typeof options.data === 'object') for (const prop of options.data) ex[prop] = options.data[prop];
 
         //innerError
         //TBI: escalate innerError to extended error if not already (default all values)
@@ -183,8 +180,7 @@ export default class Exception {
         try {
             const literal = JSON.parse(value);
 
-            for (const prop of literal)
-                result[prop] = literal[prop];
+            for (const prop of literal) result[prop] = literal[prop];
         }
         catch (ex) {
             result.message = value;

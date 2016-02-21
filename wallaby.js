@@ -5,9 +5,9 @@ var babel = require('babel');
 module.exports = function(wallaby) {
     return {
         files: [
-            { pattern: 'test/lib/requirejs/require.js', instrument: false },
-            { pattern: 'node_modules/babel/node_modules/babel-core/external-helpers.js', instrument: false },
+            { pattern: 'node_modules/requirejs/require.js', instrument: false },
             { pattern: 'node_modules/babel/node_modules/babel-core/browser-polyfill.js', instrument: false },
+            { pattern: 'node_modules/babel/node_modules/babel-core/external-helpers.js', instrument: false },
             { pattern: 'test/res/**/*.json', instrument: false, load: false },
             { pattern: 'test/lib/**/*.js', instrument: false, load: false },
             { pattern: 'src/**/*.js', load: false },
