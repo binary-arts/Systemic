@@ -121,7 +121,7 @@ module.exports = function(grunt) {
                         { pattern: 'test/karma.runner.js', included: true }
                     ],
                     frameworks: ['jasmine', 'requirejs'],
-                    logLevel: 'WARN',
+                    logLevel: 'OFF',
                     preprocessors: (function () {
                         var result = Object.create(null);
 
