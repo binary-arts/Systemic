@@ -2,7 +2,7 @@
 
 const Path = require('path');
 
-module.exports = grunt => {
+module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     const pkg = grunt.file.readJSON('package.json');
