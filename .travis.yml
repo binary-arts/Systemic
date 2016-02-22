@@ -11,6 +11,7 @@ branches:
     - master
 
 language: node_js
+  - "4.1"
 
 script:
   - grunt build
