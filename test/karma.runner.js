@@ -11,8 +11,5 @@
         }
 
         return tests;
-    })(),
-    paths: {
-        'jquery': 'test/lib/jquery/jquery'
-    }
+    })()
 });

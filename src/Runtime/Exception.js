@@ -57,7 +57,7 @@ export default class Exception {
      *
      * @param { ?String } message='Unspecified error.'
      *      A description of the error.
-     * @param { ?Object } [options={ data: {}, innorError: new Error(), number: 0, stackFrameIndex: 0 }]
+     * @param { ?Object } [options={ data: {}, innerError: new Error(), number: 0, stackFrameIndex: 0 }]
      *      An object used to configure properties of the error. {pname_1} can include any combination
      *      of the following: (1) data, an object that provides supplementary information relative
      *      to the error; properties of the data property are copied directly to the error; (2) innerError,

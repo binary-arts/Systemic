@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-var babel = require('babel');
+const babel = require('babel');
 
 module.exports = function(wallaby) {
     return {
@@ -8,8 +8,8 @@ module.exports = function(wallaby) {
             { pattern: 'node_modules/requirejs/require.js', instrument: false },
             { pattern: 'node_modules/babel/node_modules/babel-core/browser-polyfill.js', instrument: false },
             { pattern: 'node_modules/babel/node_modules/babel-core/external-helpers.js', instrument: false },
+            { pattern: 'node_modules/whatwg-fetch/fetch.js', instrument: false },
             { pattern: 'test/res/**/*.json', instrument: false, load: false },
-            { pattern: 'test/lib/**/*.js', instrument: false, load: false },
             { pattern: 'src/**/*.js', load: false },
             { pattern: 'test/wallaby.runner.js', instrument: false }
         ],
@@ -20,7 +20,7 @@ module.exports = function(wallaby) {
 
         compilers: {
             'src/**/*.js': wallaby.compilers.babel({
-                babel: babel,
+                babel,
                 comments: false,
                 externalHelpers: true,
                 modules: 'amd',
@@ -28,7 +28,7 @@ module.exports = function(wallaby) {
                 stage: 0
             }),
             'test/spec/**/*.js':  wallaby.compilers.babel({
-                babel: babel,
+                babel,
                 comments: false,
                 externalHelpers: true,
                 modules: 'amd',

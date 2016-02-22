@@ -1,7 +1,5 @@
 # Package/Dependencies
-bower_components/
 node_modules/
-types/
 
 # Build
 bin/
@@ -9,10 +7,6 @@ obj/
 
 # Test
 test/coverage
-test/lib
-
-# POC Files
-_Futures/
 
 # Others
 .vs/

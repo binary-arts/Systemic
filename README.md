@@ -26,9 +26,7 @@ Install build tools and dev dependencies:
 
 ```
 npm install -g grunt-cli
-npm install -g bower
 npm install
-bower install
 ```
 
 Use one of the following to build and test:

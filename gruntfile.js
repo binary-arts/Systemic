@@ -1,43 +1,46 @@
 /* eslint-env node */
 
-var Path = require('path');
+const Path = require('path');
 
-module.exports = function(grunt) {
+module.exports = grunt => {
     require('load-grunt-tasks')(grunt);
 
-    var pkg = grunt.file.readJSON('package.json');
+    const pkg = grunt.file.readJSON('package.json');
 
-    var dir = {
+    const axis = {
+        descendentJS: '**/*.js',
+        descendentJSON: '**/*.json'
+    }
+
+    const dir = {
         coverage: 'test/coverage',
-        dep: 'obj/lib',
+        node: 'node_modules',
         out: 'bin',
-        pkg: {
-            bower: 'bower_components',
-            node: 'node_modules'
-        },
+        res: 'test/res',
         spec: 'test/spec',
-        specdep: 'test/lib',
-        specres: 'test/res',
         src: 'src',
         work: 'obj'
     };
 
-    var file = {
-        amdRuntime: Path.join(dir.pkg.node, 'requirejs/require.js'),
-        babelRuntime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/external-helpers.js'),
-        es7Runtime: Path.join(dir.pkg.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
+    const file = {
         out: {
-            debug: Path.join(dir.work, pkg.name + '.js'),
-            min: Path.join(dir.work, pkg.name + '.min.js')
+            debug: Path.join(dir.work, `${pkg.name}.js`),
+            min: Path.join(dir.work, `${pkg.name}.min.js`)
         }
     };
 
-    var files = {
-        src: Path.join(dir.src, '**/*.js'),
-        spec: Path.join(dir.spec, '**/*.js'),
-        specdep: Path.join(dir.specdep, '**/*.js'),
-        specres: Path.join(dir.specres, '**/*.json'),
-        work: Path.join(dir.work, '**/*.js')
+    const files = {
+        src: Path.join(dir.src, axis.descendentJS),
+        spec: Path.join(dir.spec, axis.descendentJS),
+        res: Path.join(dir.res, axis.descendentJSON),
+        work: Path.join(dir.work, axis.descendentJS)
+    };
+
+    const runtime = {
+        amd: Path.join(dir.node, 'requirejs/require.js'), //TODO: change to almond
+        babel: Path.join(dir.node, 'babel/node_modules/babel-core/external-helpers.js'),
+        es7: Path.join(dir.node, 'babel/node_modules/babel-core/browser-polyfill.js'),
+        xhr: Path.join(dir.node, 'whatwg-fetch/fetch.js')
     };
 
     grunt.initConfig({
@@ -46,7 +49,7 @@ module.exports = function(grunt) {
                 cwd: dir.work,
                 dest: dir.work,
                 expand: true,
-                src: '**/*.js',
+                src: axis.descendentJS,
                 options: {
                     comments: false,
                     externalHelpers: true,
@@ -54,41 +57,25 @@ module.exports = function(grunt) {
                 }
             }
         },
-        bower: {
-            pack: {
-                options: {
-                    install: false,
-                    layout: 'byComponent',
-                    targetDir: dir.dep
-                }
-            },
-            unit: {
-                options: {
-                    install: false,
-                    layout: 'byComponent',
-                    targetDir: dir.specdep
-                }
-            }
-        },
         clean: {
             compile: [dir.work, dir.out],
-            pack: [Path.join(dir.work, '**/*'), '!' + file.out.debug],
-            reset: [dir.coverage, dir.out, dir.pkg.bower, dir.pkg.node, dir.specdep, dir.work],
-            unit: [dir.coverage, dir.specdep]
+            pack: [Path.join(dir.work, '**/*'), `!${file.out.debug}`],
+            reset: [dir.coverage, dir.node, dir.out, dir.work],
+            unit: [dir.coverage]
         },
         copy: {
             compile: {
                 cwd: dir.src,
                 dest: dir.work,
                 expand: true,
-                src: '**/*.js'
+                src: axis.descendentJS
             }
         },
         eslint: {
             analyze: {
                 cwd: dir.src,
                 expand: true,
-                src: '**/*.js',
+                src: axis.descendentJS,
                 options: {
                     format: 'stylish'
                 }
@@ -115,16 +102,16 @@ module.exports = function(grunt) {
                     files: [
                         { pattern: files.src, included: false },
                         { pattern: files.spec, included: false },
-                        { pattern: files.specres, included: false },
-                        { pattern: files.specdep, included: false },
-                        { pattern: file.es7Runtime, included: true },
-                        { pattern: file.babelRuntime, included: true },
+                        { pattern: files.res, included: false },
+                        { pattern: runtime.es7, included: true },
+                        { pattern: runtime.babel, included: true },
+                        { pattern: runtime.xhr, included: true },
                         { pattern: 'test/karma.runner.js', included: true }
                     ],
                     frameworks: ['jasmine', 'requirejs'],
-                    logLevel: 'OFF',
-                    preprocessors: (function () {
-                        var result = Object.create(null);
+                    logLevel: 'OFF', //!!! OFF | WARN
+                    preprocessors: (() => {
+                        const result = Object.create(null);
 
                         result[files.src] = ['babel', 'coverage'];
                         result[files.spec] = ['babel'];
@@ -147,16 +134,13 @@ module.exports = function(grunt) {
                 options: {
                     baseUrl: dir.work,
                     name: pkg.name,
-                    onBuildWrite: function (moduleName, path, contents) {
-                        return moduleName === pkg.name ? '' : contents.replace('define(\'', 'define(\'' + pkg.name + '/');
+                    onBuildWrite(moduleName, path, contents) {
+                        return moduleName === pkg.name ? '' : contents.replace(`define('`, `define('${pkg.name}/`);
                     },
                     optimize: 'none',
                     out: file.out.debug,
-                    paths: {
-                        jquery: 'empty:'
-                    },
                     wrap: {
-                        start: '!function() {\n' + grunt.file.read(file.amdRuntime) + '\n}();\n' + grunt.file.read(file.es7Runtime) + '\n' + grunt.file.read(file.babelRuntime) + '\n'
+                        start: `(function() {\n${grunt.file.read(runtime.amd)}\n}).call(typeof self !== 'undefined' ? self : this);\n${grunt.file.read(runtime.es7)}\n${grunt.file.read(runtime.babel)}\n${grunt.file.read(runtime.xhr)}\n`
                     }
                 }
             }
@@ -224,9 +208,9 @@ module.exports = function(grunt) {
     grunt.registerTask('reset', ['clean:reset']);
 
     grunt.registerTask('analyze', ['eslint:analyze']);
-    grunt.registerTask('unit', ['clean:unit', 'bower:unit', 'karma:unit']);
+    grunt.registerTask('unit', ['clean:unit', 'karma:unit']);
     grunt.registerTask('compile', ['clean:compile', 'copy:compile', 'babel:compile']);
-    grunt.registerTask('pack', ['requirejs:pack', 'uglify:pack', 'clean:pack', 'bower:pack']);
+    grunt.registerTask('pack', ['requirejs:pack', 'uglify:pack', 'clean:pack']);
     grunt.registerTask('min', ['string-replace:min', 'uglify:min', 'string-replace:post-min']);
 
     grunt.registerTask('test', ['analyze', 'unit']);
