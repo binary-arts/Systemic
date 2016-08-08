@@ -82,11 +82,12 @@ export class App extends Disposable {
     public constructor() {
         super();
 
-        this.firstCar = new Car();
-        this.secondCar = new Car();
-
-        window.setTimeout(
-            () => {
+        Promise
+            .all([
+                (this.firstCar = new Car()).whenInitialized,
+                (this.secondCar = new Car()).whenInitialized,
+            ])
+            .then(() => {
                 this.firstCar.onchanged.subscribe(this.car_changed.bind(this));
                 this.firstCar.onedited.subscribe(this.car_edited.bind(this));
                 this.firstCar.onediting.subscribe(this.car_editing.bind(this));
@@ -127,9 +128,7 @@ export class App extends Disposable {
                 steering!.dispose();
 
                 this.secondCar.steer();
-            },
-            0
-        );
+            });
     }
 
     public detached() {

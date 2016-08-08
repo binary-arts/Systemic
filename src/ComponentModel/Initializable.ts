@@ -9,7 +9,7 @@ export abstract class Initializable extends Disposable {
     //#region State
 
     //stores
-    private _isInitialized: boolean = false;
+    private readonly _whenInitialized: Promise<void>;
 
     //#endregion
 
@@ -19,22 +19,20 @@ export abstract class Initializable extends Disposable {
         super();
 
         //!!! async init... guaranteed to occur after all sync logic in derived constructors runs
-        // this._isInitialized = new Promise((continueWith, throwWith) => {
-        //     try {
-        //         this.initializing();
-        //         continueWith();
-        //     }
-        //     catch(ex) {
-        //         throwWith(ex);
-        //     }
-        // });
-        setTimeout(
-            () => {
-                this.initializing();
-                this._isInitialized = true;
-            },
-            0
-        );
+        this._whenInitialized = new Promise((continueWith, throwWith) => {
+            setTimeout(
+                () => {
+                    try {
+                        this.initializing();
+                        continueWith();
+                    }
+                    catch(ex) {
+                        throwWith(ex);
+                    }
+                },
+                0
+            );
+        });
     }
 
     protected initializing() {
@@ -54,8 +52,8 @@ export abstract class Initializable extends Disposable {
     //#region Properties
 
     @cannotBeDisposed()
-    public get isInitialized(): boolean {
-        return this._isInitialized;
+    public get whenInitialized(): Promise<void> {
+        return this._whenInitialized;
     }
 
     //#endregion
