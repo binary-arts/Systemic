@@ -5,7 +5,7 @@ import FileService from '../Net/FileService';
 /**
  * Projects locale-specific, externally declared, dynamically loaded language translations as well as
  * conventions for compare, parse and format operations.
- * 
+ *
  * @private @sealed
  */
 class Res {
@@ -197,9 +197,9 @@ class Res {
 
     /**
      * Gets a value indicating whether this Res object is locale-invariant.
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean }
      *      true if this Res object is neither associated with a language nor a region; otherwise,
      *      false.
@@ -210,9 +210,9 @@ class Res {
 
     /**
      * Gets a value indicating whether this Res object is locale-neutral.
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean }
      *      true if this Res object is associated with a language but not a region; otherwise,
      *      false.
@@ -234,9 +234,9 @@ class Res {
 
     /**
      * Gets the locale associated with this Res object.
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !String }
      *      The locale associated with this Res object, used to load locale-specific resource files
      *      declaring translation, compare, parse and format conventions. Locales are either region-specific
@@ -248,9 +248,9 @@ class Res {
 
     /**
      * Gets the region code associated with this Res object.
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { ?String }
      *      The region code (e.g. 'US') associated with this Res object, or null if this Res
      *      object's locale does not specify a region.
@@ -265,9 +265,9 @@ class Res {
 
     /**
      * TODO
-     * 
+     *
      * @public @async
-     * 
+     *
      * @param { !String } spec TODO
      * @returns { !Promise<*> } TODO
      */

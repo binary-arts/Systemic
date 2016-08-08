@@ -9,7 +9,7 @@ import Exception from '../Runtime/Exception';
 
 /**
  * A base class that provides a mechanism for managing object lifetime.
- * 
+ *
  * @public
  */
 export default class Disposable {
@@ -61,7 +61,7 @@ export default class Disposable {
      */
     set disposition(value) {
         const disposition = this.disposition;
-        
+
         if (disposition !== value) {
             Debug.assert(value !== Disposition.Uninitialized || disposition === Disposition.Initializing);
             Debug.assert(value !== Disposition.Initializing || disposition === Disposition.Uninitialized);
@@ -112,7 +112,7 @@ export default class Disposable {
     }
 
     /**
-     * Performs application-defined tasks associated with releasing references and resetting internal 
+     * Performs application-defined tasks associated with releasing references and resetting internal
      * state.
      *
      * @public
@@ -184,7 +184,7 @@ export default class Disposable {
      * TODO
      *
      * @protected @virtual
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     onInitialize() {

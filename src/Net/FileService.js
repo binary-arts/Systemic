@@ -4,7 +4,7 @@ import Exception from '../Runtime/Exception';
 
 /**
  * TODO
- * 
+ *
  * @public @static @sealed
  */
 export default class FileService {
@@ -31,7 +31,7 @@ export default class FileService {
      *
      * @param { !String } path TODO
      * @param { ?Boolean } [throwOnFailure] TODO
-     * 
+     *
      * @returns { Promise<?Object> } TODO
      */
     static async getObject(path, throwOnFailure) {
@@ -54,7 +54,7 @@ export default class FileService {
         }
         catch(ex) {
             result = null;
-            
+
             if (throwOnFailure) throw ex;
         }
 

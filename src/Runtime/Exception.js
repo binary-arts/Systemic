@@ -1,6 +1,6 @@
 /**
  * TODO
- * 
+ *
  * @public @static @sealed
  */
 export default class Exception {
