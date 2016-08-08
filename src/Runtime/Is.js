@@ -2,14 +2,14 @@
 
 /**
  * TODO
- * 
+ *
  * @private @sealed
  */
 class Is {
 
     /**
      * TODO
-     * 
+     *
      * @param { * } ref TODO
      */
     constructor(ref) {
@@ -20,9 +20,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aBoolean() {
@@ -31,9 +31,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aDate() {
@@ -42,9 +42,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aDocument() {
@@ -53,9 +53,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aFunction() {
@@ -64,9 +64,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get anArray() {
@@ -75,9 +75,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get anElement() {
@@ -86,9 +86,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get anError() {
@@ -97,9 +97,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get anObject() {
@@ -108,9 +108,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aNodeList() {
@@ -119,9 +119,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aNonEmptyArray() {
@@ -130,9 +130,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aNonEmptyString() {
@@ -141,9 +141,9 @@ class Is {
 
     /**
      * TODO
-     * 
+     *
      * @public
-     * 
+     *
      * @returns { !Boolean } TODO
      */
     get aNumber() {

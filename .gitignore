@@ -2,8 +2,7 @@
 node_modules/
 
 # Build
-bin/
-obj/
+.bin/
 
 # Test
 test/coverage
