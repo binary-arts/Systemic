@@ -8,14 +8,22 @@ import { is } from '../Runtime/Is';
  */
 export function cannotBeDisposed(): (target: Disposable, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => TypedPropertyDescriptor<any> {
     return function(target: Disposable, propertyKey: string, descriptor: TypedPropertyDescriptor<any>): TypedPropertyDescriptor<any> {
-        const intercepted = descriptor.get!;
+        const isAccessor = descriptor.get !== undefined;
+        let intercepted = isAccessor ? descriptor.get : descriptor.value;
 
-        descriptor.get = function(this:Disposable, ...args: Array<any>) {
-            if (this.isDisposed)
-                throw new Error(`Cannot call '${ propertyKey }' property of a disposed Disposable instance.`);
+        if (typeof intercepted === 'function') {
+            const interceptor = function(this:Disposable, ...args: Array<any>) {
+                if (this.isDisposed)
+                    throw new Error(`Cannot call '${ propertyKey }' ${ isAccessor ? 'property' : 'method' } of a disposed Disposable instance.`);
 
-            return Reflect.apply(intercepted, this, args);
+                return Reflect.apply(intercepted, this, args);
+            }
+
+            if (isAccessor) descriptor.get = interceptor;
+            else descriptor.value = interceptor;
         }
+        else
+            intercepted = null;
 
         return descriptor;
     }
@@ -40,45 +48,55 @@ export abstract class Disposable implements IDisposable {
      */
     public dispose(): void {
         if (!this.isDisposed) {
+            let cancelled = false;
+
             try {
-                this.disposing();
+                cancelled = this.beforeDisposing();
             }
             finally {
-                try {
-                    //transitive disposal
-                    for (const key of Object.keys(this)) {
-                        const field = (<any>this)[key];
-
-                        //TODO: dispose maps and sets
-
-                        if (is(field).anArray)
-                            for(const item of field)
-                                if (is(item.dispose).aFunction)
-                                    item.dispose();
-                        else if (is(field).anObject)
-                            for(const key of Object.keys(field))
-                                if (is(field[key].dispose).aFunction)
-                                    field[key].dispose();
-
-                        if (is(field.dispose).aFunction)
-                            field.dispose();
+                if (!cancelled) {
+                    try {
+                        this.disposing();
                     }
-                }
-                finally {
-                    //teardown
-                    for (const key of Object.keys(this))
-                        if (key !== '_isDisposed') {
-                            const field= (<any>this)[key];
+                    finally {
+                        try {
+                            //transitive disposal
+                            for (const key of Object.keys(this)) {
+                                const field = (<any>this)[key];
 
-                            //TODO: clear maps and sets
+                                //TODO: recursively probe Arrays, Objects, Maps and Sets for the same -or- disposables
+                                //TODO: dispose maps and sets
 
-                            if (is(field).anArray) field.length = 0;
+                                if (is(field).anArray)
+                                    for(const item of field)
+                                        if (is(item.dispose).aFunction)
+                                            item.dispose();
+                                else if (is(field).anObject)
+                                    for(const key of Object.keys(field))
+                                        if (is(field[key].dispose).aFunction)
+                                            field[key].dispose();
 
-                            Reflect.deleteProperty(this, key);
+                                if (is(field.dispose).aFunction)
+                                    field.dispose();
+                            }
                         }
+                        finally {
+                            //teardown
+                            for (const key of Object.keys(this))
+                                if (key !== '_isDisposed') {
+                                    const field= (<any>this)[key];
 
-                    //state
-                    this._isDisposed = true;
+                                    //TODO: clear maps and sets
+
+                                    if (is(field).anArray) field.length = 0;
+
+                                    Reflect.deleteProperty(this, key);
+                                }
+
+                            //state
+                            this._isDisposed = true;
+                        }
+                    }
                 }
             }
         }
@@ -89,7 +107,7 @@ export abstract class Disposable implements IDisposable {
     //#region Events
 
     public get ondisposing(): Event<Disposable, EventArgs<Disposable>> {
-        return this.events.get('disposing');
+        return this.getEvent('disposing');
     }
 
     //#endregion
@@ -97,7 +115,7 @@ export abstract class Disposable implements IDisposable {
     //#region Properties
 
     @cannotBeDisposed()
-    protected get events(): EventList {
+    private get events(): EventList {
         return this._events || (this._events = new EventList());
     }
 
@@ -109,8 +127,21 @@ export abstract class Disposable implements IDisposable {
 
     //#region Methods
 
+    protected beforeDisposing(): boolean {
+        return false;
+    }
+
     protected disposing() {
-        this.events.publish('disposing', EventArgs.empty(this));
+        this.publish('disposing', EventArgs.empty(this));
+    }
+
+    @cannotBeDisposed()
+    protected getEvent(name: string): Event<Disposable, EventArgs<Disposable>> {
+        return this.events.get(name);
+    }
+
+    protected publish(name: string, e: EventArgs<Disposable>): void {
+        if (!this.isDisposed) this.events.publish(name, e);
     }
 
     //#endregion

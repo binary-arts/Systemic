@@ -22,15 +22,15 @@ export abstract class Editable extends Component {
     //#region Events
 
     public get onchanged(): Event<Editable, EventArgs<Editable>> {
-        return this.events.get('changed');
+        return this.getEvent('changed');
     }
 
     public get onedited(): Event<Editable, EventArgs<Editable>> {
-        return this.events.get('edited');
+        return this.getEvent('edited');
     }
 
     public get onediting(): Event<Editable, EventArgs<Editable>> {
-        return this.events.get('editing');
+        return this.getEvent('editing');
     }
 
     //#enregion
@@ -88,22 +88,22 @@ export abstract class Editable extends Component {
 
     //#region Methods
 
-    //@cannotBeDisposed()
+    @cannotBeDisposed()
     public beginEdit(): void {
         this.editFrames++;
     }
 
-    //@cannotBeDisposed()
+    @cannotBeDisposed()
     public cancelEdit(): void {
         this.editBuffer.clear();
         this.editFrames = 0;
     }
 
     protected changed(): void {
-        this.events.publish('changed', EventArgs.empty(this));
+        this.publish('changed', EventArgs.empty(this));
     }
 
-    //@cannotBeDisposed()
+    @cannotBeDisposed()
     protected edit(fieldName: string, value: any): void {
         this.beginEdit();
         this.editBuffer.set(fieldName, value);
@@ -111,14 +111,14 @@ export abstract class Editable extends Component {
     }
 
     protected edited(): void {
-        this.events.publish('edited', EventArgs.empty(this));
+        this.publish('edited', EventArgs.empty(this));
     }
 
     protected editing(): void {
-        this.events.publish('editing', EventArgs.empty(this));
+        this.publish('editing', EventArgs.empty(this));
     }
 
-    //@cannotBeDisposed()
+    @cannotBeDisposed()
     public endEdit(): boolean {
         this.editFrames--;
         return this.isEditing;
@@ -143,12 +143,12 @@ export abstract class Editable extends Component {
         super.propertyChanged(name, newValue, oldValue);
     }
 
-    //@cannotBeDisposed()
+    @cannotBeDisposed()
     public revert(): void {
         //TODO: cancel edits, change the buffer back to fresh (isChanged is false)
     };
 
-    //@cannotBeDisposed()
+    @cannotBeDisposed()
     public save(): boolean {
         //TODO: make a class decorator persistedBy (takes a type that implements the Persister interface)
         //TODO: if persistedBy is available, call it

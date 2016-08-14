@@ -36,7 +36,7 @@ export abstract class Initializable extends Disposable {
     }
 
     protected initializing() {
-        this.events.publish('initializing', EventArgs.empty(this));
+        this.publish('initializing', EventArgs.empty(this));
     }
 
     //#endregion
@@ -44,7 +44,7 @@ export abstract class Initializable extends Disposable {
     //#region Events
 
     public get oninitializing(): Event<Initializable, EventArgs<Initializable>> {
-        return this.events.get('initializing');
+        return this.getEvent('initializing');
     }
 
     //#endregion
